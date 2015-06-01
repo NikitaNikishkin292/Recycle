@@ -1,0 +1,39 @@
+li {
+	font-size: 20px;
+	color: green;
+}
+
+/*body {
+	background: white url('images/background.jpg') no-repeat right bottom;
+}*/
+
+nav.navbar-default {
+	margin: 0;
+	padding: 0;
+}
+
+.navbar-brand {
+	font-size: 25px;
+}
+
+#city_info {
+	height: 500px;
+	background-image: url('images/dolgopa.jpg');
+	background-size: cover;
+	margin: 0;
+	padding: 0;
+}
+
+#city_info>h1 {
+	text-align: left;
+}
+
+h1 {
+	text-align: center;
+	padding-bottom: 1%;
+}
+
+#containers {
+	height: 500px;
+	font-size: 30px;
+}
