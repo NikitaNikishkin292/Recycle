@@ -1,4 +1,5 @@
 /*стили панели навигации*/
+
 nav.navbar-default {
 	margin: 0;
 	padding: 0;
@@ -19,15 +20,17 @@ nav.navbar-default {
 
 
 /*стили списка контейнеров*/
+#containers {
+	height: 500px;
+	font-size: 30px;
+}
+
 h1 {
 	text-align: center;
 	padding-bottom: 1%;
 }
 
-#containers {
-	height: 500px;
-	font-size: 30px;
-}
+/*стили форм добавления нового контейнера*/
 
 input {
 	width: 100%;
@@ -52,3 +55,19 @@ input {
 	height: 100px;
 }
 
+
+
+/*стили страницы одного контейнера*/
+#measurement_list {
+	text-align: center;
+}
+
+#measurement_list h1 {
+	text-align: center;
+}
+
+
+/**/
+.new_measurement div {
+	text-align: center;
+}
