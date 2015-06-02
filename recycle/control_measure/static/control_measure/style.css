@@ -1,12 +1,4 @@
-li {
-	font-size: 20px;
-	color: green;
-}
-
-/*body {
-	background: white url('images/background.jpg') no-repeat right bottom;
-}*/
-
+/*стили панели навигации*/
 nav.navbar-default {
 	margin: 0;
 	padding: 0;
@@ -16,6 +8,7 @@ nav.navbar-default {
 	font-size: 25px;
 }
 
+
 #city_info {
 	height: 500px;
 	background-image: url('images/dolgopa.jpg');
@@ -24,10 +17,8 @@ nav.navbar-default {
 	padding: 0;
 }
 
-#city_info>h1 {
-	text-align: left;
-}
 
+/*стили списка контейнеров*/
 h1 {
 	text-align: center;
 	padding-bottom: 1%;
@@ -37,3 +28,27 @@ h1 {
 	height: 500px;
 	font-size: 30px;
 }
+
+input {
+	width: 100%;
+	text-align: center;
+}
+
+#new_bin_info {
+	margin: 2%;
+}
+
+#new_bin {
+	margin-top: 2%;
+}
+
+.hidden_menu_for_add {
+	height: 0px;
+	visibility: hidden;
+}
+
+.visible_menu_for_add {
+	visibility: visible;
+	height: 100px;
+}
+

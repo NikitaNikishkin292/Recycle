@@ -11,45 +11,5 @@
 </head>
 <body>
 
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand navbar-center" href="#">ZnaiK</a>
-    </div>
-    <div>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Город</a></li>
-        <li><a href="#containers">Контенеры</a></li>
-        <li><a href="#">Финансы</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div id = 'city_info'>
-	
-</div>
-
-<div class="container" id = "containers">
-	<h1> Контейнеры в городе </h1>
-	{% if first_five_bins %}
-		<div class="row">
-	    	<div class="col-xs-1"></div>
-	    	<div class="col-xs-2"> #</div>
-	    	<div class="col-xs-4">Адрес</div>
-	    	<div class="col-xs-4">Заполненность</div>
-	    </div>
-	    {% for bin in first_five_bins %}
-	    <div class="row">
-	    	<div class="col-xs-1"></div>
-	    	<div class="col-xs-2">{{ bin.bin_id }}</div>
-	    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
-	    	<div class="col-xs-4">{{ bin.bin_get_last_fill }}%</div>
-	    </div>
-	    {% endfor %}
-	{% else %}
-	    <p>No bins are available.</p>
-	{% endif %}
-</div>
 </body>
 </html>

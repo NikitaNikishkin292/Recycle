@@ -3,8 +3,8 @@ from decimal import*
 # Create your models here.
 
 class Bin(models.Model):
-	bin_id = models.IntegerField(default = 1)
-	bin_adress = models.CharField(max_length = 200)
+	bin_id = models.IntegerField(default = 1, verbose_name = 'Номер')
+	bin_adress = models.CharField(max_length = 200, verbose_name = 'Адрес')
 	#Объём рабочей внутренности контейнера в литрах
 	bin_volume = models.IntegerField(default = 200)
 	#средний темп заполняемости контейнера, выраженный в процентах от общего объёма в день
@@ -13,7 +13,10 @@ class Bin(models.Model):
 		return str(self.bin_adress)
 	#возвращает последнее измерениие
 	def bin_get_last_fill(self):
-		return self.measurement_set.last().measurement_get_percentage()
+		if self.measurement_set.count():
+			return self.measurement_set.last().measurement_get_percentage()
+		else:
+			return 0.
 	def bin_get_number(self):
 		return Bin.objects.count()
 
@@ -31,6 +34,12 @@ class Measurement(models.Model):
 		x = (self.measurement_cells_inside / self.measurement_cells_maximum) * 100
 		g =float("{0:.2f}".format(x))
 		return g
+
+class Event(models.Model):
+	event_bin = models.ForeignKey(Bin)
+	event_date = models.DateField()
+	event_description = models.CharField(max_length = 500)
+
 
 #Выполняя makemigrations, вы говорите Django, что внесли 
 #некоторые изменения в ваши модели и хотели бы сохранить их в миграции.
