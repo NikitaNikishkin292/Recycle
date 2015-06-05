@@ -37,13 +37,13 @@
 			<h2> Адрес: {{ a_bin.bin_adress}} </h2>
 		</div>
 	</div>
-	{% if a_bin.measurement_set.all %}
+	{% if a_bin.bin_get_last_five_measurements %}
 		<div class="row">
 			<div class="col-xs-3"></div>
 			<div class="col-xs-3"> Дата </div>
 			<div class="col-xs-3"> Уровень заполненности </div>
 		</div>
-		{% for measurement in a_bin.measurement_set.all %}
+		{%	for measurement in a_bin.bin_get_last_five_measurements %}
 			<div class="row">
 				<div class="col-xs-3"></div>
 				<div class="col-xs-3"> {{ measurement.measurement_date }} </div>

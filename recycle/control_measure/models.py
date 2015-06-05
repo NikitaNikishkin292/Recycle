@@ -19,6 +19,9 @@ class Bin(models.Model):
 			return 0.
 	def bin_get_number(self):
 		return Bin.objects.count()
+	def bin_get_last_five_measurements(self):
+		result = self.measurement_set.all().order_by('-measurement_date')[:5]
+		return result
 
 
 class Measurement(models.Model):
