@@ -5,6 +5,7 @@ from .models import Measurement, Event, Bin
 
 class MeasurementInline(admin.TabularInline):
 	model = Measurement
+	ordering = ('-measurement_date',)
 	extra = 0
 
 class EventInline(admin.TabularInline):

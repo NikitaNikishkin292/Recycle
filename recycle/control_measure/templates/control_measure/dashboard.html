@@ -35,18 +35,20 @@
 	<h1> Контейнеры в городе </h1>
 	{% if bins_list %}
 		<div class="row">
-	    	<div class="col-xs-2"></div>
-	    	<div class="col-xs-2"> #</div>
+	    	<div class="col-xs-1"></div>
+	    	<div class="col-xs-1"> #</div>
 	    	<div class="col-xs-4">Адрес</div>
-	    	<div class="col-xs-4">Заполненность</div>
+	    	<div class="col-xs-3">Заполненность</div>
+	    	<div class="col-xs-3">Средний темп</div>
 	    </div>
 	    {% for bin in bins_list %}
 	    <a href="/control_measure/{{bin.bin_id}}/">
 		    <div class="row bin_info">
-		    	<div class="col-xs-2"></div>
-		    	<div class="col-xs-2">{{ bin.bin_id }}</div>
+		    	<div class="col-xs-1"></div>
+		    	<div class="col-xs-1">{{ bin.bin_id }}</div>
 		    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
-		    	<div class="col-xs-4">{{ bin.bin_get_last_fill }}%</div>
+		    	<div class="col-xs-3">{{ bin.bin_get_last_fill }}%</div>
+		    	<div class="col-xs-3">{{ bin.bin_get_fill_pace_percentage }}%</div>
 		    </div>
 	    </a>
 	    {% endfor %}

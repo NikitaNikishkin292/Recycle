@@ -46,7 +46,7 @@
 		{%	for measurement in a_bin.bin_get_last_five_measurements %}
 			<div class="row">
 				<div class="col-xs-3"></div>
-				<div class="col-xs-3"> {{ measurement.measurement_date }} </div>
+				<div class="col-xs-3"> {{ measurement.measurement_date.date }} </div>
 				<div class="col-xs-3"> {{ measurement.measurement_get_percentage }}% </div>
 			</div>
 		{% endfor %}
