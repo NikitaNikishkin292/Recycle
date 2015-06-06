@@ -46,7 +46,7 @@
 		{%	for measurement in a_bin.bin_get_last_five_measurements %}
 			<div class="row">
 				<div class="col-xs-3"></div>
-				<div class="col-xs-3"> {{ measurement.measurement_date.date }} </div>
+				<div class="col-xs-3"> {{ measurement.measurement_date }} </div>
 				<div class="col-xs-3"> {{ measurement.measurement_get_percentage }}% </div>
 			</div>
 		{% endfor %}
@@ -61,14 +61,14 @@
 	{% endif %}
 </div>
 
-<div class="container new_measurement">
+<div class="container" id = "new_measurement">
 	<div class="row">
 		<div class="col-xs-3"></div>
-		<div class="col-xs-6">
+		<div class="col-xs-6 add_button">
 			<h2> Добавить новое измерение </h2>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row hidden_menu" id = "new_measure_info">
 		<form action = '{% url "control_measure:add_measurement" a_bin.bin_id %}' method = 'post' >
 			{% csrf_token %}
 			<div class='col-xs-3'>
@@ -84,6 +84,35 @@
 				<input type = 'submit' value = 'Добавить'/>
 			</div>
 		</form>
+	</div>
+</div>
+
+<div class="container" id = "unload_bin">
+	<div class="row">
+		<div class="col-xs-3"></div>
+		<div class="col-xs-6 unload_button">
+			<h2> Выгрузить контейнер </h2>
+		</div>
+	</div>
+	<div class="row hidden_menu" id = "new_unload_info">
+		<form action = '{% url "control_measure:unload_bin" a_bin.bin_id %}' method = "post" >
+			{% csrf_token %}
+			<div class="col-xs-1"></div>
+			<div class="col-xs-2">
+				<input type="text" name = "unload_date" placeholder = "Дата" />
+			</div>
+			<div class="col-xs-2">
+				<input type="text" name="unload_cells_inside_before" placeholder="Клеточек было" />
+			</div>
+			<div class="col-xs-2"> 
+				<input type="text" name="unload_cells_inside_after" placeholder="Клеточек осталось"/>
+			</div>
+			<div class="col-xs-2"> 
+				<input type="text" name="unload_cells_inside_maximum" placeholder="Клеточек всего"/>
+			</div>
+			<div class='col-xs-2'>
+				<input type = 'submit' value = 'Выгрузить'/>
+			</div>
 	</div>
 </div>
 

@@ -31,24 +31,27 @@
 	
 </div>
 
+
 <div class="container" id = "containers">
 	<h1> Контейнеры в городе </h1>
 	{% if bins_list %}
 		<div class="row">
-	    	<div class="col-xs-1"></div>
+	    	
 	    	<div class="col-xs-1"> #</div>
 	    	<div class="col-xs-4">Адрес</div>
-	    	<div class="col-xs-3">Заполненность</div>
-	    	<div class="col-xs-3">Средний темп</div>
+	    	<div class="col-xs-2">Fill</div>
+	    	<div class="col-xs-2">Темп(%)</div>
+	    	<div class="col-xs-3">Вывоз</div>
 	    </div>
 	    {% for bin in bins_list %}
 	    <a href="/control_measure/{{bin.bin_id}}/">
 		    <div class="row bin_info">
-		    	<div class="col-xs-1"></div>
+		   
 		    	<div class="col-xs-1">{{ bin.bin_id }}</div>
 		    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
-		    	<div class="col-xs-3">{{ bin.bin_get_last_fill }}%</div>
-		    	<div class="col-xs-3">{{ bin.bin_get_fill_pace_percentage }}%</div>
+		    	<div class="col-xs-2">{{ bin.bin_get_current_fill }}%</div>
+		    	<div class="col-xs-2">{{ bin.bin_get_fill_pace_percentage }}%</div>
+		    	<div class="col-xs-3">{{ bin.bin_get_unload_date.date }} </div>
 		    </div>
 	    </a>
 	    {% endfor %}
@@ -62,7 +65,7 @@
 				<button id="new_bin">Новый контейнер</button>
 			</div>
 		</div>
-		<div class="row hidden_menu_for_add" id = "new_bin_info">
+		<div class="row hidden_menu" id = "new_bin_info">
 		<form action = '{% url "control_measure:add_bin"  %}' method = 'post' >
 			{% csrf_token %}
 			<div class='col-xs-1'></div>

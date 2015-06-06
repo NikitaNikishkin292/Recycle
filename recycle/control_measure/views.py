@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
+import datetime
 
 def index(request):
 	return render(request, 'control_measure/index.html')
@@ -46,3 +47,16 @@ def add_measurement(request, bin_ident):
 		a_bin.measurement_set.create(measurement_date = new_date, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum)
 		return render(request, 'control_measure/detail.html', {'a_bin' : a_bin})
 
+def unload_bin(request, bin_ident):
+	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
+	try:
+		date = request.POST['unload_date']
+		cells_inside_before = request.POST['unload_cells_inside_before']
+		cells_inside_after = request.POST['unload_cells_inside_after']
+		cells_inside_maximum = request.POST['unload_cells_inside_maximum']
+	except (KeyError, Bin.DoesNotExist):
+		return render(request, 'control/measure/detail.html', {'a_bin': a_bin})
+	else:
+		a_bin.measurement_set.create(measurement_date = date, measurement_cells_inside = cells_inside_after, measurement_cells_maximum = cells_inside_maximum)
+		a_bin.measurement_set.create(measurement_date = date, measurement_cells_inside = cells_inside_before, measurement_cells_maximum = cells_inside_maximum)
+		return render(request, 'control_measure/detail.html', {'a_bin': a_bin})

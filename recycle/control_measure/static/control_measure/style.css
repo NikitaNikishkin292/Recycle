@@ -45,14 +45,13 @@ input {
 	margin-top: 2%;
 }
 
-.hidden_menu_for_add {
+.hidden_menu {
 	height: 0px;
 	visibility: hidden;
 }
 
-.visible_menu_for_add {
+.visible_menu {
 	visibility: visible;
-	height: 100px;
 }
 
 
@@ -68,6 +67,18 @@ input {
 
 
 /**/
-.new_measurement div {
+.unload_button, .add_button {
+	margin: 1%;
+	padding-bottom: 1%;
+	border: solid black 1px;
 	text-align: center;
+	cursor: pointer;
+}
+
+.mouseover_cursor {
+	cursor: pointer;
+}
+
+.mouseout_cursor {
+	cursor: default;
 }
