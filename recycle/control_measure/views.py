@@ -15,6 +15,8 @@ def dashboard(request):
 	#user = get_object_or_404(User, pk = user_id)
 	bins_list = Bin.objects.all().order_by('bin_id')
 	context = RequestContext = {'bins_list': bins_list}
+	from django.conf import settings
+	print (settings.STATIC_ROOT)
 	return render(request, 'control_measure/dashboard.html', context)
 
 def add_bin(request):

@@ -15,10 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.conf import settings
 
 urlpatterns = [
 	url(r'^control_measure/', include('control_measure.urls', namespace = 'control_measure')),
-	(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+	#(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     url(r'^', include(admin.site.urls)),
 ]
