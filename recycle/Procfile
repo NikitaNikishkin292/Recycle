@@ -1,1 +1,1 @@
-web: control_measure
+web: gunicorn recycle.wsgi --log-file -
