@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
 	url(r'^control_measure/', include('control_measure.urls', namespace = 'control_measure')),
+	(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     url(r'^', include(admin.site.urls)),
 ]
