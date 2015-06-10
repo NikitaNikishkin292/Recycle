@@ -8,7 +8,8 @@ from django.core.urlresolvers import reverse
 import datetime
 
 def index(request):
-	return render(request, 'control_measure/index.html')
+    return render(request, 'control_measure/index.html', {})
+
 
 def dashboard(request):
 	#user = get_object_or_404(User, pk = user_id)

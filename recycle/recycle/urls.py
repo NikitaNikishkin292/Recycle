@@ -18,5 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
 	url(r'^control_measure/', include('control_measure.urls', namespace = 'control_measure')),
-    url(r'^control_measure/admin/', include(admin.site.urls)),
+    url(r'^', include(admin.site.urls)),
 ]
