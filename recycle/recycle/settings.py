@@ -25,7 +25,7 @@ SECRET_KEY = 't0h-_&^6_cf+sg4dqkus*y7fw4_98-twiu#(c8+8%g74fmnovx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -75,19 +75,18 @@ WSGI_APPLICATION = 'recycle.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'bins',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': '', # Set to empty string for localhost.
-        'PORT': '', # Set to empty string for default.
-    }
-}
-
+ON_HEROKU = os.environ.get('ON_HEROKU')
 import dj_database_url
+
+DATABASES = {}
 DATABASES['default'] =  dj_database_url.config()
+if not ON_HEROKU:
+    DATABASES['default']['NAME'] = 'bins'
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+    DATABASES['default']['USER'] = 'admin'
+    DATABASES['default']['PASSWORD'] = 'admin'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
