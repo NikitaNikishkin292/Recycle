@@ -56,13 +56,16 @@ def add_measurement(request, bin_ident):
 def unload_bin(request, bin_ident):
 	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
 	try:
-		date = request.POST['unload_date']
+		unload_date = request.POST['unload_date']
+		unload_time = request.POST['unload_time']
 		cells_inside_before = request.POST['unload_cells_inside_before']
 		cells_inside_after = request.POST['unload_cells_inside_after']
 		cells_inside_maximum = request.POST['unload_cells_inside_maximum']
 	except (KeyError, Bin.DoesNotExist):
 		return render(request, 'control/measure/detail.html', {'a_bin': a_bin})
 	else:
-		a_bin.measurement_set.create(measurement_date = date, measurement_cells_inside = cells_inside_after, measurement_cells_maximum = cells_inside_maximum)
-		a_bin.measurement_set.create(measurement_date = date, measurement_cells_inside = cells_inside_before, measurement_cells_maximum = cells_inside_maximum)
+		the_date = unload_date + " " + unload_time
+		print(the_date)
+		a_bin.measurement_set.create(measurement_date = the_date, measurement_cells_inside = cells_inside_after, measurement_cells_maximum = cells_inside_maximum)
+		a_bin.measurement_set.create(measurement_date = unload_date + " " + unload_time, measurement_cells_inside = cells_inside_before, measurement_cells_maximum = cells_inside_maximum)
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
