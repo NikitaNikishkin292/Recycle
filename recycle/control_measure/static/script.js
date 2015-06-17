@@ -11,6 +11,11 @@ $(document).ready(function() {
 		$('#new_unload_info').addClass('visible_menu');
 	});
 
+	$('.current_date').click(function(event){
+		//var now = new Date();
+		alert('dfgdfg');
+	});
+
 	//обработчики кнопки Эдобавить измерение
 	$('.add_button').click(function(event){
 		$('#new_measure_info').removeClass('hidden_menu');

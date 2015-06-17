@@ -71,16 +71,22 @@
 	<div class="row hidden_menu" id = "new_measure_info">
 		<form action = '{% url "control_measure:add_measurement" a_bin.bin_id %}' method = 'post' >
 			{% csrf_token %}
-			<div class='col-xs-3'>
+			<div class='col-xs-2'>
 				<input type = "text" name="measurement_date" placeholder = "Дата"/>
 			</div>
-			<div class='col-xs-3'>
+			<div class='col-xs-2'>
+				<input type = "text" name="measurement_date" value = "15:00"/>
+			</div>
+			<div class='col-xs-2 current_date'>
+				<span>Сейчас</span>
+			</div>
+			<div class='col-xs-2'>
 				<input type = "text" name = "measurement_cells_inside" placeholder = "Клеточек внутри" />
 			</div>
-			<div class='col-xs-3'>
+			<div class='col-xs-2'>
 				<input type = "text" name = "measurement_cells_maximum" placeholder = "Клеточек всего" />
 			</div>
-			<div class='col-xs-3'>
+			<div class='col-xs-2'>
 				<input type = 'submit' value = 'Добавить'/>
 			</div>
 		</form>

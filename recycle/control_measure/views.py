@@ -5,7 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-import datetime
+from pytz import timezone
+from datetime import datetime
+tz = 'Europe/Moscow'
 
 def index(request):
     return render(request, 'control_measure/index.html', {})

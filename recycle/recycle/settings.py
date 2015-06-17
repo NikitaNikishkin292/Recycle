@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'recycle.wsgi.application'
 
 #ON_HEROKU = os.environ.get('ON_HEROKU')
 #При отправке на сервер нужно сделать not_on_heroku = 0 и убрать комменарий в строчке 84
-not_on_heroku = 0
+not_on_heroku = 1
 import dj_database_url
 
 DATABASES = {}
-DATABASES['default'] =  dj_database_url.config()    
+#DATABASES['default'] =  dj_database_url.config()    
 if not_on_heroku:
     DATABASES = {
         'default': {
@@ -100,7 +100,7 @@ if not_on_heroku:
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
