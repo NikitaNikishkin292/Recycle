@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'recycle.wsgi.application'
 
 #ON_HEROKU = os.environ.get('ON_HEROKU')
 #При отправке на сервер нужно сделать not_on_heroku = 0 и убрать комменарий в строчке 84
-not_on_heroku = 0
+not_on_heroku = 1
 import dj_database_url
 
 DATABASES = {}
-DATABASES['default'] =  dj_database_url.config()    
+#DATABASES['default'] =  dj_database_url.config()    
 if not_on_heroku:
     DATABASES = {
         'default': {

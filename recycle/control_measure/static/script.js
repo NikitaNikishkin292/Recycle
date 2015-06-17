@@ -12,9 +12,15 @@ $(document).ready(function() {
 	});
 
 	$('.current_date').click(function(event){
-		//var now = new Date();
-		alert('dfgdfg');
-	});
+			var now = new Date();
+			var day = now.getDate();
+			var mon = now.getMonth() + 1;
+			var year = now.getFullYear();
+			var hours = now.getHours()
+			var current_date = year + "-" + mon + "-" + day;
+			//alert(current_date);
+			$('#date_of_measurement').attr("value", current_date);
+		});
 
 	//обработчики кнопки Эдобавить измерение
 	$('.add_button').click(function(event){

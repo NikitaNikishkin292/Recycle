@@ -16,4 +16,8 @@ $(document).ready(function() {
 		$('#new_measure_info').removeClass('hidden_menu');
 		$('#new_measure_info').addClass('visible_menu');
 	});
+
+	$('.current_date').click(function(event) {
+		alert('win');
+	});
 });

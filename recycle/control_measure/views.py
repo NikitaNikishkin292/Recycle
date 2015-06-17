@@ -44,12 +44,13 @@ def add_measurement(request, bin_ident):
 	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
 	try:
 		new_date = request.POST['measurement_date']
+		new_time = request.POST['measurement_time']
 		new_cells_inside = int(request.POST['measurement_cells_inside'])
 		new_cells_maximum = int(request.POST['measurement_cells_maximum'])
 	except (KeyError, Measurement.DoesNotExist):
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 	else:
-		a_bin.measurement_set.create(measurement_date = new_date, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum)
+		a_bin.measurement_set.create(measurement_date = new_date + " " + new_time, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum)
 		return render(request, 'control_measure/detail.html', {'a_bin' : a_bin})
 
 def unload_bin(request, bin_ident):
