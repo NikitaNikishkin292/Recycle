@@ -79,14 +79,21 @@ ON_HEROKU = os.environ.get('ON_HEROKU')
 import dj_database_url
 
 DATABASES = {}
-DATABASES['default'] =  dj_database_url.config()
+#DATABASES['default'] =  dj_database_url.config()
 if ON_HEROKU:
-    DATABASES['default']['NAME'] = 'bins'
-    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
-    DATABASES['default']['USER'] = 'admin'
-    DATABASES['default']['PASSWORD'] = 'admin'
+    DATABASES['default'] =  dj_database_url.config()    
 else:
-    DATABASES['default'] =  dj_database_url.config()
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'bins',
+            'USER': 'admin',
+            'PASSWORD': 'admin',
+            'HOST': '', # Set to empty string for localhost.
+            'PORT': '', # Set to empty string for default.
+        }
+    }
+#    DATABASES['default'] =  dj_database_url.config()
 
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
