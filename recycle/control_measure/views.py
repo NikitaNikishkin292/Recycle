@@ -51,7 +51,14 @@ def add_measurement(request, bin_ident):
 	except (KeyError, Measurement.DoesNotExist):
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 	else:
-		a_bin.measurement_set.create(measurement_date = new_date + " " + new_time, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum)
+		the_date_of_begin_string = new_date + " " + new_time
+		the_date_of_begin_datetime = datetime.strptime(the_date_of_begin_string, "%Y-%m-%d %H:%M")
+		tz = 'Europe/Moscow'
+		current_server_time = datetime.utcnow()
+		current_client_time = timezone(tz).fromutc(current_server_time)
+		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime)
+		if our_date_for_comparison <= current_client_time:
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum)
 		return render(request, 'control_measure/detail.html', {'a_bin' : a_bin})
 
 def unload_bin(request, bin_ident):
