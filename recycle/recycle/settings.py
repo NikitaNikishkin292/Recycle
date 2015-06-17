@@ -76,16 +76,13 @@ WSGI_APPLICATION = 'recycle.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 #ON_HEROKU = os.environ.get('ON_HEROKU')
-on_heroku = 0
-if 'YOUR_ENV_VAR' in os.environ:
-    on_heroku = 1
+#При отправке на сервер нужно сделать not_on_heroku = 0 и убрать комменарий в строчке 84
+not_on_heroku = 0
 import dj_database_url
 
 DATABASES = {}
-#DATABASES['default'] =  dj_database_url.config()
-if on_heroku:
-    DATABASES['default'] =  dj_database_url.config()    
-else:
+DATABASES['default'] =  dj_database_url.config()    
+if not_on_heroku:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
