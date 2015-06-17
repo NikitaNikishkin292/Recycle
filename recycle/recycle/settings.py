@@ -80,13 +80,15 @@ import dj_database_url
 
 DATABASES = {}
 DATABASES['default'] =  dj_database_url.config()
-if not ON_HEROKU:
+if ON_HEROKU:
     DATABASES['default']['NAME'] = 'bins'
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
     DATABASES['default']['USER'] = 'admin'
     DATABASES['default']['PASSWORD'] = 'admin'
+else:
+    DATABASES['default'] =  dj_database_url.config()
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
