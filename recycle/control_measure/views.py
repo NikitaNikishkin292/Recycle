@@ -67,9 +67,9 @@ def unload_bin(request, bin_ident):
 	try:
 		unload_date = request.POST['unload_date']
 		unload_time = request.POST['unload_time']
-		cells_inside_before = request.POST['unload_cells_inside_before']
-		cells_inside_after = request.POST['unload_cells_inside_after']
-		cells_inside_maximum = request.POST['unload_cells_inside_maximum']
+		cells_inside_before = int(request.POST['unload_cells_inside_before'])
+		cells_inside_after = int(request.POST['unload_cells_inside_after'])
+		cells_inside_maximum = int(request.POST['unload_cells_inside_maximum'])
 	except (KeyError, Bin.DoesNotExist):
 		return render(request, 'control/measure/detail.html', {'a_bin': a_bin})
 	else:
@@ -81,8 +81,10 @@ def unload_bin(request, bin_ident):
 		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime)
 		if our_date_for_comparison <= current_client_time:
 			the_date_of_finish = the_date_of_begin_datetime + timedelta(minutes = 5)
-			a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_cells_inside = cells_inside_after, measurement_cells_maximum = cells_inside_maximum)
-			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = cells_inside_before, measurement_cells_maximum = cells_inside_maximum)
+			percentage_before = 100 * (cells_inside_before / cells_inside_maximum)
+			percentage_after = 100 * (cells_inside_after / cells_inside_maximum)
+			a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_cells_inside = cells_inside_after, measurement_cells_maximum = cells_inside_maximum, measurement_percentage = percentage_after)
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = cells_inside_before, measurement_cells_maximum = cells_inside_maximum, measurement_percentage = percentage_before)
 			return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 		else:
 			return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
