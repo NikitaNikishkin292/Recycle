@@ -4,11 +4,24 @@ import decimal
 import datetime
 # Create your models here.
 
+class Type(models.Model):
+	type_name = models.CharField(max_length = 20, verbose_name = "Тип контейнера")
+	type_description = models.CharField(max_length = 100, default = "bla bla bla", verbose_name = "Описание")
+	type_length = models.IntegerField(default = 145, verbose_name = "Длина")
+	type_width = models.IntegerField(default = 105, verbose_name = "Ширина")
+	type_heigth = models.IntegerField(default = 165, verbose_name = "Высота")
+	def __str__(self):
+		return str(self.type_name)
+	def type_get_volume(self):
+		return (self.type_heigth * self.type_width * self.type_length) / 1000
+
 class Bin(models.Model):
 	bin_id = models.IntegerField(default = 1, verbose_name = 'Номер')
 	bin_adress = models.CharField(max_length = 200, verbose_name = 'Адрес')
 	#Объём рабочей внутренности контейнера в литрах
-	bin_volume = models.IntegerField(default = 200)
+	#bin_volume = models.IntegerField(default = 200)
+	#тип контейнера
+	bin_type = models.ForeignKey(Type, null = 'True')
 	#средний темп заполняемости контейнера, выраженный в процентах от общего объёма в день
 	#bin_pace = models.DecimalField(max_digits = 4, decimal_places = 2)
 	def __str__(self):
@@ -100,6 +113,8 @@ class Bin(models.Model):
 class Measurement(models.Model):
 	measurement_bin = models.ForeignKey(Bin)
 	measurement_date = models.DateTimeField()
+	#заполненность контейнера в процентах
+	measurement_percentage = models.IntegerField(default = 50, verbose_name = "Заполненность")
 	#число клеточек, соответствующее уровню заполненности контейнера
 	measurement_cells_inside = models.DecimalField(max_digits = 3, decimal_places = 1)
 	#максимально возможное число клеточек
@@ -115,6 +130,7 @@ class Event(models.Model):
 	event_bin = models.ForeignKey(Bin)
 	event_date = models.DateField()
 	event_description = models.CharField(max_length = 500)
+
 
 
 #Выполняя makemigrations, вы говорите Django, что внесли 
