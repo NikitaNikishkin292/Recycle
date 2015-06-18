@@ -58,7 +58,8 @@ def add_measurement(request, bin_ident):
 		current_client_time = timezone(tz).fromutc(current_server_time)
 		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime)
 		if our_date_for_comparison <= current_client_time:
-			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum)
+			new_percentage = 100 * (new_cells_inside/ new_cells_maximum)
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum, measurement_percentage = new_percentage)
 		return render(request, 'control_measure/detail.html', {'a_bin' : a_bin})
 
 def unload_bin(request, bin_ident):

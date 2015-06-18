@@ -24,3 +24,4 @@ class TypeAdmin(admin.ModelAdmin):
 
 admin.site.register(Bin, BinAdmin)
 admin.site.register(Type, TypeAdmin)
+admin.site.register(Measurement)
