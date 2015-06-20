@@ -10,19 +10,16 @@
     <script src= '{% static "script.js" %}'></script>	
     <script type="text/javascript">
     $(document).ready(function() {
-    	$('#button_unload_current').click(function(event){
-			var now = new Date();
-			var day = now.getDate();
-			var mon = now.getMonth() + 1;
-			var year = now.getFullYear();
-			var hours = now.getHours()
-			var current_date = year + "-" + mon + "-" + day;
-			//alert(current_date);
-			$('#date_of_upload').attr("value", current_date);
-		});
-    });
+   	});
     </script>
+    <style type="text/css">
+    span {
+    	padding: 2%;
+    	font-size: 20px;
+    }
+    </style>
     <title>Наши контейнеры</title>
+
 </head>
 <body>
 
@@ -45,29 +42,29 @@
 
 <div class="container" id = "measurement_list">
 	<div class="row">
-		<div class="col-xs-1"></div>
-		<div class="col-xs-10">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
 			<h1> История измерений и выгрузок контейнера #{{ a_bin.bin_id }}  </h1>
 			<h2> Адрес: {{ a_bin.bin_adress}} </h2>
 		</div>
 	</div>
 	{% if a_bin.bin_get_last_five_measurements %}
 		<div class="row">
-			<div class="col-xs-3"></div>
-			<div class="col-xs-3"> Дата </div>
-			<div class="col-xs-3"> Уровень заполненности </div>
+			<div class="col-md-3"></div>
+			<div class="col-md-3"> Дата </div>
+			<div class="col-md-3"> Уровень заполненности </div>
 		</div>
 		{%	for measurement in a_bin.bin_get_last_five_measurements %}
 			<div class="row">
-				<div class="col-xs-3"></div>
-				<div class="col-xs-3"> {{ measurement.measurement_date }} </div>
-				<div class="col-xs-3"> {{ measurement.measurement_get_percentage }}% </div>
+				<div class="col-md-3"></div>
+				<div class="col-md-3"> {{ measurement.measurement_date }} </div>
+				<div class="col-md-3"> {{ measurement.measurement_percentage }}% </div>
 			</div>
 		{% endfor %}
 	{% else %}
 		<div class="row">
-			<div class="col-xs-3"></div>
-			<div class="col-xs-6">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
 				<h2>No avaliable measurements</h2>
 			</div>
 		</div>
@@ -75,71 +72,136 @@
 	{% endif %}
 </div>
 
-<div class="container" id = "new_measurement">
+<div class="container">
 	<div class="row">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6 add_button">
-			<h2> Добавить новое измерение </h2>
+		<div class="col-md-3 col-xs-12">
+			<div class="container-fluid">
+				<div class="row add_button">
+					<span> Измерение в клетках </span>
+				</div>
+				<div class="hidden_menu" id = "new_measure_info">
+					<form action = '{% url "control_measure:add_measurement" a_bin.bin_id %}' method = 'post' >
+						{% csrf_token %}
+						<div class='row'>
+							<input type = "text" name="measurement_date" id="date_of_measurement" placeholder = "Дата" />
+						</div>
+						<div class='row'>
+							<input type = "text" name="measurement_time" id="time_of_measurement" placeholder = "Время"/>
+						</div>
+						<div class='row'>
+							<button type="button" class="current_date">Сейчас</button>
+						</div>
+						<div class='row'>
+							<input type = "text" name = "measurement_cells_inside" placeholder = "Клеточек внутри" />
+						</div>
+						<div class='row'>
+							<input type = "text" name = "measurement_cells_maximum" placeholder = "Клеточек всего" />
+						</div>
+						<div class='row'>
+							<input type = 'submit' value = 'Добавить'/>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="row hidden_menu" id = "new_measure_info">
-		<form action = '{% url "control_measure:add_measurement" a_bin.bin_id %}' method = 'post' >
-			{% csrf_token %}
-			<div class='col-xs-2'>
-				<input type = "text" name="measurement_date" id="date_of_measurement" placeholder = "Дата" />
+		<div class="col-md-3 col-xs-12">
+			<div class="container-fluid">
+				<div class="row add_button_percent">
+					<span> Измерение в % </span>
+				</div>
+				<div class="row hidden_menu" id = "new_measure_info_percent">
+					<form action = '{% url "control_measure:add_measurement_percent" a_bin.bin_id %}' id = "form_add_percent" method = 'post' >
+						{% csrf_token %}
+						<div class='row'>
+							<input type = "text" name="measurement_date_percent" id="date_of_measurement_percent" placeholder = "Дата" />
+						</div>
+						<div class='row'>
+							<input type = "text" name="measurement_time_percent" placeholder = "Дата" id = "time_of_measurement_percent"/>
+						</div>
+						<div class='row'>
+							<button type="button" id="current_date_percent">Сейчас</button>
+						</div>
+						<div class='row'>
+							<input type = "text" name = "measurement_percent_inside" placeholder = "Процент наполненности" />
+						</div>
+						<div class='row'>
+							<input type = 'submit' value = 'Добавить'/>
+						</div>
+					</form>
+				</div>
 			</div>
-			<div class='col-xs-2'>
-				<input type = "text" name="measurement_time" value = "15:00"/>
+		</div>
+		<div class="col-md-3 col-xs-12">
+			<div class="container-fluid">
+				<div class="row unload_button">
+					<span> Выгрузить контейнер </span>
+				</div>
+				<div class="row hidden_menu" id = "new_unload_info">
+					<form action = '{% url "control_measure:unload_bin" a_bin.bin_id %}' method = "post" >
+						{% csrf_token %}
+						<div class="row">
+							<input type="text" name = "unload_date" placeholder = "Дата" id = "date_of_upload" />
+						</div>
+						<div class="row">
+							<input type="text" name = "unload_time" placeholder = "Время" id = "time_of_upload" />
+						</div>
+						<div class='row'>
+							<button type = 'button' id = "button_unload_current"> Сейчас </button>
+						</div>
+						<div class="row">
+							<input type="text" name="unload_cells_inside_before" placeholder="Клеточек было" />
+						</div>
+						<div class="row"> 
+							<input type="text" name="unload_cells_inside_after" placeholder="Клеточек осталось"/>
+						</div>
+						<div class="row"> 
+							<input type="text" name="unload_cells_inside_maximum" placeholder="Клеточек всего"/>
+						</div>
+						<div class='row'>
+							<input type = 'submit' value = 'Выгрузить'/>
+						</div>
+					</form>
+				</div>
 			</div>
-			<div class='col-xs-2'>
-				<button type="button" class="current_date">Сегодня</button>
+		</div>
+		<div class="col-md-3 col-xs-12">
+			<div class="container-fluid">
+				<div class="row unload_button_percent">
+					<span> Выгрузить в % </span>
+				</div>
+				<div class="row hidden_menu" id = "new_unload_info_percent">
+					<form action = '{% url "control_measure:unload_bin_percent" a_bin.bin_id %}' method = "post" >
+						{% csrf_token %}
+						<div class="row">
+							<input type="text" name = "unload_date_percent" placeholder = "Дата" id = "date_of_upload_percent" />
+						</div>
+						<div class="row">
+							<input type="text" name = "unload_time_percent" placeholder = "Время" id = "time_of_upload_percent" />
+						</div>
+						<div class='row'>
+							<button type = 'button' id = "button_unload_current_percent"> Сейчас </button>
+						</div>
+						<div class="row">
+							<input type="text" name="unload_percent_before" placeholder="Процентов было" />
+						</div>
+						<div class="row"> 
+							<input type="text" name="unload_percent_after" placeholder="Процентов осталось"/>
+						</div>
+						<div class='row'>
+							<input type = 'submit' value = 'Выгрузить'/>
+						</div>
+					</form>
+				</div>
 			</div>
-			<div class='col-xs-2'>
-				<input type = "text" name = "measurement_cells_inside" placeholder = "Клеточек внутри" />
-			</div>
-			<div class='col-xs-2'>
-				<input type = "text" name = "measurement_cells_maximum" placeholder = "Клеточек всего" />
-			</div>
-			<div class='col-xs-2'>
-				<input type = 'submit' value = 'Добавить'/>
-			</div>
-		</form>
+		</div>
 	</div>
 </div>
 
-<div class="container" id = "unload_bin">
-	<div class="row">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6 unload_button">
-			<h2> Выгрузить контейнер </h2>
-		</div>
-	</div>
-	<div class="row hidden_menu" id = "new_unload_info">
-		<form action = '{% url "control_measure:unload_bin" a_bin.bin_id %}' method = "post" >
-			{% csrf_token %}
-			<div class="col-xs-2">
-				<input type="text" name = "unload_date" placeholder = "Дата" id = "date_of_upload" />
-			</div>
-			<div class="col-xs-2">
-				<input type="text" name = "unload_time" value="15:00" />
-			</div>
-			<div class='col-xs-1'>
-				<button type = 'button' id = "button_unload_current"> Сегодня </button>
-			</div>
-			<div class="col-xs-2">
-				<input type="text" name="unload_cells_inside_before" placeholder="Клеточек было" />
-			</div>
-			<div class="col-xs-2"> 
-				<input type="text" name="unload_cells_inside_after" placeholder="Клеточек осталось"/>
-			</div>
-			<div class="col-xs-2"> 
-				<input type="text" name="unload_cells_inside_maximum" placeholder="Клеточек всего"/>
-			</div>
-			<div class='col-xs-1'>
-				<input type = 'submit' value = 'Выгрузить'/>
-			</div>
-	</div>
-</div>
+
+
+
+
+
 
 </body>
 </html>

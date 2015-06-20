@@ -33,63 +33,14 @@ class Bin(models.Model):
 			return self.measurement_set.order_by('measurement_date').last().measurement_percentage
 		else:
 			return 0.
-
-	#возвращает текущую прогнозируемую заполненность контейнера
-	def bin_get_current_fill(self):
-		from django.utils.timezone import utc
-		from django.utils import timezone
-		today = datetime.datetime.utcnow().replace(tzinfo=utc)
-		last_measure = self.measurement_set.order_by('measurement_date').last()
-		if last_measure:
-			#print(today, last_measure.measurement_date)
-			delta = (today - last_measure.measurement_date).days
-			return float("{0:.2f}".format(self.bin_get_fill_pace_percentage() * delta + float(last_measure.measurement_percentage)))
-		else:
 			return 0.
 
-	#возвращает число контейнеров
-	def bin_get_number(self):
-		return Bin.objects.count()
-
-	#возвращает 5 последних измерений
+	#возвращает  измерения
 	def bin_get_last_five_measurements(self):
 		result = self.measurement_set.all().order_by('-measurement_date')
 		return result
 
-	#считает средний темп заполняемости за всё время в процентах/день
-	def bin_get_fill_pace_percentage(self):
-		count = 0
-		summa = 0.
-		bin_measurement_set = self.measurement_set.all().order_by('measurement_date', '-measurement_percentage')
-		#print(self.bin_adress, bin_measurement_set)
-		measurement = bin_measurement_set.first()
-		for next_measurement in bin_measurement_set[1:]:
-			#print(self.bin_adress, measurement.measurement_get_percentage(), next_measurement.measurement_get_percentage(), summa)
-			if (next_measurement.measurement_date - measurement.measurement_date).days != 0:
-				pace_per_period = next_measurement.measurement_percentage - measurement.measurement_percentage
-				pace_per_day = pace_per_period / (next_measurement.measurement_date - measurement.measurement_date).days
-				count = count + 1
-				summa = summa + float(pace_per_day)
-				#print(self.bin_adress, measurement.measurement_get_percentage(), next_measurement.measurement_get_percentage(), summa)
-			measurement = next_measurement
-				
-		if count:
-			return float("{0:.2f}".format(summa / count))
-		else:
-			return 0
-
-
-	#считает темп заполняемости контейнера в литрах/день
-	def bin_get_fill_pace_volume(self):
-		return float("{0:.2f}".format(self.bin_get_fill_pace_percentage * self.bin_type.type_get_volume()))
-
-	def bin_get_unload_date(self):
-		fill_pace = self.bin_get_fill_pace_percentage()
-		last_measurement = self.measurement_set.order_by('measurement_date').last()
-		if last_measurement:
-			if fill_pace:
-				unload_date = last_measurement.measurement_date + datetime.timedelta(int((100. - last_measurement.measurement_get_percentage()) / fill_pace))
-				return unload_date
+	
 
 
 
@@ -101,9 +52,9 @@ class Measurement(models.Model):
 	#заполненность контейнера в процентах
 	measurement_percentage = models.DecimalField(max_digits = 3, decimal_places = 1, default = 50, verbose_name = "Процент")
 	#число клеточек, соответствующее уровню заполненности контейнера
-	measurement_cells_inside = models.DecimalField(max_digits = 3, decimal_places = 1)
+	measurement_cells_inside = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True')
 	#максимально возможное число клеточек
-	measurement_cells_maximum = models.DecimalField(max_digits = 3, decimal_places = 1)
+	measurement_cells_maximum = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True')
 	def __str__ (self):
 		return str(self.measurement_date)
 	def measurement_get_percentage(self):

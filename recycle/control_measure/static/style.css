@@ -33,8 +33,13 @@ h1 {
 /*стили форм добавления нового контейнера*/
 
 input {
-	width: 100%;
+	width: 80%;
 	text-align: center;
+	margin: 2%;
+}
+
+button {
+	margin: 2%;
 }
 
 #new_bin_info {
@@ -67,19 +72,17 @@ input {
 
 
 /**/
-.unload_button, .add_button {
+.unload_button, .add_button, .add_button_percent, .unload_button_percent {
 	margin: 1%;
-	padding-bottom: 1%;
+	padding-bottom: 2%;
 	border: solid black 1px;
 	text-align: center;
 	cursor: pointer;
 }
 
-.mouseover_cursor {
-	cursor: pointer;
+
+#new_measure_info, #new_measure_info_percent, #new_unload_info, #new_unload_info_percent {
+	text-align: center;
 }
 
-.mouseout_cursor {
-	cursor: default;
-}
 
