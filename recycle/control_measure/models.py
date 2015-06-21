@@ -1,7 +1,11 @@
 from django.db import models
 from decimal import*
 import decimal
+import pytz
+from pytz import timezone
 import datetime
+from datetime import datetime, timedelta
+tz = 'Europe/Moscow'
 # Create your models here.
 
 class Type(models.Model):
@@ -41,39 +45,46 @@ class Bin(models.Model):
 		result = self.measurement_set.all().order_by('-measurement_date')
 		return result
 
+	def generate_pace_number(self):
+		measure_set = self.measurement_set.all().order_by('measurement_date')
+		if measure_set.count() > 1:
+			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
+			time_summ = time_summ.days * 24 + time_summ.seconds / 3600
+			summ = 0.
+			mes_first = measure_set.first()
+			for mes_second in measure_set[1:]:
+				if mes_second.measurement_percentage - mes_first.measurement_percentage > 0:
+					summ += float(mes_second.measurement_percentage - mes_first.measurement_percentage)
+				mes_first = mes_second
+			result = summ / time_summ
+			return result
+		else:
+			return 0
+
+
+	#Средний темп заполняемости за всё время в час
 	def bin_get_average_pace_per_hour(self):
-		measure_set = self.measurement_set.all().order_by('measurement_date')
-		if measure_set.count() > 1:
-			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
-			time_summ = time_summ.days * 24 + time_summ.seconds / 3600
-			summ = 0.
-			mes_first = measure_set.first()
-			for mes_second in measure_set[1:]:
-				if mes_second.measurement_percentage - mes_first.measurement_percentage > 0:
-					summ += float(mes_second.measurement_percentage - mes_first.measurement_percentage)
-				mes_first = mes_second
-			result = float("{0:.2f}".format(summ / time_summ))
-			return result
-		else:
-			return 0
+		result = float("{0:.2f}".format(self.generate_pace_number()))
+		return result
 
+	#средний темп заполняемости за всё время в день
 	def bin_get_average_pace_per_day(self):
-		measure_set = self.measurement_set.all().order_by('measurement_date')
-		if measure_set.count() > 1:
-			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
-			time_summ = time_summ.days * 24 + time_summ.seconds / 3600
-			summ = 0.
-			mes_first = measure_set.first()
-			for mes_second in measure_set[1:]:
-				if mes_second.measurement_percentage - mes_first.measurement_percentage > 0:
-					summ += float(mes_second.measurement_percentage - mes_first.measurement_percentage)
-				mes_first = mes_second
-			result = float("{0:.2f}".format((summ * 24) / time_summ))
-			return result
+		result = float("{0:.2f}".format(self.generate_pace_number() * 24))
+		return result
+		
+	def bin_get_current_fill (self):
+		last_measure = self.measurement_set.all().order_by('measurement_date').last()
+		if last_measure:
+			pace_per_hour = self.generate_pace_number()
+			current_server_time = datetime.utcnow()
+			current_client_time = timezone(tz).fromutc(current_server_time)
+			#date_of_last_measure = pytz.utc.localize(last_measure.measurement_date) - timedelta(hours = 3)
+			time_delta = current_client_time - last_measure.measurement_date
+			time_delta = time_delta.days * 24 + time_delta.seconds / 3600
+			fill_now = float(last_measure.measurement_percentage) + time_delta * pace_per_hour
+			return float("{0:.2f}".format(fill_now))
 		else:
 			return 0
-
-	
 
 
 
