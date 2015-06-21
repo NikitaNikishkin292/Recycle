@@ -5,6 +5,7 @@ import datetime
 # Create your models here.
 
 class Type(models.Model):
+	type_short_name = models.CharField(max_length = 20, null='True')
 	type_name = models.CharField(max_length = 20, verbose_name = "Тип контейнера")
 	type_description = models.CharField(max_length = 100, default = "bla bla bla", verbose_name = "Описание")
 	type_length = models.IntegerField(default = 145, verbose_name = "Длина")
@@ -35,14 +36,15 @@ class Bin(models.Model):
 			return 0.
 			return 0.
 
-	#возвращает  измерения
+	#возвращает измерения
 	def bin_get_last_five_measurements(self):
 		result = self.measurement_set.all().order_by('-measurement_date')
 		return result
 
-	
-
-
+	#def bin_get_average_pace(self):
+	#	measure_set - self.measurement_set.all()
+	#	time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
+	#	time_summ = time_summ.days * 24 + time_summ.seconds / 3600
 
 
 
@@ -50,7 +52,7 @@ class Measurement(models.Model):
 	measurement_bin = models.ForeignKey(Bin, verbose_name = "Контейнер")
 	measurement_date = models.DateTimeField(verbose_name = "Дата замера")
 	#заполненность контейнера в процентах
-	measurement_percentage = models.DecimalField(max_digits = 3, decimal_places = 1, default = 50, verbose_name = "Процент")
+	measurement_percentage = models.DecimalField(max_digits = 5, decimal_places = 3, default = 50, verbose_name = "Процент")
 	#число клеточек, соответствующее уровню заполненности контейнера
 	measurement_cells_inside = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True')
 	#максимально возможное число клеточек

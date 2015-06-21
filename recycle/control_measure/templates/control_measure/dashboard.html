@@ -8,6 +8,16 @@
     <link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css" />
     <link rel = 'stylesheet' type = 'text/css' href = '{% static "style.css" %}' /> 
     <script src= '{% static "script.js" %}'></script>
+    <style type="text/css">
+    .add_form {
+    	text-align: center;
+    	vertical-align: middle;
+    }
+
+    .add_select {
+    	padding-top: 0.5%;
+    }
+    </style>
     <title>Наши контейнеры</title>
 </head>
 <body>
@@ -29,8 +39,8 @@
 
 <div id = 'city_info'>
 	<div class="row">
-		<div class="col-xs-2"></div>
-		<div class="col-xs-8">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
 			<h1> Welcome, garbage king </h1>
 			<h2>1.2. Можно добавлять измерения как в клетках, так и в процентах, данные в БД хранятся в процентах. Темпы и сроки вывоза не отображаются. Их надо сделать на следующем этапе. Теперь дата и время на 100% адекватные, можно добавлять значения прямо в текущий момент </h2>
 		</div>
@@ -43,20 +53,20 @@
 	{% if bins_list %}
 		<div class="row">
 	    	
-	    	<div class="col-xs-1"> #</div>
-	    	<div class="col-xs-4">Адрес</div>
-	    	<div class="col-xs-2">Fill</div>
-	    	<div class="col-xs-2">Темп(%)</div>
-	    	<div class="col-xs-3">Вывоз</div>
+	    	<div class="col-md-1"> #</div>
+	    	<div class="col-md-4">Адрес</div>
+	    	<div class="col-md-2">Fill</div>
+	    	<div class="col-md-2">Темп(%)</div>
+	    	<div class="col-md-3">Вывоз</div>
 	    </div>
 	    {% for bin in bins_list %}
 	    <a href="/control_measure/{{bin.bin_id}}/">
 		    <div class="row bin_info">
-		    	<div class="col-xs-1">{{ forloop.counter }}</div>
-		    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
-		    	<div class="col-xs-2">%</div>
-		    	<div class="col-xs-2">%</div>
-		    	<div class="col-xs-3"> </div>
+		    	<div class="col-md-1">{{ forloop.counter }}</div>
+		    	<div class="col-md-4">{{ bin.bin_adress }}</div>
+		    	<div class="col-md-2">%</div>
+		    	<div class="col-md-2">%</div>
+		    	<div class="col-md-3"> </div>
 		    </div>
 	    </a>
 	    {% endfor %}
@@ -65,22 +75,26 @@
 	{% endif %}
 	<div class="container">
 		<div class="row">
-			<div class='col-xs-4'></div>
-			<div class='col-xs-4'>
+			<div class='col-md-4'></div>
+			<div class='col-md-4'>
 				<button id="new_bin">Новый контейнер</button>
 			</div>
 		</div>
 		<div class="row hidden_menu" id = "new_bin_info">
 		<form action = '{% url "control_measure:add_bin"  %}' method = 'post' >
 			{% csrf_token %}
-			<div class='col-xs-1'></div>
-			<div class='col-xs-3 add_form'>
+			<div class='col-md-3 add_form'>
 				<input type = "text" name="bin_adress" placeholder = "Адрес"/>
 			</div>
-			<div class='col-xs-3 add_form'>
-				<input type = "text" name = "bin_volume" placeholder = "Объём" />
+			<div class="col-md-6 add_form add_select">
+				<select name="bin_type">
+					<option disabled selected="selected">Тип контейнера</option>
+					{% for bin_type in types %}
+					<option value={{ bin_type.type_short_name }}> {{ bin_type.type_name }} {{ bin_type.type_length }}x{{ bin_type.type_width }}x{{ bin_type.type_heigth }}</option>
+					{% endfor %}
+				</select>
 			</div>
-			<div class='col-xs-4'>
+			<div class='col-md-3 add_form'>
 				<input type = 'submit' value = 'Добавить'/>
 			</div>
 		</form>
