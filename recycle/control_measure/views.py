@@ -58,7 +58,7 @@ def add_measurement(request, bin_ident):
 		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime)  - timedelta(hours = 3)
 		if our_date_for_comparison <= current_client_time:
 			new_percentage = 100 * (new_cells_inside/ new_cells_maximum)
-			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum, measurement_percentage = new_percentage * 0.95)
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum, measurement_percentage = new_percentage, measurement_volume = (new_percentage * a_bin.bin_type.type_get_volume()) / 100)
 		return render(request, 'control_measure/detail.html', {'a_bin' : a_bin})
 
 def unload_bin(request, bin_ident):
@@ -82,8 +82,8 @@ def unload_bin(request, bin_ident):
 			the_date_of_finish = the_date_of_begin_datetime + timedelta(minutes = 5)
 			percentage_before = 100 * (cells_inside_before / cells_inside_maximum)
 			percentage_after = 100 * (cells_inside_after / cells_inside_maximum)
-			a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_cells_inside = cells_inside_after, measurement_cells_maximum = cells_inside_maximum, measurement_percentage = percentage_after * 0.95)
-			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = cells_inside_before, measurement_cells_maximum = cells_inside_maximum, measurement_percentage = percentage_before * 0.95)
+			a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_cells_inside = cells_inside_after, measurement_cells_maximum = cells_inside_maximum, measurement_percentage = percentage_after * 0.95, measurement_volume = (percentage_after * 0.95 * a_bin.bin_type.type_get_volume()) / 100)
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = cells_inside_before, measurement_cells_maximum = cells_inside_maximum, measurement_percentage = percentage_before * 0.95, measurement_volume = (percentage_before * 0.95 * a_bin.bin_type.type_get_volume()) / 100)
 			return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 		else:
 			return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
@@ -105,7 +105,7 @@ def add_measurement_percent(request, bin_ident):
 		our_date_for_comparison = pytz.utc.localize(the_date_datetime) - timedelta(hours = 3)
 		print("time", our_date_for_comparison, current_client_time)
 		if our_date_for_comparison <= current_client_time:
-			a_bin.measurement_set.create(measurement_date = the_date_datetime, measurement_percentage = measurement_percent)
+			a_bin.measurement_set.create(measurement_date = the_date_datetime, measurement_percentage = measurement_percent, measurement_volume = (float(measurement_percent) * a_bin.bin_type.type_get_volume()) / 100)
 	return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 
 def unload_bin_percent(request, bin_ident):
@@ -126,8 +126,8 @@ def unload_bin_percent(request, bin_ident):
 		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime) - timedelta(hours = 3)
 		if our_date_for_comparison <= current_client_time:
 			the_date_of_finish = the_date_of_begin_datetime + timedelta(minutes = 5)
-			a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_percentage = percent_after)
-			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_percentage = percent_before)
+			a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_percentage = percent_after, measurement_volume = (percent_after * a_bin.bin_type.type_get_volume()) / 100)
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_percentage = percent_before, measurement_volume = (percent_before * a_bin.bin_type.type_get_volume()) / 100)
 			return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 		else:
 			return render(request, 'control_measure/detail.html', {'a_bin': a_bin })

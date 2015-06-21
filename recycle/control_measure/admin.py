@@ -21,7 +21,16 @@ class BinAdmin(admin.ModelAdmin):
 class TypeAdmin(admin.ModelAdmin):
 	list_display = ('type_name', 'type_description', 'type_get_volume')
 
+class MeasurementAdmin(admin.ModelAdmin):
+	fieldsets = [
+		(None, {'fields': ['measurement_date', 'measurement_volume']}),
+		('Left Information', {'fields': ['measurement_percentage', 'measurement_cells_inside', 'measurement_cells_maximum']}),
+	]
+	list_display = ['measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume']
+	ordering = ('-measurement_date',)
+	list_filter = ['measurement_bin']
+
 
 admin.site.register(Bin, BinAdmin)
 admin.site.register(Type, TypeAdmin)
-admin.site.register(Measurement)
+admin.site.register(Measurement, MeasurementAdmin)

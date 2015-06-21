@@ -40,7 +40,7 @@
 <div id = 'city_info'>
 	<div class="row">
 		<div class="col-md-2"></div>
-		<div class="col-md-8">
+		<div class="col-md-8 col-xs-12">
 			<h1> Welcome, garbage king </h1>
 			<h2>1.2. Можно добавлять измерения как в клетках, так и в процентах, данные в БД хранятся в процентах. Темпы считаются как среднее за всё время. Дата и время на 100% адекватные, можно добавлять значения прямо в текущий момент. Можно добавлять измерения в один и тот же день. Темпы теперь считаются в час </h2>
 		</div>
@@ -53,20 +53,20 @@
 	{% if bins_list %}
 		<div class="row">
 	    	
-	    	<div class="col-md-1"> #</div>
-	    	<div class="col-md-4">Адрес</div>
-	    	<div class="col-md-2">Fill</div>
-	    	<div class="col-md-2">Темп(%)</div>
-	    	<div class="col-md-3">Вывоз</div>
+	    	<div class="col-xs-1"> #</div>
+	    	<div class="col-xs-4">Адрес</div>
+	    	<div class="col-xs-2">Fill</div>
+	    	<div class="col-xs-2">Темп(%)</div>
+	    	<div class="col-xs-3">Вывоз</div>
 	    </div>
 	    {% for bin in bins_list %}
 	    <a href="/control_measure/{{bin.bin_id}}/">
 		    <div class="row bin_info">
-		    	<div class="col-md-1">{{ forloop.counter }}</div>
-		    	<div class="col-md-4">{{ bin.bin_adress }}</div>
-		    	<div class="col-md-2">{{ bin.bin_get_current_fill }}%</div>
-		    	<div class="col-md-2">{{ bin.bin_get_average_pace_per_day }}%</div>
-		    	<div class="col-md-3"> </div>
+		    	<div class="col-xs-1">{{ forloop.counter }}</div>
+		    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
+		    	<div class="col-xs-2">{{ bin.bin_get_current_fill_percentage }}%</div>
+		    	<div class="col-xs-2">{{ bin.bin_get_average_pace_per_day }}%</div>
+		    	<div class="col-xs-3"> </div>
 		    </div>
 	    </a>
 	    {% endfor %}
@@ -76,17 +76,17 @@
 	<div class="container">
 		<div class="row">
 			<div class='col-md-4'></div>
-			<div class='col-md-4'>
+			<div class='col-md-4 col=xs=12'>
 				<button id="new_bin">Новый контейнер</button>
 			</div>
 		</div>
 		<div class="row hidden_menu" id = "new_bin_info">
 		<form action = '{% url "control_measure:add_bin"  %}' method = 'post' >
 			{% csrf_token %}
-			<div class='col-md-3 add_form'>
+			<div class='col-xs-3 add_form'>
 				<input type = "text" name="bin_adress" placeholder = "Адрес"/>
 			</div>
-			<div class="col-md-6 add_form add_select">
+			<div class="col-xs-6 add_form add_select">
 				<select name="bin_type">
 					<option disabled selected="selected">Тип контейнера</option>
 					{% for bin_type in types %}
@@ -94,7 +94,7 @@
 					{% endfor %}
 				</select>
 			</div>
-			<div class='col-md-3 add_form'>
+			<div class='col-xs-3 add_form'>
 				<input type = 'submit' value = 'Добавить'/>
 			</div>
 		</form>
