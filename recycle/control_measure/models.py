@@ -94,7 +94,7 @@ class Bin(models.Model):
 		current_server_time = datetime.utcnow()
 		current_client_time = timezone(tz).fromutc(current_server_time)
 		if self.bin_generate_pace_number():
-			hours_number = self.bin_type.type_get_volume() / self.bin_generate_pace_number()
+			hours_number = (self.bin_type.type_get_volume() - self.bin_get_current_fill_litres()) / self.bin_generate_pace_number()
 			term = timedelta(hours = hours_number)
 			upload_date = current_client_time + term
 			return upload_date.date()
