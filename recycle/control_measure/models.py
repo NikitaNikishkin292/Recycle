@@ -101,11 +101,12 @@ class Bin(models.Model):
 
 	def bin_predict_fill_of_date(self, dt):
 		measure_set = self.measurement_set.all().order_by('measurement_date')
-		delta = pytz.utc.localize(dt) - measure_set.last().measurement_date
-		if delta > timedelta(0):
-			delta = delta.days * 24 + delta.seconds / 3600
-			volume_inside =  self.bin_generate_pace_number() * delta + measure_set.last().measurement_volume
-			return volume_inside
+		if measure_set:
+			delta = pytz.utc.localize(dt) - measure_set.last().measurement_date
+			if delta > timedelta(0):
+				delta = delta.days * 24 + delta.seconds / 3600
+				volume_inside =  self.bin_generate_pace_number() * delta + measure_set.last().measurement_volume
+				return volume_inside
 
 
 
