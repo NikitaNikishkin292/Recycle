@@ -110,8 +110,11 @@ def add_measurement_percent(request, bin_ident):
 		print("time", our_date_for_comparison, current_client_time)
 		if our_date_for_comparison <= current_client_time:
 			volume_in_fact = (float(measurement_percent) * a_bin.bin_type.type_get_volume()) / 100
-			volume_predicted = a_bin.bin_predict_fill_of_date(the_date_datetime)
-			measure_error = ((volume_in_fact - volume_predicted) / volume_predicted) * 100
+			if a_bin.measurement_set.objects.all():
+				volume_predicted = a_bin.bin_predict_fill_of_date(the_date_datetime)
+				measure_error = ((volume_in_fact - volume_predicted) / volume_predicted) * 100
+			else: 
+				measure_error = ""
 			a_bin.measurement_set.create(measurement_date = the_date_datetime, measurement_error = measure_error, measurement_percentage = measurement_percent, measurement_volume = volume_in_fact)
 	return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 
