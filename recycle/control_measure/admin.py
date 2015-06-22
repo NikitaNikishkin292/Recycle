@@ -14,7 +14,7 @@ class EventInline(admin.TabularInline):
 
 class BinAdmin(admin.ModelAdmin):
 	fields = ['bin_id', 'bin_adress', 'bin_type']
-	list_display = ('bin_id', 'bin_adress', 'bin_get_last_fill')
+	list_display = ('bin_id', 'bin_adress', 'bin_get_average_pace_per_day', 'bin_type', 'bin_get_volume')
 	ordering = ('bin_id',)
 	inlines = [MeasurementInline, EventInline]
 
@@ -23,7 +23,7 @@ class TypeAdmin(admin.ModelAdmin):
 
 class MeasurementAdmin(admin.ModelAdmin):
 	fieldsets = [
-		(None, {'fields': ['measurement_date', 'measurement_volume']}),
+		('Important Information', {'fields': ['measurement_bin', 'measurement_date', 'measurement_volume', 'measurement_error']}),
 		('Left Information', {'fields': ['measurement_percentage', 'measurement_cells_inside', 'measurement_cells_maximum']}),
 	]
 	list_display = ['measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume']

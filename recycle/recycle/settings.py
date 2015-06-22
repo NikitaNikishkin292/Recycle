@@ -76,7 +76,8 @@ WSGI_APPLICATION = 'recycle.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 #ON_HEROKU = os.environ.get('ON_HEROKU')
-#При отправке на сервер нужно сделать not_on_heroku = 0 и убрать комменарий в строчке 84
+
+
 not_on_heroku = 0
 import dj_database_url
 

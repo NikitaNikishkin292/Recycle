@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from pytz import timezone
 import pytz
 from datetime import datetime, timedelta
+#import date
 tz = 'Europe/Moscow'
 
 def index(request):
@@ -58,7 +59,10 @@ def add_measurement(request, bin_ident):
 		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime)  - timedelta(hours = 3)
 		if our_date_for_comparison <= current_client_time:
 			new_percentage = 100 * (new_cells_inside/ new_cells_maximum)
-			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum, measurement_percentage = new_percentage, measurement_volume = (new_percentage * a_bin.bin_type.type_get_volume()) / 100)
+			volume_in_fact = (new_percentage * a_bin.bin_type.type_get_volume()) / 100
+			volume_predicted = a_bin.bin_predict_fill_of_date(the_date_of_begin_datetime)
+			measure_error = ((volume_in_fact - volume_predicted) / volume_predicted) * 100
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_error = measure_error, measurement_cells_inside = new_cells_inside, measurement_cells_maximum = new_cells_maximum, measurement_percentage = new_percentage, measurement_volume = volume_in_fact)
 		return render(request, 'control_measure/detail.html', {'a_bin' : a_bin})
 
 def unload_bin(request, bin_ident):
@@ -105,7 +109,10 @@ def add_measurement_percent(request, bin_ident):
 		our_date_for_comparison = pytz.utc.localize(the_date_datetime) - timedelta(hours = 3)
 		print("time", our_date_for_comparison, current_client_time)
 		if our_date_for_comparison <= current_client_time:
-			a_bin.measurement_set.create(measurement_date = the_date_datetime, measurement_percentage = measurement_percent, measurement_volume = (float(measurement_percent) * a_bin.bin_type.type_get_volume()) / 100)
+			volume_in_fact = (float(measurement_percent) * a_bin.bin_type.type_get_volume()) / 100
+			volume_predicted = a_bin.bin_predict_fill_of_date(the_date_datetime)
+			measure_error = ((volume_in_fact - volume_predicted) / volume_predicted) * 100
+			a_bin.measurement_set.create(measurement_date = the_date_datetime, measurement_error = measure_error, measurement_percentage = measurement_percent, measurement_volume = volume_in_fact)
 	return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
 
 def unload_bin_percent(request, bin_ident):
@@ -125,10 +132,27 @@ def unload_bin_percent(request, bin_ident):
 		current_client_time = timezone(tz).fromutc(current_server_time)
 		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime) - timedelta(hours = 3)
 		if our_date_for_comparison <= current_client_time:
+			volume_in_fact_before = (percent_before * a_bin.bin_type.type_get_volume()) / 100
+			volume_predicted_before = a_bin.bin_predict_fill_of_date(the_date_of_begin_datetime)
+			measure_error = ((volume_in_fact_before - volume_predicted_before) / volume_predicted_before) * 100
 			the_date_of_finish = the_date_of_begin_datetime + timedelta(minutes = 5)
 			a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_percentage = percent_after, measurement_volume = (percent_after * a_bin.bin_type.type_get_volume()) / 100)
-			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_percentage = percent_before, measurement_volume = (percent_before * a_bin.bin_type.type_get_volume()) / 100)
-			return render(request, 'control_measure/detail.html', {'a_bin': a_bin})
-		else:
-			return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
+			a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_error = measure_error, measurement_percentage = percent_before, measurement_volume = volume_in_fact_before)
+		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
 
+def add_event(request, bin_ident):
+	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
+	try:
+		an_event_date = request.POST['event_date']
+		an_event_description = request.POST['event_description']
+	except (KeyError, Bin.DoesNotExist):
+		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
+	else:
+		the_date_of_event = datetime.strptime(an_event_date, "%Y-%m-%d")
+		tz = 'Europe/Moscow'
+		current_server_time = datetime.utcnow()
+		current_client_time = timezone(tz).fromutc(current_server_time)
+		our_date_for_comparison = pytz.utc.localize(the_date_of_event) - timedelta(hours = 3)
+		if our_date_for_comparison <= current_client_time:
+			a_bin.event_set.create(event_date = an_event_date, event_description = an_event_description)
+	return render(request, 'control_measure/detail.html', {'a_bin': a_bin })

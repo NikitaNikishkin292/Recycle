@@ -32,6 +32,15 @@ h1 {
 
 /*стили форм добавления нового контейнера*/
 
+.add_form {
+    	text-align: center;
+    	vertical-align: middle;
+}
+
+.add_select {
+	padding-top: 0.5%;
+}
+
 input {
 	width: 80%;
 	text-align: center;
@@ -70,9 +79,17 @@ button {
 	text-align: center;
 }
 
+span {
+    	padding: 2%;
+    	font-size: 20px;
+}
+span.measure_error {
+	font-size: 15px;
+    }
+
 
 /**/
-.unload_button, .add_button, .add_button_percent, .unload_button_percent {
+.unload_button, .add_button, .add_button_percent, .unload_button_percent, .add_event {
 	margin: 1%;
 	padding-bottom: 2%;
 	border: solid black 1px;
@@ -81,8 +98,7 @@ button {
 }
 
 
-#new_measure_info, #new_measure_info_percent, #new_unload_info, #new_unload_info_percent {
+#new_measure_info, #new_measure_info_percent, #new_unload_info, #new_unload_info_percent, #new_event_info {
 	text-align: center;
 }
-
 

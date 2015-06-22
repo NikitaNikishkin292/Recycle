@@ -27,7 +27,13 @@ $(document).ready(function() {
 	$('.unload_button_percent').click(function(event){
 		$('#new_unload_info_percent').removeClass('hidden_menu');
 		$('#new_unload_info_percent').addClass('visible_menu');
-	})
+	});
+
+	$('.add_event').click(function(event){
+		$('#new_event_info').removeClass('hidden_menu');
+		$('#new_event_info').addClass('visible_menu');
+	});
+
 	//обработка кнопок "сейчас"
 	$('.current_date').click(function(event){
 			var now = new Date();
@@ -92,4 +98,26 @@ $(document).ready(function() {
 			$('#date_of_upload_percent').attr("placeholder", "");
 			$('#time_of_upload_percent').attr("placeholder", "");
 	});
+
+	$('#button_event_current').click(function(event){
+			var now = new Date();
+			var day = now.getDate();
+			var mon = now.getMonth() + 1;
+			var year = now.getFullYear();
+			var current_date = year + "-" + mon + "-" + day;
+			//alert(current_date);
+			$('#date_of_event').attr("value", current_date);
+			$('#date_of_event').attr("placeholder", "");
+	});
+
+	$('span.measure_error').each(function() {
+    		var val = parseFloat($(this).text());
+    		console.log(val);
+    		if (val > 0.0) {
+    			$(this).closest('div').css('color', 'green');
+    		}
+    		else {
+    			$(this).closest('div').css('color', 'red');
+    		}
+    	});
 });

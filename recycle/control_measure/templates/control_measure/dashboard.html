@@ -9,14 +9,7 @@
     <link rel = 'stylesheet' type = 'text/css' href = '{% static "style.css" %}' /> 
     <script src= '{% static "script.js" %}'></script>
     <style type="text/css">
-    .add_form {
-    	text-align: center;
-    	vertical-align: middle;
-    }
-
-    .add_select {
-    	padding-top: 0.5%;
-    }
+    
     </style>
     <title>Наши контейнеры</title>
 </head>
@@ -66,7 +59,7 @@
 		    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
 		    	<div class="col-xs-2">{{ bin.bin_get_current_fill_percentage }}%</div>
 		    	<div class="col-xs-2">{{ bin.bin_get_average_pace_per_day }}%</div>
-		    	<div class="col-xs-3"> </div>
+		    	<div class="col-xs-3">{{ bin.bin_get_upload_date }} </div>
 		    </div>
 	    </a>
 	    {% endfor %}

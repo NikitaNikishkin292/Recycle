@@ -7,6 +7,7 @@ import datetime
 from datetime import datetime, timedelta
 tz = 'Europe/Moscow'
 # Create your models here.
+# coding=utf8 
 
 class Type(models.Model):
 	type_short_name = models.CharField(max_length = 20, null='True')
@@ -32,21 +33,16 @@ class Bin(models.Model):
 	def __str__(self):
 		return str(self.bin_adress)
 
-	#возвращает самое новое измерение
-	def bin_get_last_fill(self):
-		if self.measurement_set.count():
-			return self.measurement_set.order_by('measurement_date').last().measurement_volume * self.bin_type.type_get_volume()
-		else:
-			return 0.
-			return 0.
-
 	#возвращает измерения
 	def bin_get_last_five_measurements(self):
 		result = self.measurement_set.all().order_by('-measurement_date')
 		return result
 
+	def bin_get_volume(self):
+		return self.bin_type.type_get_volume()
+
 	#генерирует скорость заполнения в литрах/час для счёта
-	def generate_pace_number(self):
+	def bin_generate_pace_number(self):
 		measure_set = self.measurement_set.all().order_by('measurement_date')
 		if measure_set.count() > 1:
 			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
@@ -65,19 +61,19 @@ class Bin(models.Model):
 
 	#Средний темп заполняемости в %/час за всё время для вывода
 	def bin_get_average_pace_per_hour(self):
-		result = float("{0:.1f}".format( ( self.generate_pace_number() / self.bin_type.type_get_volume() ) * 100) )
+		result = float("{0:.1f}".format( ( self.bin_generate_pace_number() / self.bin_type.type_get_volume() ) * 100) )
 		return result
 
 	#средний темп заполняемости в %/день за всё время для вывода
 	def bin_get_average_pace_per_day(self):
-		result = float("{0:.1f}".format( (self.generate_pace_number() / self.bin_type.type_get_volume() * 2400 )))
+		result = float("{0:.1f}".format( (self.bin_generate_pace_number() / self.bin_type.type_get_volume() * 2400 )))
 		return result
 		
 	#Текущая заполненность в литрах для счёта
 	def bin_get_current_fill_litres (self):
 		last_measure = self.measurement_set.all().order_by('measurement_date').last()
 		if last_measure:
-			pace_per_hour_litres = self.generate_pace_number()
+			pace_per_hour_litres = self.bin_generate_pace_number()
 			current_server_time = datetime.utcnow()
 			current_client_time = timezone(tz).fromutc(current_server_time)
 			#date_of_last_measure = pytz.utc.localize(last_measure.measurement_date) - timedelta(hours = 3)
@@ -94,6 +90,21 @@ class Bin(models.Model):
 		return float("{0:.1f}".format(result))
 
 
+	def bin_get_upload_date (self):
+		current_server_time = datetime.utcnow()
+		current_client_time = timezone(tz).fromutc(current_server_time)
+		hours_number = self.bin_type.type_get_volume() / self.bin_generate_pace_number()
+		term = timedelta(hours = hours_number)
+		upload_date = current_client_time + term
+		return upload_date.date()
+
+	def bin_predict_fill_of_date(self, dt):
+		measure_set = self.measurement_set.all().order_by('measurement_date')
+		delta = pytz.utc.localize(dt) - measure_set.last().measurement_date
+		if delta > timedelta(0):
+			delta = delta.days * 24 + delta.seconds / 3600
+			volume_inside =  self.bin_generate_pace_number() * delta + measure_set.last().measurement_volume
+			return volume_inside
 
 
 
@@ -102,7 +113,8 @@ class Bin(models.Model):
 class Measurement(models.Model):
 	measurement_bin = models.ForeignKey(Bin, verbose_name = "Контейнер")
 	measurement_date = models.DateTimeField(verbose_name = "Дата замера")
-	measurement_volume = models.IntegerField(verbose_name = "Объём", blank = 'True', null = 'True')
+	measurement_volume = models.IntegerField(verbose_name = "Объём в литрах", blank = 'True', null = 'True')
+	measurement_error = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = "Ошибка", blank = 'True', null = 'True')
 	#заполненность контейнера в процентах
 	measurement_percentage = models.DecimalField(max_digits = 3, decimal_places = 1, default = 50, verbose_name = "Процент")
 	#число клеточек, соответствующее уровню заполненности контейнера
