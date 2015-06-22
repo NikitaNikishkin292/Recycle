@@ -93,10 +93,11 @@ class Bin(models.Model):
 	def bin_get_upload_date (self):
 		current_server_time = datetime.utcnow()
 		current_client_time = timezone(tz).fromutc(current_server_time)
-		hours_number = self.bin_type.type_get_volume() / self.bin_generate_pace_number()
-		term = timedelta(hours = hours_number)
-		upload_date = current_client_time + term
-		return upload_date.date()
+		if self.bin_generate_pace_number():
+			hours_number = self.bin_type.type_get_volume() / self.bin_generate_pace_number()
+			term = timedelta(hours = hours_number)
+			upload_date = current_client_time + term
+			return upload_date.date()
 
 	def bin_predict_fill_of_date(self, dt):
 		measure_set = self.measurement_set.all().order_by('measurement_date')
