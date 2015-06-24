@@ -129,13 +129,13 @@
 	<div class="row">
 		<div class="row short_bin_info">
 			<div class="col-xs-3">
-				<span>Номер: <span id = "bin_id">{{ a_bin.bin_id}}</span></span>
-			</div>
-			<div class="col-xs-3">
 				<span>Адрес: {{ a_bin.bin_adress}}</span>
 			</div>
 			<div class="col-xs-3">
 				<span>Скорость: {{ a_bin.bin_get_average_pace_per_day_output }}% в сутки</span>
+			</div>
+			<div class="col-xs-3">
+				<span>Заполнен на: <span id = "bin_id">{{ a_bin.bin_get_current_fill_percentage }}%</span></span>
 			</div>
 			<div class="col-xs-3">
 				<span>Вывоз: {{ a_bin.bin_get_upload_date }}</span>
