@@ -5,162 +5,270 @@
 	<meta http-equiv='Content-Type' content = 'text/html; charset=utf-8' />
 	<script src="http://yastatic.net/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
     <script src="http://yastatic.net/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+   <script src="https://raw.githubusercontent.com/alexpashevich/urbandata_hackaton/master/timeschedule_analysis/templates/Chart.js-master/Chart.js"></script>
     <link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css" />
     <link rel = 'stylesheet' type = 'text/css' href = '{% static "style.css" %}' /> 
     <script src= '{% static "script.js" %}'></script>	
     <script type="text/javascript">
     $(document).ready(function() {
-    	
+    	var menuList = ["#bin_module", "#measurements_module", "#speed_module"];
+    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach()];
+    	function setActiveDivId (id_string) {
+    		console.log("im in function for", id_string);
+    		if (!($('div').is(id_string))) {
+    			console.log(id_string, "doesn't exist");
+    			var this_index = 0;
+    			for (var j = 0; j < menuList.length; j++) {
+    				if (id_string == menuList[j])
+    					this_index = j;
+    			}
+    			console.log(this_index, "is the index in menuList");
+	    		for (var i = 0; i < menuList.length; ++i) {
+	    			if ($('div').is(menuList[i])) {
+	    				bufferList[i] = $(menuList[i]).detach();
+	    				bufferList[this_index].appendTo('body');
+	    				console.log(menuList[i], "is detached");
+	    				console.log(bufferList[this_index], "is appended");
+	    			}
+	    		}
+	    	}
+    	};
+    	//var measurements_module_buffer = ;
+    	//var	bin_buffer = $("#bin_module");
+    	$('#bin_link').click(function(e){
+	    		//measurements_module_buffer = $('div#measurements_module').detach();
+	    		//bin_module_buffer.appendTo('#short_bin_info');
+	    		setActiveDivId("#bin_module");	    	
+    	});
+
+    	$('#measurements_link').click(function(e){
+    		//bin_module_buffer = $('div#bin_module').detach();
+    		//measurements_module_buffer.appendTo('#short_bin_info');
+    		setActiveDivId("#measurements_module");	
+    	});
+
+    	$('#speed_link').click(function(e){
+    		//bin_module_buffer = $('div#bin_module').detach();
+    		//measurements_module_buffer.appendTo('#short_bin_info');
+    		setActiveDivId("#speed_module");
+    		addChart();	
+    	});
+
+
+
+
+    	function addChart () {
+  
+	    	var randomScalingFactor = function(a) { 
+					return Math.round(Math.random()* a)
+				};
+				var dat = 0;
+				var delta = 400;
+				var lineChartData = {
+					labels : ["20.04","21.04","22.04","23.04","24.04","25.04","26.04","27.04","28.04", "29.04","30.04"],
+					datasets : [
+						
+						{
+							label: "My Second dataset",
+							fillColor : "rgba(151,187,205,0.2)",
+							strokeColor : "rgba(151,187,205,1)",
+							pointColor : "rgba(151,187,205,1)",
+							pointStrokeColor : "#fff",
+							pointHighlightFill : "#fff",
+							pointHighlightStroke : "rgba(151,187,205,1)",
+							data : [dat += randomScalingFactor(delta), dat += randomScalingFactor(delta),dat += randomScalingFactor(delta),dat += randomScalingFactor(delta), dat += randomScalingFactor(delta), dat += randomScalingFactor(delta), dat += randomScalingFactor(delta),dat += randomScalingFactor(delta), dat += randomScalingFactor(delta), dat += randomScalingFactor(delta), dat += randomScalingFactor(delta)]
+						}
+					]
+				}
+					var ctx = document.getElementById("myChart").getContext("2d");
+					myLine = new Chart(ctx).Line(lineChartData, {
+						responsive: true
+					});
+			}
+
    	});
     </script>
     <style type="text/css">
-    
+    	.short_bin_info {
+    		margin: 2% 0;
+    		padding-bottom: 2%;
+    		border-bottom: 1px solid black;
+    		text-align: center;
+    	}
     </style>
     <title>Наши контейнеры</title>
-
 </head>
 <body>
 
 <!--Панель навигации -->
 
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default" id = "top_nav_pannel">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand navbar-center" href="/control_measure">ZnaiK</a>
+      <a class="navbar-brand navbar-center" href="/control_measure">ZnaiK 1.4</a>
     </div>
     <div>
       <ul class="nav navbar-nav navbar-right">
+       	<li><a href="#" id="bin_link">Контейнер</a></li>
+       	<li><a href="#" id="measurements_link">Измерения</a></li>
+       	<li><a href="#" id="speed_link">Скорость</a></li>
+       	<li><a href="#" id="history_link">История</a></li>
         <li><a href="/control_measure">Назад</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
+
+<div class="container" id="short_bin_info">
+	<div class="row">
+		<div class="row short_bin_info">
+			<div class="col-xs-4">
+				<span>Адрес: {{ a_bin.bin_adress}}</span>
+			</div>
+			<div class="col-xs-4">
+				<span>Скорость: {{ a_bin.bin_get_average_pace_per_day_output }}% в сутки</span>
+			</div>
+			<div class="col-xs-4">
+				<span>Вывоз: {{ a_bin.bin_get_upload_date }}</span>
+			</div>
+		</div>
+	</div>
+</div>
 <!--Список измерений -->
 
-<div class="container" id = "measurement_list">
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-10">
-			<h1> История измерений и выгрузок контейнера #{{ a_bin.bin_id }}  </h1>
-			<h2> Адрес: {{ a_bin.bin_adress}} </h2>
-		</div>
-	</div>
-	{% if a_bin.bin_get_last_five_measurements %}
-		<div class="row">
-			<div class="col-md-4"> Дата </div>
-			<div class="col-md-4"> Уровень заполненности </div>
-			<div class="col-md-4"> Прогноз - Факт </div>
-		</div>
-		{%	for measurement in a_bin.bin_get_last_five_measurements %}
+<div id="measurements_module">
+	<div class="container" id = "measurement_list">
+		{% if a_bin.bin_get_last_five_measurements %}
 			<div class="row">
-				<div class="col-md-4"> {{ measurement.measurement_date }} </div>
-				<div class="col-md-4"> {{ measurement.measurement_percentage }}% </div>
-				{% if measurement.measurement_error %}
-					<div class="col-md-4"> <span class = "measure_error">{{ measurement.measurement_error }}</span>% </div>
-				{% else %}
-					<div class="col-md-4"> - </div>
-				{% endif %}
+				<div class="col-md-4"> Дата </div>
+				<div class="col-md-4"> Уровень заполненности </div>
+				<div class="col-md-4"> Прогноз - Факт </div>
 			</div>
-		{% endfor %}
-	{% else %}
-		<div class="row">
-			<div class="col-md-3"></div>
-			<div class="col-md-6">
-				<h2>No avaliable measurements</h2>
+			{%	for measurement in a_bin.bin_get_last_five_measurements %}
+				<div class="row">
+					<div class="col-md-4"> {{ measurement.measurement_date }} </div>
+					<div class="col-md-4"> {{ measurement.measurement_percentage }}% </div>
+					{% if measurement.measurement_error %}
+						<div class="col-md-4"> <span class = "measure_error">{{ measurement.measurement_error }}</span>% </div>
+					{% else %}
+						<div class="col-md-4"> - </div>
+					{% endif %}
+				</div>
+			{% endfor %}
+		{% else %}
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+					<h2>No avaliable measurements</h2>
+				</div>
 			</div>
-		</div>
-		
-	{% endif %}
-</div>
+			
+		{% endif %}
+	</div>
 
-<div class="container">
-	<div class="row">
-		<div class="col-md-4 col-xs-12">
-			<div class="container-fluid">
-				<div class="row add_button_percent">
-					<span> Измерение в % </span>
-				</div>
-				<div class="row hidden_menu" id = "new_measure_info_percent">
-					<form action = '{% url "control_measure:add_measurement_percent" a_bin.bin_id %}' id = "form_add_percent" method = 'post' >
-						{% csrf_token %}
-						<div class='row'>
-							<input type = "text" name="measurement_date_percent" id="date_of_measurement_percent" placeholder = "Дата" />
-						</div>
-						<div class='row'>
-							<input type = "text" name="measurement_time_percent" placeholder = "Дата" id = "time_of_measurement_percent"/>
-						</div>
-						<div class='row'>
-							<button type="button" id="current_date_percent">Сейчас</button>
-						</div>
-						<div class='row'>
-							<input type = "text" name = "measurement_percent_inside" placeholder = "Процент наполненности" />
-						</div>
-						<div class='row'>
-							<input type = 'submit' value = 'Добавить'/>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4 col-xs-12">
-			<div class="container-fluid">
-				<div class="row unload_button_percent">
-					<span> Выгрузить в % </span>
-				</div>
-				<div class="row hidden_menu" id = "new_unload_info_percent">
-					<form action = '{% url "control_measure:unload_bin_percent" a_bin.bin_id %}' method = "post" >
-						{% csrf_token %}
-						<div class="row">
-							<input type="text" name = "unload_date_percent" placeholder = "Дата" id = "date_of_upload_percent" />
-						</div>
-						<div class="row">
-							<input type="text" name = "unload_time_percent" placeholder = "Время" id = "time_of_upload_percent" />
-						</div>
-						<div class='row'>
-							<button type = 'button' id = "button_unload_current_percent"> Сейчас </button>
-						</div>
-						<div class="row">
-							<input type="text" name="unload_percent_before" placeholder="Процентов было" />
-						</div>
-						<div class="row"> 
-							<input type="text" name="unload_percent_after" placeholder="Процентов осталось"/>
-						</div>
-						<div class='row'>
-							<input type = 'submit' value = 'Выгрузить'/>
-						</div>
-					</form>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 col-xs-12">
+				<div class="container-fluid">
+					<div class="row add_button_percent">
+						<span> Измерение в % </span>
+					</div>
+					<div class="row hidden_menu" id = "new_measure_info_percent">
+						<form action = '{% url "control_measure:add_measurement_percent" a_bin.bin_id %}' id = "form_add_percent" method = 'post' >
+							{% csrf_token %}
+							<div class='row'>
+								<input type = "text" name="measurement_date_percent" id="date_of_measurement_percent" placeholder = "Дата" />
+							</div>
+							<div class='row'>
+								<input type = "text" name="measurement_time_percent" placeholder = "Дата" id = "time_of_measurement_percent"/>
+							</div>
+							<div class='row'>
+								<button type="button" id="current_date_percent">Сейчас</button>
+							</div>
+							<div class='row'>
+								<input type = "text" name = "measurement_percent_inside" placeholder = "Процент наполненности" />
+							</div>
+							<div class='row'>
+								<input type = 'submit' value = 'Добавить'/>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-md-4 col-xs-12">
-			<div class="container-fluid">
-				<div class="row add_event">
-					<span> Добавить событие </span>
+			<div class="col-md-4 col-xs-12">
+				<div class="container-fluid">
+					<div class="row unload_button_percent">
+						<span> Выгрузить в % </span>
+					</div>
+					<div class="row hidden_menu" id = "new_unload_info_percent">
+						<form action = '{% url "control_measure:unload_bin_percent" a_bin.bin_id %}' method = "post" >
+							{% csrf_token %}
+							<div class="row">
+								<input type="text" name = "unload_date_percent" placeholder = "Дата" id = "date_of_upload_percent" />
+							</div>
+							<div class="row">
+								<input type="text" name = "unload_time_percent" placeholder = "Время" id = "time_of_upload_percent" />
+							</div>
+							<div class='row'>
+								<button type = 'button' id = "button_unload_current_percent"> Сейчас </button>
+							</div>
+							<div class="row">
+								<input type="text" name="unload_percent_before" placeholder="Процентов было" />
+							</div>
+							<div class="row"> 
+								<input type="text" name="unload_percent_after" placeholder="Процентов осталось"/>
+							</div>
+							<div class='row'>
+								<input type = 'submit' value = 'Выгрузить'/>
+							</div>
+						</form>
+					</div>
 				</div>
-				<div class="row hidden_menu" id = "new_event_info">
-					<form action = '{% url "control_measure:add_event" a_bin.bin_id %}' method = "post" >
-						{% csrf_token %}
-						<div class="row">
-							<input type="text" name = "event_date" placeholder = "Дата" id = "date_of_event" />
-						</div>
-						<div class='row'>
-							<button type = 'button' id = "button_event_current"> Сегодня </button>
-						</div>
-						<div class="row">
-							<input type="textarea" name="event_description" placeholder="Что произошло?" />
-						</div>
-						<div class='row'>
-							<input type = 'submit' value = 'Добавить'/>
-						</div>
-					</form>
+			</div>
+			<div class="col-md-4 col-xs-12">
+				<div class="container-fluid">
+					<div class="row add_event">
+						<span> Добавить событие </span>
+					</div>
+					<div class="row hidden_menu" id = "new_event_info">
+						<form action = '{% url "control_measure:add_event" a_bin.bin_id %}' method = "post" >
+							{% csrf_token %}
+							<div class="row">
+								<input type="text" name = "event_date" placeholder = "Дата" id = "date_of_event" />
+							</div>
+							<div class='row'>
+								<button type = 'button' id = "button_event_current"> Сегодня </button>
+							</div>
+							<div class="row">
+								<input type="textarea" name="event_description" placeholder="Что произошло?" />
+							</div>
+							<div class='row'>
+								<input type = 'submit' value = 'Добавить'/>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
+<div id="bin_module">
+	<div class="container">
+		<div class="row"><span> Тип контейнера: {{ a_bin.bin_type }}</span></div>
+		<div class="row"><span> Высота: {{ a_bin.bin_type.type_heigth }} см</span></div>
+		<div class="row"><span> Ширина: {{ a_bin.bin_type.type_width }} см</span></div>
+		<div class="row"><span> Глубина: {{ a_bin.bin_type.type_length }} см</span></div>
+		<div class="row"><span> Объём: {{ a_bin.bin_get_volume }} л</span></div>
+	</div>
+</div>
 
+<div id="speed_module">
+	<div class="container">
+		<canvas id="myChart" width="400" height="400"></canvas>
+	</div>
+</div>
 
 
 

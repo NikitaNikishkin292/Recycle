@@ -38,11 +38,12 @@ class Bin(models.Model):
 		result = self.measurement_set.all().order_by('-measurement_date')
 		return result
 
+	#объём контейнера
 	def bin_get_volume(self):
 		return self.bin_type.type_get_volume()
 
 	#генерирует скорость заполнения в литрах/час для счёта
-	def bin_generate_pace_number(self):
+	def bin_generate_volume_pace(self):
 		measure_set = self.measurement_set.all().order_by('measurement_date')
 		if measure_set.count() > 1:
 			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
@@ -60,20 +61,20 @@ class Bin(models.Model):
 
 
 	#Средний темп заполняемости в %/час за всё время для вывода
-	def bin_get_average_pace_per_hour(self):
-		result = float("{0:.1f}".format( ( self.bin_generate_pace_number() / self.bin_type.type_get_volume() ) * 100) )
+	def bin_get_average_pace_per_hour_output(self):
+		result = float("{0:.1f}".format( ( self.bin_generate_volume_pace() / self.bin_type.type_get_volume() ) * 100) )
 		return result
 
 	#средний темп заполняемости в %/день за всё время для вывода
-	def bin_get_average_pace_per_day(self):
-		result = float("{0:.1f}".format( (self.bin_generate_pace_number() / self.bin_type.type_get_volume() * 2400 )))
+	def bin_get_average_pace_per_day_output(self):
+		result = float("{0:.1f}".format( (self.bin_generate_volume_pace() / self.bin_type.type_get_volume() * 2400 )))
 		return result
 		
 	#Текущая заполненность в литрах для счёта
 	def bin_get_current_fill_litres (self):
 		last_measure = self.measurement_set.all().order_by('measurement_date').last()
 		if last_measure:
-			pace_per_hour_litres = self.bin_generate_pace_number()
+			pace_per_hour_litres = self.bin_generate_volume_pace()
 			current_server_time = datetime.utcnow()
 			current_client_time = timezone(tz).fromutc(current_server_time)
 			#date_of_last_measure = pytz.utc.localize(last_measure.measurement_date) - timedelta(hours = 3)
@@ -93,8 +94,8 @@ class Bin(models.Model):
 	def bin_get_upload_date (self):
 		current_server_time = datetime.utcnow()
 		current_client_time = timezone(tz).fromutc(current_server_time)
-		if self.bin_generate_pace_number():
-			hours_number = (self.bin_type.type_get_volume() - self.bin_get_current_fill_litres()) / self.bin_generate_pace_number()
+		if self.bin_generate_volume_pace():
+			hours_number = (self.bin_type.type_get_volume() - self.bin_get_current_fill_litres()) / self.bin_generate_volume_pace()
 			term = timedelta(hours = hours_number)
 			upload_date = current_client_time + term
 			return upload_date.date()
@@ -105,7 +106,7 @@ class Bin(models.Model):
 			delta = pytz.utc.localize(dt) - measure_set.last().measurement_date
 			if delta > timedelta(0):
 				delta = delta.days * 24 + delta.seconds / 3600
-				volume_inside =  self.bin_generate_pace_number() * delta + measure_set.last().measurement_volume
+				volume_inside =  self.bin_generate_volume_pace() * delta + measure_set.last().measurement_volume
 				return volume_inside
 
 
