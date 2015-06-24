@@ -120,4 +120,80 @@ $(document).ready(function() {
     			$(this).closest('div').css('color', 'red');
     		}
     	});
+
+
+
+	var menuList = ["#bin_module", "#measurements_module", "#speed_module"];
+    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach()];
+    	function setActiveDivId (id_string) {
+    		if (!($('div').is(id_string))) {
+    			var this_index = 0;
+    			for (var j = 0; j < menuList.length; j++) {
+    				if (id_string == menuList[j])
+    					this_index = j;
+    			}
+	    		for (var i = 0; i < menuList.length; ++i) {
+	    			if ($('div').is(menuList[i])) {
+	    				bufferList[i] = $(menuList[i]).detach();
+	    				bufferList[this_index].appendTo('body');
+	    			}
+	    		}
+	    	}
+    	};
+    	//var measurements_module_buffer = ;
+    	//var	bin_buffer = $("#bin_module");
+    	$('#bin_link').click(function(e){
+	    		//measurements_module_buffer = $('div#measurements_module').detach();
+	    		//bin_module_buffer.appendTo('#short_bin_info');
+	    		setActiveDivId("#bin_module");	    	
+    	});
+
+    	$('#measurements_link').click(function(e){
+    		//bin_module_buffer = $('div#bin_module').detach();
+    		//measurements_module_buffer.appendTo('#short_bin_info');
+    		setActiveDivId("#measurements_module");	
+    	});
+
+    	$('#speed_link').click(function(e){
+    		//bin_module_buffer = $('div#bin_module').detach();
+    		//measurements_module_buffer.appendTo('#short_bin_info');
+    		var chartLabels = []
+    		var chartData = []
+    		setActiveDivId("#speed_module");
+    		$.getJSON('{% url "control_measure:data_for_chart" a_bin.bin_id %}', function(data){
+    			for (var i in data) {
+    				chartLabels.push(data[i].month + "/" + data[i].day);
+    				chartData.push(parseInt(data[i].pace));
+    			}
+    			console.log(chartData);
+    			console.log(chartLabels);
+    			addChart(chartLabels, chartData);
+    		});
+    		
+    			
+    	});
+
+
+    	function addChart (chartLabels, chartData) {
+				var lineChartData = {
+					labels : chartLabels,
+					datasets : [
+						
+						{
+							label: "My Second dataset",
+							fillColor : "rgba(151,187,205,0.2)",
+							strokeColor : "rgba(151,187,205,1)",
+							pointColor : "rgba(151,187,205,1)",
+							pointStrokeColor : "#fff",
+							pointHighlightFill : "#fff",
+							pointHighlightStroke : "rgba(151,187,205,1)",
+							data : chartData
+						}
+					]
+				}
+					var ctx = document.getElementById("myChart").getContext("2d");
+					myLine = new Chart(ctx).Line(lineChartData, {
+						 //scaleShowGridLines : true,
+					});
+			}
 });

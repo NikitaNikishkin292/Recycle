@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from pytz import timezone
 import pytz
 from datetime import datetime, timedelta
+import json
 #import date
 tz = 'Europe/Moscow'
 
@@ -40,6 +41,30 @@ def detail(request, bin_ident):
 	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
 	#return HttpResponse("You're looking at question %s." % a_bin.bin_adress)
 	return render(request, 'control_measure/detail.html', { 'a_bin': a_bin  })
+
+
+def data_for_chart(request, bin_ident):
+	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
+	dict_for_send = []
+	if a_bin.measurement_set.all().order_by('measurement_date').count() > 1:
+		mes_beg = a_bin.measurement_set.all().order_by('measurement_date')[0]
+		for mes in a_bin.measurement_set.all().order_by('measurement_date')[1:]:
+			if mes.measurement_volume > mes_beg.measurement_volume:
+				time_delta = mes.measurement_date - mes_beg.measurement_date
+				time_delta = time_delta.days + time_delta.seconds / (3600 * 24)
+				dict_elem = {}
+				dict_elem['day'] = mes.measurement_date.day
+				dict_elem['month'] = mes.measurement_date.month
+				dict_elem['pace'] = (mes.measurement_volume - mes_beg.measurement_volume) / time_delta
+				dict_for_send.append(dict_elem)
+			mes_beg = mes
+		dump = json.dumps(dict_for_send)
+		return HttpResponse(dump, content_type='application/json')
+	#a_bin = 0
+	#return render(request, 'control_measure/detail.html', { 'a_bin': a_bin  })
+
+
+
 
 def add_measurement(request, bin_ident):
 	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
