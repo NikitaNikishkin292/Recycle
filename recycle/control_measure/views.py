@@ -200,5 +200,5 @@ def add_volume(request, bin_ident):
 	else:
 		#the_date_of_volume = datetime.strptime(a_volume_date, "%Y-%m-%d")
 		a_volume_date += " 15:00"
-		a_bin.measurement_set.create(measurement_date = a_volume_date, measurement_volume = a_volume)
+		a_bin.measurement_set.create(measurement_date = a_volume_date, measurement_volume = a_volume, measurement_percentage = (int(a_volume) / a_bin.bin_get_volume() * 100))
 	return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
