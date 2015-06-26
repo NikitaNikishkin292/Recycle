@@ -60,6 +60,7 @@ def data_for_chart(request, bin_ident):
 			mes_beg = mes
 		dump = json.dumps(dict_for_send)
 		return HttpResponse(dump, content_type='application/json')
+	return render(request, 'control_measure/detail.html', { 'a_bin': a_bin  })
 	#a_bin = 0
 	#return render(request, 'control_measure/detail.html', { 'a_bin': a_bin  })
 
