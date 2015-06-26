@@ -13,4 +13,5 @@ urlpatterns = [
 	url(r'^(?P<bin_ident>[0-9]+)/unload_percent/$', views.unload_bin_percent, name = "unload_bin_percent"),
 	url(r'^(?P<bin_ident>[0-9]+)/add_event/$', views.add_event, name = "add_event"),
 	url(r'^(?P<bin_ident>[0-9]+)/data_for_chart/$', views.data_for_chart, name = "data_for_chart"),
+	url(r'^(?P<bin_ident>[0-9]+)/add_volume/$', views.add_volume, name = "add_volume"),
 ]

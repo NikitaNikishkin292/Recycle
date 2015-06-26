@@ -64,6 +64,18 @@
     	});
 
 
+    	$('#button_volume_current').click(function(event){
+			var now = new Date();
+			var day = now.getDate();
+			var mon = now.getMonth() + 1;
+			var year = now.getFullYear();
+			var current_date = year + "-" + mon + "-" + day;
+			//alert(current_date);
+			$('#date_of_volume').attr("value", current_date);
+			$('#date_of_volume').attr("placeholder", "");
+	});
+
+
     	function addChart (chartLabels, chartData) {
 			var lineChartData = {
 				labels : chartLabels,
@@ -160,7 +172,7 @@
 			{%	for measurement in a_bin.bin_get_last_five_measurements %}
 				<div class="row">
 					<div class="col-xs-4"> {{ measurement.measurement_date }} </div>
-					<div class="col-xs-4"> {{ measurement.measurement_percentage }}% </div>
+					<div class="col-xs-4"> {{ measurement.measurement_get_percentage }}% </div>
 					{% if measurement.measurement_error %}
 						<div class="col-xs-4"> <span class = "measure_error">{{ measurement.measurement_error }}</span>% </div>
 					{% else %}
@@ -239,7 +251,7 @@
 				</div>
 			</div>
 			<div class="col-md-4 col-xs-12">
-				<div class="container-fluid">
+				<!--<div class="container-fluid">
 					<div class="row add_event">
 						<span> Добавить событие </span>
 					</div>
@@ -254,6 +266,28 @@
 							</div>
 							<div class="row">
 								<input type="textarea" name="event_description" placeholder="Что произошло?" />
+							</div>
+							<div class='row'>
+								<input type = 'submit' value = 'Добавить'/>
+							</div>
+						</form>
+					</div>
+				</div> -->
+				<div class="container-fluid">
+					<div class="row add_volume">
+						<span> Добавить Объём </span>
+					</div>
+					<div class="row">
+						<form action = '{% url "control_measure:add_volume" a_bin.bin_id %}' method = "post" >
+							{% csrf_token %}
+							<div class="row">
+								<input type="text" name = "volume_date" placeholder = "Дата" id = "date_of_volume" />
+							</div>
+							<div class='row'>
+								<button type = 'button' id = "button_volume_current"> Сегодня </button>
+							</div>
+							<div class="row">
+								<input type="text" name="volume" placeholder="Объём" />
 							</div>
 							<div class='row'>
 								<input type = 'submit' value = 'Добавить'/>

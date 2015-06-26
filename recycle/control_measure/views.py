@@ -188,3 +188,17 @@ def add_event(request, bin_ident):
 		if our_date_for_comparison <= current_client_time:
 			a_bin.event_set.create(event_date = an_event_date, event_description = an_event_description)
 	return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
+
+
+def add_volume(request, bin_ident):
+	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
+	try:
+		a_volume_date = request.POST['volume_date']
+		a_volume = request.POST['volume']
+	except (KeyError, Bin.DoesNotExist):
+		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
+	else:
+		#the_date_of_volume = datetime.strptime(a_volume_date, "%Y-%m-%d")
+		a_volume_date += " 15:00"
+		a_bin.measurement_set.create(measurement_date = a_volume_date, measurement_volume = a_volume)
+	return render(request, 'control_measure/detail.html', {'a_bin': a_bin })

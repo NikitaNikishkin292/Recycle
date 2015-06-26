@@ -127,8 +127,8 @@ class Measurement(models.Model):
 	def __str__ (self):
 		return str(self.measurement_date)
 	def measurement_get_percentage(self):
-		x = (self.measurement_cells_inside / self.measurement_cells_maximum) * 100
-		g =float("{0:.2f}".format(x))
+		x = (self.measurement_volume / self.measurement_bin.bin_get_volume()) * 100
+		g =float("{0:.1f}".format(x))
 		return g
 
 class Event(models.Model):

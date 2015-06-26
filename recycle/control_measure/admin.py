@@ -14,7 +14,7 @@ class EventInline(admin.TabularInline):
 
 class BinAdmin(admin.ModelAdmin):
 	fields = ['bin_id', 'bin_adress', 'bin_type']
-	list_display = ('bin_id', 'bin_adress', 'bin_get_average_pace_per_day', 'bin_type', 'bin_get_volume')
+	list_display = ('bin_id', 'bin_adress', 'bin_get_average_pace_per_day_output', 'bin_type', 'bin_get_volume')
 	ordering = ('bin_id',)
 	inlines = [MeasurementInline, EventInline]
 
