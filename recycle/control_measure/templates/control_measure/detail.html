@@ -11,8 +11,8 @@
     <script src= '{% static "Chart.js" %}'></script>	
     <script type="text/javascript">
     $(document).ready(function() {
-    	var menuList = ["#bin_module", "#measurements_module", "#speed_module"];
-    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach()];
+    	var menuList = ["#bin_module", "#measurements_module", "#speed_module", "history_module"];
+    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach(), $('#history_module').detach()];
     	function setActiveDivId (id_string) {
     		if (!($('div').is(id_string))) {
     			var this_index = 0;
@@ -41,6 +41,13 @@
     		//measurements_module_buffer.appendTo('#short_bin_info');
     		setActiveDivId("#measurements_module");	
     	});
+
+    	$('#history_link').click(function(e){
+    		//bin_module_buffer = $('div#bin_module').detach();
+    		//measurements_module_buffer.appendTo('#short_bin_info');
+    		setActiveDivId("#history_module");	
+    	});
+    	
 
     	$('#speed_link').click(function(e){
     		//bin_module_buffer = $('div#bin_module').detach();
@@ -109,7 +116,7 @@
     		border-bottom: 1px solid black;
     		text-align: center;
     	}
-    	#speed_module {
+    	#speed_module, #history_module {
     		text-align: center;
     	}
     	#speed_module>h1 {
@@ -251,28 +258,7 @@
 				</div>
 			</div>
 			<div class="col-md-4 col-xs-12">
-				<!--<div class="container-fluid">
-					<div class="row add_event">
-						<span> Добавить событие </span>
-					</div>
-					<div class="row hidden_menu" id = "new_event_info">
-						<form action = '{% url "control_measure:add_event" a_bin.bin_id %}' method = "post" >
-							{% csrf_token %}
-							<div class="row">
-								<input type="text" name = "event_date" placeholder = "Дата" id = "date_of_event" />
-							</div>
-							<div class='row'>
-								<button type = 'button' id = "button_event_current"> Сегодня </button>
-							</div>
-							<div class="row">
-								<input type="textarea" name="event_description" placeholder="Что произошло?" />
-							</div>
-							<div class='row'>
-								<input type = 'submit' value = 'Добавить'/>
-							</div>
-						</form>
-					</div>
-				</div> -->
+				<!-- -->
 				<div class="container-fluid">
 					<div class="row add_volume">
 						<span> Добавить Объём </span>
@@ -316,6 +302,57 @@
 		<h1> Динамика скорости заполнения литров/сутки</h1>
 	</div>
 		<canvas id="myChart" width="800px" height="400"></canvas>
+	</div>
+</div>
+
+<div id="history_module">
+	<div class="container">
+		<div class="row">
+			<h1>История контейнера</h1>
+		</div>
+		{% if a_bin.bin_get_events %}
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-xs-4 col-md-4"> Дата </div>
+				<div class="col-xs-8 col-md-4"> Описание события </div>
+				<div class="col-md-2"></div>
+			</div>
+			{% for event in a_bin.bin_get_events %}
+				<div class="row">
+				<div class="col-md-2"></div>
+					<div class="col-xs-4 col-md-4"> {{ event.event_date }} </div>
+					<div class="col-xs-8 col-md-4"> {{ event.event_description }} </div>
+					<div class="col-md-2"></div>
+				</div>
+			{% endfor %}
+		{% endif %}
+	</div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-4 col-xs-12">
+				<div class="row add_event">
+					<span> Добавить событие </span>
+				</div>
+				<div class="row hidden_menu" id = "new_event_info">
+					<form action = '{% url "control_measure:add_event" a_bin.bin_id %}' method = "post" >
+						{% csrf_token %}
+						<div class="row">
+							<input type="text" name = "event_date" placeholder = "Дата" id = "date_of_event" />
+						</div>
+						<div class='row'>
+							<button type = 'button' id = "button_event_current"> Сегодня </button>
+						</div>
+						<div class="row">
+							<input type="textarea" name="event_description" placeholder="Что произошло?" />
+						</div>
+						<div class='row'>
+							<input type = 'submit' value = 'Добавить'/>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 

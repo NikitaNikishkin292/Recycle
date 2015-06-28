@@ -123,8 +123,8 @@ $(document).ready(function() {
 
 
 
-	var menuList = ["#bin_module", "#measurements_module", "#speed_module"];
-    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach()];
+	var menuList = ["#bin_module", "#measurements_module", "#speed_module", "#history_module"];
+    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach(), $('#history_module').detach()];
     	function setActiveDivId (id_string) {
     		if (!($('div').is(id_string))) {
     			var this_index = 0;
@@ -152,6 +152,12 @@ $(document).ready(function() {
     		//bin_module_buffer = $('div#bin_module').detach();
     		//measurements_module_buffer.appendTo('#short_bin_info');
     		setActiveDivId("#measurements_module");	
+    	});
+
+    	$('#history_link').click(function(e){
+    		//bin_module_buffer = $('div#bin_module').detach();
+    		//measurements_module_buffer.appendTo('#short_bin_info');
+    		setActiveDivId("#history_module");	
     	});
 
     	$('#speed_link').click(function(e){

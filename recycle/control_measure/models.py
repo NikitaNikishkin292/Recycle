@@ -109,6 +109,9 @@ class Bin(models.Model):
 				volume_inside =  self.bin_generate_volume_pace() * delta + measure_set.last().measurement_volume
 				return volume_inside
 
+	def bin_get_events(self):
+		return self.event_set.all().order_by('-event_date')
+
 
 
 
