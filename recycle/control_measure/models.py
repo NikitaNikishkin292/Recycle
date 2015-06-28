@@ -117,13 +117,14 @@ class Measurement(models.Model):
 	measurement_bin = models.ForeignKey(Bin, verbose_name = "Контейнер")
 	measurement_date = models.DateTimeField(verbose_name = "Дата замера")
 	measurement_volume = models.IntegerField(verbose_name = "Объём в литрах", blank = 'True', null = 'True')
-	measurement_error = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = "Ошибка", blank = 'True', null = 'True')
+	#measurement_error = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = "Ошибка", blank = 'True', null = 'True')
 	#заполненность контейнера в процентах
-	measurement_percentage = models.DecimalField(max_digits = 3, decimal_places = 1, default = 50, verbose_name = "Процент")
+	measurement_percentage = models.DecimalField(max_digits = 4, decimal_places = 1, default = 50, verbose_name = "Процент")
+	measurement_mass = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = 'Масса PET', blank = 'True', null = 'True')
 	#число клеточек, соответствующее уровню заполненности контейнера
-	measurement_cells_inside = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True', blank = 'True')
+	#measurement_cells_inside = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True', blank = 'True')
 	#максимально возможное число клеточек
-	measurement_cells_maximum = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True', blank = 'True')
+	#measurement_cells_maximum = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True', blank = 'True')
 	def __str__ (self):
 		return str(self.measurement_date)
 	def measurement_get_percentage(self):

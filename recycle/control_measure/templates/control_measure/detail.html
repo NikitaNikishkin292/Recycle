@@ -94,7 +94,7 @@
 				]
 			}
 			var ctx = document.getElementById("myChart").getContext("2d");
-			myLine = new Chart(ctx).Line(lineChartData, {
+			myLine = new Chart(ctx).Bar(lineChartData, {
 				 scaleShowGridLines : true,
 			});
 			//myChart.reDraw();
@@ -174,7 +174,7 @@
 					<div class="col-xs-4"> {{ measurement.measurement_date }} </div>
 					<div class="col-xs-4"> {{ measurement.measurement_get_percentage }}% </div>
 					{% if measurement.measurement_error %}
-						<div class="col-xs-4"> <span class = "measure_error">{{ measurement.measurement_error }}</span>% </div>
+						<div class="col-xs-4"> <span class = "measure_error"></span>% </div>
 					{% else %}
 						<div class="col-xs-4"> - </div>
 					{% endif %}

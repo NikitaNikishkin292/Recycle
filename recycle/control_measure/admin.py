@@ -19,14 +19,14 @@ class BinAdmin(admin.ModelAdmin):
 	inlines = [MeasurementInline, EventInline]
 
 class TypeAdmin(admin.ModelAdmin):
-	list_display = ('type_name', 'type_description', 'type_get_volume')
+	list_display = ('type_name', 'type_description', 'type_heigth', 'type_width', 'type_length', 'type_get_volume')
 
 class MeasurementAdmin(admin.ModelAdmin):
 	fieldsets = [
-		('Important Information', {'fields': ['measurement_bin', 'measurement_date', 'measurement_volume', 'measurement_error']}),
-		('Left Information', {'fields': ['measurement_percentage', 'measurement_cells_inside', 'measurement_cells_maximum']}),
+		('Important Information', {'fields': ['measurement_bin', 'measurement_date', 'measurement_volume', 'measurement_mass']}),
+		('Left Information', {'fields': ['measurement_percentage']}),
 	]
-	list_display = ['measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume']
+	list_display = ['measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume', 'measurement_mass']
 	ordering = ('-measurement_date',)
 	list_filter = ['measurement_bin']
 
