@@ -141,6 +141,18 @@ class Event(models.Model):
 	event_description = models.CharField(max_length = 500)
 
 
+class Bag(models.Model):
+	bag_id = models.IntegerField(primary_key = True, verbose_name = 'Номер мешка')
+	bag_type = models.ManyToManyField(Type, verbose_name = 'Тип контейнера')
+	BAG_STATUS = (
+			(1, "В контейнере"),
+			(2, "На складе полный"),			
+			(3, "На складе пустой"),
+		)
+	bag_status = models.IntegerField(verbose_name = 'Статус мешка', choices = BAG_STATUS, default = 2)
+
+	def __str__ (self):
+		return str(self.bag_id)
 
 #Выполняя makemigrations, вы говорите Django, что внесли 
 #некоторые изменения в ваши модели и хотели бы сохранить их в миграции.
