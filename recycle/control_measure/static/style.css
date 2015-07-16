@@ -30,6 +30,20 @@ h1 {
 	padding-bottom: 1%;
 }
 
+
+
+
+/*Стили выжимки про контейнер*/
+.short_bin_info {
+    		margin: 3% 0;
+    		text-align: center;
+    		
+    	}
+
+#short_bin_info {
+	background-color: rgb(247, 231, 153);
+}
+
 /*стили форм добавления нового контейнера*/
 
 .add_form {
@@ -89,13 +103,7 @@ span.measure_error {
 
 
 /**/
-.unload_button, .add_button, .add_button_percent, .unload_button_percent, .add_event {
-	margin: 1%;
-	padding-bottom: 2%;
-	border: solid black 1px;
-	text-align: center;
-	cursor: pointer;
-}
+
 
 
 #new_measure_info, #new_measure_info_percent, #new_unload_info, #new_unload_info_percent, #new_event_info {

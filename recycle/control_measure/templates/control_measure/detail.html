@@ -8,7 +8,10 @@
     <link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css" />
     <link rel = 'stylesheet' type = 'text/css' href = '{% static "style.css" %}' /> 
     <script src= '{% static "script.js" %}'></script>	
-    <script src= '{% static "Chart.js" %}'></script>	
+    <script src= '{% static "Chart.js" %}'></script>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.indigo-pink.min.css">
+	<script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">	
     <script type="text/javascript">
     $(document).ready(function() {
     	var menuList = ["#bin_module", "#measurements_module", "#speed_module", "history_module"];
@@ -23,7 +26,7 @@
 	    		for (var i = 0; i < menuList.length; ++i) {
 	    			if ($('div').is(menuList[i])) {
 	    				bufferList[i] = $(menuList[i]).detach();
-	    				bufferList[this_index].appendTo('body');
+	    				bufferList[this_index].append('div.page-content');
 	    			}
 	    		}
 	    	}
@@ -110,18 +113,56 @@
    	});
     </script>
     <style type="text/css">
-    	.short_bin_info {
-    		margin: 2% 0;
-    		padding-bottom: 2%;
-    		border-bottom: 1px solid black;
-    		text-align: center;
+    	#short_bin_info {
+    		width: 100%;
+    		vertical-align: middle;
+    		margin-bottom: 2%;
     	}
+
     	#speed_module, #history_module {
     		text-align: center;
+    		position: relative;
     	}
     	#speed_module>h1 {
     		margin: 0;
     	}
+    	header.mdl-layout__header {
+    		background-color: rgb(53, 59, 90);
+    		font: black;
+    	}
+    	.measurements_table_header {
+    		margin-bottom: 2%;
+    		font-size: 20pt;
+    	}
+
+    	.measurements_rows {
+    		font-size: 18pt;
+    		padding: 1.5% 0%;
+    		border-top: black solid 1px;
+
+    	}
+
+    	.measurements_rows:hover {
+    		background-color: #D5DBED;
+    	}
+
+    	.unload_row {
+    		padding-bottom: 2%;
+    	}
+
+    	.unload_button, .add_button, .add_button_percent, .unload_button_percent, .add_event {
+			margin: 1%;
+			padding: 4%;
+			border: solid rgb(53, 59, 90) 2px;
+			text-align: center;
+			cursor: pointer;
+		}
+
+		.add_button_percent>span, .unload_button_percent>span {
+			font-size: 250%;
+			color: rgb(53, 59, 90);
+		}
+
     </style>
     <title>Наши контейнеры</title>
 </head>
@@ -129,234 +170,274 @@
 
 <!--Панель навигации -->
 
-
-<nav class="navbar navbar-default" id = "top_nav_pannel">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand navbar-center" href="/control_measure">ZnaiK 1.4</a>
+<!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title"> <a href="/control_measure" style = "color: white; text-decoration: none;"> Znaik 1.4 </a> </span>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        <a class="mdl-navigation__link" href="/control_measure">Контейнеры</a>
+        <a class="mdl-navigation__link" href="">Склад</a>
+      </nav>
     </div>
-    <div>
-      <ul class="nav navbar-nav navbar-right">
-       	<li><a href="#" id="bin_link">Контейнер</a></li>
-       	<li><a href="#" id="measurements_link">Измерения</a></li>
-       	<li><a href='#' id="speed_link">Скорость</a></li>
-       	<li><a href="#" id="history_link">История</a></li>
-        <li><a href="/control_measure">Назад</a></li>
-      </ul>
-    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Меню</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" id = "bin_link">Контейнер</a>
+      <a class="mdl-navigation__link" id = "measurements_link">Измерения</a>
+      <a class="mdl-navigation__link" id = "speed_link">Скорости</a>
+      <a class="mdl-navigation__link" id = "history_link">История</a>
+    </nav>
   </div>
-</nav>
+  <main class="mdl-layout__content">
+    <div class="page-content"><!-- Your content goes here -->
 
 
-<div class="container" id="short_bin_info">
-	<div class="row">
-		<div class="row short_bin_info">
-			<div class="col-xs-3">
-				<span>Адрес: {{ a_bin.bin_adress}}</span>
-			</div>
-			<div class="col-xs-3">
-				<span>Скорость: {{ a_bin.bin_get_average_pace_per_day_output }}% в сутки</span>
-			</div>
-			<div class="col-xs-3">
-				<span>Заполнен на: <span id = "bin_id">{{ a_bin.bin_get_current_fill_percentage }}%</span></span>
-			</div>
-			<div class="col-xs-3">
-				<span>Вывоз: {{ a_bin.bin_get_upload_date }}</span>
+
+
+		<div class="container" id="short_bin_info">
+			<div class="row try_make_juice">
+				<div class="row short_bin_info">
+					<div class="col-md-3 col-xs-12">
+						<span>Адрес: {{ a_bin.bin_adress}}</span>
+					</div>
+					<div class="col-md-3 col-xs-12">
+						<span>Скорость: {{ a_bin.bin_get_average_pace_per_day_output }}% в сутки</span>
+					</div>
+					<div class="col-md-3 col-xs-12">
+						<span>Заполнен на: <span id = "bin_id">{{ a_bin.bin_get_current_fill_percentage }}%</span></span>
+					</div>
+					<div class="col-md-3 col-xs-12">
+						<span>Вывоз: {{ a_bin.bin_get_upload_date }}</span>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<!--Список измерений -->
+		<!--Список измерений -->
 
-<div id="measurements_module">
-	<div class="container" id = "measurement_list">
-		{% if a_bin.bin_get_last_five_measurements %}
-			<div class="row">
-				<div class="col-xs-4"> Дата </div>
-				<div class="col-xs-4"> Уровень заполненности </div>
-				<div class="col-xs-4"> Прогноз - Факт </div>
-			</div>
-			{%	for measurement in a_bin.bin_get_last_five_measurements %}
-				<div class="row">
-					<div class="col-xs-4"> {{ measurement.measurement_date }} </div>
-					<div class="col-xs-4"> {{ measurement.measurement_get_percentage }}% </div>
-					{% if measurement.measurement_error %}
-						<div class="col-xs-4"> <span class = "measure_error"></span>% </div>
-					{% else %}
-						<div class="col-xs-4"> - </div>
-					{% endif %}
-				</div>
-			{% endfor %}
-		{% else %}
-			<div class="row">
-				<div class="col-md-3"></div>
-				<div class="col-md-6 col-xs-12">
-					<h2>No avaliable measurements</h2>
-				</div>
-			</div>
-			
-		{% endif %}
-	</div>
-
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4 col-xs-12">
-				<div class="container-fluid">
-					<div class="row add_button_percent">
-						<span> Измерение в % </span>
+		<div id="measurements_module">
+			<div class="container" id = "measurement_list">
+				{% if a_bin.bin_get_last_five_measurements %}
+					<div class="row measurements_table_header">
+						<div class="col-xs-4"> Дата </div>
+						<div class="col-xs-4"> Уровень заполненности </div>
+						<div class="col-xs-4"> Прогноз - Факт </div>
 					</div>
-					<div class="row hidden_menu" id = "new_measure_info_percent">
-						<form action = '{% url "control_measure:add_measurement_percent" a_bin.bin_id %}' id = "form_add_percent" method = 'post' >
-							{% csrf_token %}
-							<div class='row'>
-								<input type = "text" name="measurement_date_percent" id="date_of_measurement_percent" placeholder = "Дата" />
+					{%	for measurement in a_bin.bin_get_last_five_measurements %}
+						<div class="row measurements_rows">	
+							{% if measurement.measurement_bag %}
+								<div class="row unload_row">
+									<div class="col-md-4"> <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> </div>
+									<div class="col-md-4"> Мешок: {{ measurement.measurement_bag }} </div>
+									
+										{% if measurement.measurement_mass %}
+											<div class="col-md-4">
+											Масса: {{ measurement.measurement_mass }} кг
+											</div>
+										{% else %}
+											<form action = '{% url "control_measure:add_mass" a_bin.bin_id measurement.id %}' method = 'post'>
+												{% csrf_token %}
+												<div class="col-md-3">
+												<input type = "text" name = "measurement_mass" id = "measurement_mass" placeholder = "Масса пластика" />
+												</div>
+												<div class="col-md-1">
+												<input type="submit" value = "+"/>
+												</div>
+										{% endif %}
+									
+								</div>
+							{% endif %}
+							<div class="row">	
+								<div class="col-xs-4"> {{ measurement.measurement_date }} </div>
+								<div class="col-xs-4"> {{ measurement.measurement_get_percentage }}% </div>
+								{% if measurement.measurement_error %}
+									<div class="col-xs-4"> <span class = "measure_error"></span>% </div>
+								{% else %}
+									<div class="col-xs-4"> - </div>
+								{% endif %}
 							</div>
-							<div class='row'>
-								<input type = "text" name="measurement_time_percent" placeholder = "Дата" id = "time_of_measurement_percent"/>
-							</div>
-							<div class='row'>
-								<button type="button" id="current_date_percent">Сейчас</button>
-							</div>
-							<div class='row'>
-								<input type = "text" name = "measurement_percent_inside" placeholder = "Процент наполненности" />
-							</div>
-							<div class='row'>
-								<input type = 'submit' value = 'Добавить'/>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4 col-xs-12">
-				<div class="container-fluid">
-					<div class="row unload_button_percent">
-						<span> Выгрузить в % </span>
-					</div>
-					<div class="row hidden_menu" id = "new_unload_info_percent">
-						<form action = '{% url "control_measure:unload_bin_percent" a_bin.bin_id %}' method = "post" >
-							{% csrf_token %}
-							<div class="row">
-								<input type="text" name = "unload_date_percent" placeholder = "Дата" id = "date_of_upload_percent" />
-							</div>
-							<div class="row">
-								<input type="text" name = "unload_time_percent" placeholder = "Время" id = "time_of_upload_percent" />
-							</div>
-							<div class='row'>
-								<button type = 'button' id = "button_unload_current_percent"> Сейчас </button>
-							</div>
-							<div class="row">
-								<input type="text" name="unload_percent_before" placeholder="Процентов было" />
-							</div>
-							<div class="row"> 
-								<input type="text" name="unload_percent_after" placeholder="Процентов осталось"/>
-							</div>
-							<div class='row'>
-								<input type = 'submit' value = 'Выгрузить'/>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4 col-xs-12">
-				<!-- -->
-				<div class="container-fluid">
-					<div class="row add_volume">
-						<span> Добавить Объём </span>
-					</div>
+						</div>
+					{% endfor %}
+				{% else %}
 					<div class="row">
-						<form action = '{% url "control_measure:add_volume" a_bin.bin_id %}' method = "post" >
-							{% csrf_token %}
+						<div class="col-md-3"></div>
+						<div class="col-md-6 col-xs-12">
+							<h2>No avaliable measurements</h2>
+						</div>
+					</div>
+					
+				{% endif %}
+			</div>
+			<br>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-xs-12">
+						<div class="container-fluid">
+							<div class="row add_button_percent">
+								<span> Измерение в % </span>
+							</div>
+							<div class="row hidden_menu" id = "new_measure_info_percent">
+								<form action = '{% url "control_measure:add_measurement_percent" a_bin.bin_id %}' id = "form_add_percent" method = 'post' >
+									{% csrf_token %}
+									<div class='row'>
+										<input type = "text" name="measurement_date_percent" id="date_of_measurement_percent" placeholder = "Дата" />
+									</div>
+									<div class='row'>
+										<input type = "text" name="measurement_time_percent" placeholder = "Дата" id = "time_of_measurement_percent"/>
+									</div>
+									<div class='row'>
+										<button type="button" id="current_date_percent">Сейчас</button>
+									</div>
+									<div class='row'>
+										<input type = "text" name = "measurement_percent_inside" placeholder = "Процент наполненности" />
+									</div>
+									<div class='row'>
+										<input type = 'submit' value = "Добавить"/>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 col-xs-12">
+						<div class="container-fluid">
+							<div class="row unload_button_percent">
+								<span> Выгрузить в % </span>
+							</div>
+							<div class="row hidden_menu" id = "new_unload_info_percent">
+								<form action = '{% url "control_measure:unload_bin_percent" a_bin.bin_id %}' method = "post" >
+									{% csrf_token %}
+									<div class="row">
+										<input type="text" name = "unload_date_percent" placeholder = "Дата" id = "date_of_upload_percent" />
+									</div>
+									<div class="row">
+										<input type="text" name = "unload_time_percent" placeholder = "Время" id = "time_of_upload_percent" />
+									</div>
+									<div class='row'>
+										<button type = 'button' id = "button_unload_current_percent"> Сейчас </button>
+									</div>
+									<div class="row">
+										<input type="text" name="unload_percent_before" placeholder="Процентов было" />
+									</div>
+									<div class="row"> 
+										<input type="text" name="unload_percent_after" placeholder="Процентов осталось"/>
+									</div>
+									<div class="row"> 
+										<input type="text" name="unload_bag_id" placeholder="Номер мешка"/>
+									</div>
+									<div class='row'>
+										<input type = 'submit' value = 'Выгрузить'/>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 col-xs-12">
+						<!-- 
+						<div class="container-fluid">
+							<div class="row add_volume">
+								<span> Добавить Объём </span>
+							</div>
 							<div class="row">
-								<input type="text" name = "volume_date" placeholder = "Дата" id = "date_of_volume" />
+								<form action = '{% url "control_measure:add_volume" a_bin.bin_id %}' method = "post" >
+									{% csrf_token %}
+									<div class="row">
+										<input type="text" name = "volume_date" placeholder = "Дата" id = "date_of_volume" />
+									</div>
+									<div class='row'>
+										<button type = 'button' id = "button_volume_current"> Сегодня </button>
+									</div>
+									<div class="row">
+										<input type="text" name="volume" placeholder="Объём" />
+									</div>
+									<div class='row'>
+										<input type = 'submit' value = 'Добавить'/>
+									</div>
+								</form>
 							</div>
-							<div class='row'>
-								<button type = 'button' id = "button_volume_current"> Сегодня </button>
-							</div>
-							<div class="row">
-								<input type="text" name="volume" placeholder="Объём" />
-							</div>
-							<div class='row'>
-								<input type = 'submit' value = 'Добавить'/>
-							</div>
-						</form>
+						</div> -->
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</div>
 
-<div id="bin_module">
-	<div class="container">
-		<div class="row"><span> Тип контейнера: {{ a_bin.bin_type }}</span></div>
-		<div class="row"><span> Высота: {{ a_bin.bin_type.type_heigth }} см</span></div>
-		<div class="row"><span> Ширина: {{ a_bin.bin_type.type_width }} см</span></div>
-		<div class="row"><span> Глубина: {{ a_bin.bin_type.type_length }} см</span></div>
-		<div class="row"><span> Объём: {{ a_bin.bin_get_volume }} л</span></div>
-	</div>
-</div>
-
-<div id="speed_module">
-	<div class="container">
-	<div class="row">
-		<h1> Динамика скорости заполнения литров/сутки</h1>
-	</div>
-		<canvas id="myChart" width="800px" height="400"></canvas>
-	</div>
-</div>
-
-<div id="history_module">
-	<div class="container">
-		<div class="row">
-			<h1>История контейнера</h1>
+		<div id="bin_module">
+			<div class="container">
+				<div class="row"><span> Тип контейнера: {{ a_bin.bin_type }}</span></div>
+				<div class="row"><span> Высота: {{ a_bin.bin_type.type_heigth }} см</span></div>
+				<div class="row"><span> Ширина: {{ a_bin.bin_type.type_width }} см</span></div>
+				<div class="row"><span> Глубина: {{ a_bin.bin_type.type_length }} см</span></div>
+				<div class="row"><span> Объём: {{ a_bin.bin_get_volume }} л</span></div>
+			</div>
 		</div>
-		{% if a_bin.bin_get_events %}
+
+		<div id="speed_module">
+			<div class="container">
 			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-xs-4 col-md-4"> Дата </div>
-				<div class="col-xs-8 col-md-4"> Описание события </div>
-				<div class="col-md-2"></div>
+				<h1> Динамика скорости заполнения литров/сутки</h1>
 			</div>
-			{% for event in a_bin.bin_get_events %}
+				<canvas id="myChart" width="800px" height="400"></canvas>
+			</div>
+		</div>
+
+		<div id="history_module">
+			<div class="container">
 				<div class="row">
-				<div class="col-md-2"></div>
-					<div class="col-xs-4 col-md-4"> {{ event.event_date }} </div>
-					<div class="col-xs-8 col-md-4"> {{ event.event_description }} </div>
-					<div class="col-md-2"></div>
+					<h1>История контейнера</h1>
 				</div>
-			{% endfor %}
-		{% endif %}
-	</div>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-4"></div>
-			<div class="col-md-4 col-xs-12">
-				<div class="row add_event">
-					<span> Добавить событие </span>
-				</div>
-				<div class="row hidden_menu" id = "new_event_info">
-					<form action = '{% url "control_measure:add_event" a_bin.bin_id %}' method = "post" >
-						{% csrf_token %}
+				{% if a_bin.bin_get_events %}
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-xs-4 col-md-4"> Дата </div>
+						<div class="col-xs-8 col-md-4"> Описание события </div>
+						<div class="col-md-2"></div>
+					</div>
+					{% for event in a_bin.bin_get_events %}
 						<div class="row">
-							<input type="text" name = "event_date" placeholder = "Дата" id = "date_of_event" />
+						<div class="col-md-2"></div>
+							<div class="col-xs-4 col-md-4"> {{ event.event_date }} </div>
+							<div class="col-xs-8 col-md-4"> {{ event.event_description }} </div>
+							<div class="col-md-2"></div>
 						</div>
-						<div class='row'>
-							<button type = 'button' id = "button_event_current"> Сегодня </button>
+					{% endfor %}
+				{% endif %}
+			</div>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-4"></div>
+					<div class="col-md-4 col-xs-12">
+						<div class="row add_event">
+							<span> Добавить событие </span>
 						</div>
-						<div class="row">
-							<input type="textarea" name="event_description" placeholder="Что произошло?" />
+						<div class="row hidden_menu" id = "new_event_info">
+							<form action = '{% url "control_measure:add_event" a_bin.bin_id %}' method = "post" >
+								{% csrf_token %}
+								<div class="row">
+									<input type="text" name = "event_date" placeholder = "Дата" id = "date_of_event" />
+								</div>
+								<div class='row'>
+									<button type = 'button' id = "button_event_current"> Сегодня </button>
+								</div>
+								<div class="row">
+									<input type="textarea" name="event_description" placeholder="Что произошло?" />
+								</div>
+								<div class='row'>
+									<input type = 'submit' value = 'Добавить'/>
+								</div>
+							</form>
 						</div>
-						<div class='row'>
-							<input type = 'submit' value = 'Добавить'/>
-						</div>
-					</form>
+					</div>
 				</div>
 			</div>
 		</div>
+
 	</div>
+  </main>
 </div>
-
-
 
 
 

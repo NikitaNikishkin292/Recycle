@@ -23,7 +23,7 @@ class TypeAdmin(admin.ModelAdmin):
 
 class MeasurementAdmin(admin.ModelAdmin):
 	fieldsets = [
-		('Important Information', {'fields': ['measurement_bin', 'measurement_date', 'measurement_volume', 'measurement_mass']}),
+		('Important Information', {'fields': ['measurement_bin', 'measurement_date', 'measurement_volume', 'measurement_mass', 'measurement_bag']}),
 		('Left Information', {'fields': ['measurement_percentage']}),
 	]
 	list_display = ['measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume', 'measurement_mass']
@@ -31,6 +31,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 	list_filter = ['measurement_bin']
 
 class BagAdmin(admin.ModelAdmin):
+	ordering = ('bag_id',)
 	list_display = ('bag_id', 'bag_status')
 	list_filter = ['bag_status']
 

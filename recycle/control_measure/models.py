@@ -124,6 +124,7 @@ class Measurement(models.Model):
 	#заполненность контейнера в процентах
 	measurement_percentage = models.DecimalField(max_digits = 4, decimal_places = 1, default = 50, verbose_name = "Процент")
 	measurement_mass = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = 'Масса PET', blank = 'True', null = 'True')
+	measurement_bag = models.IntegerField(verbose_name = 'Номер мешка', blank = 'True', null = 'True')
 	#число клеточек, соответствующее уровню заполненности контейнера
 	#measurement_cells_inside = models.DecimalField(max_digits = 3, decimal_places = 1, null = 'True', blank = 'True')
 	#максимально возможное число клеточек

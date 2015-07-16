@@ -14,4 +14,5 @@ urlpatterns = [
 	url(r'^(?P<bin_ident>[0-9]+)/add_event/$', views.add_event, name = "add_event"),
 	url(r'^(?P<bin_ident>[0-9]+)/data_for_chart/$', views.data_for_chart, name = "data_for_chart"),
 	url(r'^(?P<bin_ident>[0-9]+)/add_volume/$', views.add_volume, name = "add_volume"),
+	url(r'^(?P<bin_ident>[0-9]+)/(?P<meas_id>[0-9]+)/$', views.add_mass, name = "add_mass"),
 ]
