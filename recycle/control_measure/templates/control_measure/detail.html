@@ -151,17 +151,36 @@
     	}
 
     	.unload_button, .add_button, .add_button_percent, .unload_button_percent, .add_event {
-			margin: 1%;
-			padding: 4%;
+			margin: 1% 0%;
+			padding: 4% 0%;
 			border: solid rgb(53, 59, 90) 2px;
 			text-align: center;
 			cursor: pointer;
+			width: 100%;
 		}
 
 		.add_button_percent>span, .unload_button_percent>span {
 			font-size: 250%;
 			color: rgb(53, 59, 90);
 		}
+
+		input {
+			border: 2px solid #353a5a;
+			background: #ffffff;
+			-webkit-border-radius: 0px;
+			-moz-border-radius: 0px;
+			border-radius: 0px;
+			color: #353b5a;
+			-webkit-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
+			-moz-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
+			box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
+			padding:3%;
+			margin-bottom:20px;
+			width: 90%;
+			font-size: 200%;
+		}
+
+
 
     </style>
     <title>Наши контейнеры</title>
@@ -282,13 +301,13 @@
 								<span> Измерение в % </span>
 							</div>
 							<div class="row hidden_menu" id = "new_measure_info_percent">
-								<form action = '{% url "control_measure:add_measurement_percent" a_bin.bin_id %}' id = "form_add_percent" method = 'post' >
+								<form action = '{% url "control_measure:add_measurement_percent" a_bin.bin_id %}' id = "form_add_percent" class="juicy_form" method = 'post' >
 									{% csrf_token %}
 									<div class='row'>
 										<input type = "text" name="measurement_date_percent" id="date_of_measurement_percent" placeholder = "Дата" />
 									</div>
 									<div class='row'>
-										<input type = "text" name="measurement_time_percent" placeholder = "Дата" id = "time_of_measurement_percent"/>
+										<input type = "text" name="measurement_time_percent" placeholder = "Время" id = "time_of_measurement_percent"/>
 									</div>
 									<div class='row'>
 										<button type="button" id="current_date_percent">Сейчас</button>

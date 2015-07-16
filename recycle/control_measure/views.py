@@ -105,8 +105,8 @@ def unload_bin_percent(request, bin_ident):
 			if bag_id <= Bag.objects.all().order_by('bag_id').last().bag_id:
 				volume_in_fact_before = (percent_before * a_bin.bin_type.type_get_volume()) / 100
 				the_date_of_finish = the_date_of_begin_datetime + timedelta(minutes = 5)
-				a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_percentage = percent_after, measurement_volume = (percent_after * a_bin.bin_type.type_get_volume()) / 100)
 				a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_percentage = percent_before, measurement_volume = volume_in_fact_before, measurement_bag = bag_id)
+				a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_percentage = percent_after, measurement_volume = (percent_after * a_bin.bin_type.type_get_volume()) / 100)
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
 
 def add_event(request, bin_ident):
