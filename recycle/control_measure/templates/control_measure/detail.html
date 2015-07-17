@@ -14,8 +14,18 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">	
     <script type="text/javascript">
     $(document).ready(function() {
-    	var menuList = ["#bin_module", "#measurements_module", "#speed_module", "history_module"];
-    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach(), $('#history_module').detach()];
+
+
+
+
+
+
+
+
+
+    	var menuList = ["#bin_module", "#measurements_module", "#speed_module", "history_modul"];
+    	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach(), $('#history_modul').detach()];
+
     	function setActiveDivId (id_string) {
     		if (!($('div').is(id_string))) {
     			var this_index = 0;
@@ -26,7 +36,7 @@
 	    		for (var i = 0; i < menuList.length; ++i) {
 	    			if ($('div').is(menuList[i])) {
 	    				bufferList[i] = $(menuList[i]).detach();
-	    				bufferList[this_index].append('div.page-content');
+	    				bufferList[this_index].appendTo($('div#page_content'));
 	    			}
 	    		}
 	    	}
@@ -45,14 +55,14 @@
     		setActiveDivId("#measurements_module");	
     	});
 
-    	$('#history_link').click(function(e){
+    	$('#history_lin').click(function(e){
     		//bin_module_buffer = $('div#bin_module').detach();
     		//measurements_module_buffer.appendTo('#short_bin_info');
-    		setActiveDivId("#history_module");	
+    		setActiveDivId("#history_modul");	
     	});
     	
 
-    	$('#speed_link').click(function(e){
+    	$('#speed_link').click(function(e) {
     		//bin_module_buffer = $('div#bin_module').detach();
     		//measurements_module_buffer.appendTo('#short_bin_info');
     		var chartLabels = []
@@ -74,6 +84,29 @@
     	});
 
 
+    	//обработчики кнопки Эдобавить измерение в процентах
+		$('.add_button_percent').click(function(event){
+			if ($('#new_measure_info_percent').hasClass('hidden_menu')) {
+				$('#new_measure_info_percent').removeClass('hidden_menu');
+				$('#new_measure_info_percent').addClass('visible_menu');
+			}
+			else {
+				$('#new_measure_info_percent').removeClass('visible_menu');
+				$('#new_measure_info_percent').addClass('hidden_menu');
+			}
+		});
+
+		$('.unload_button_percent').click(function(event){
+			$('#new_unload_info_percent').removeClass('hidden_menu');
+			$('#new_unload_info_percent').addClass('visible_menu');
+		});
+
+		$('.add_event').click(function(event){
+			$('#new_event_info').removeClass('hidden_menu');
+			$('#new_event_info').addClass('visible_menu');
+		});
+
+
     	$('#button_volume_current').click(function(event){
 			var now = new Date();
 			var day = now.getDate();
@@ -85,14 +118,55 @@
 			$('#date_of_volume').attr("placeholder", "");
 	});
 
-    	$('input[type="submit"]').css('background':'black');	
+    	$('#current_date_percent').click(function(event){
+		var now = new Date();
+		var day = now.getDate();
+		var mon = now.getMonth() + 1;
+		var year = now.getFullYear();
+		var hours = now.getHours()
+		var minutes = now.getMinutes();
+		var current_time = hours + ":" + minutes;
+		var current_date = year + "-" + mon + "-" + day;
+		//alert(current_date);
+		$('#date_of_measurement_percent').attr("value", current_date);
+		$('#time_of_measurement_percent').attr("value", current_time);
+		$('#date_of_measurement_percent').attr("placeholder", "");
+		$('#time_of_measurement_percent').attr("placeholder", "");
+	});
+
+
+	$('#button_unload_current_percent').click(function(event){
+			var now = new Date();
+			var day = now.getDate();
+			var mon = now.getMonth() + 1;
+			var year = now.getFullYear();
+			var hours = now.getHours();
+			var minutes = now.getMinutes();
+			var current_date = year + "-" + mon + "-" + day;
+			var current_time = hours + ":" + minutes;
+			//alert(current_date);
+			$('#date_of_upload_percent').attr("value", current_date);
+			$('#time_of_upload_percent').attr("value", current_time);
+			$('#date_of_upload_percent').attr("placeholder", "");
+			$('#time_of_upload_percent').attr("placeholder", "");
+	});
+
+	$('#button_event_current').click(function(event){
+			var now = new Date();
+			var day = now.getDate();
+			var mon = now.getMonth() + 1;
+			var year = now.getFullYear();
+			var current_date = year + "-" + mon + "-" + day;
+			//alert(current_date);
+			$('#date_of_event').attr("value", current_date);
+			$('#date_of_event').attr("placeholder", "");
+	});
 
 
     	function addChart (chartLabels, chartData) {
 			var lineChartData = {
 				labels : chartLabels,
-				datasets : [
-					
+				datasets : [					
 					{
 						label: "My Second dataset",
 						fillColor : "rgba(151,187,205,0.2)",
@@ -121,13 +195,14 @@
     		margin-bottom: 2%;
     	}
 
-    	#speed_module, #history_module {
+    	#speed_module {
     		text-align: center;
     		position: relative;
     	}
     	#speed_module>h1 {
     		margin: 0;
     	}
+
     	header.mdl-layout__header {
     		background-color: rgb(53, 59, 90);
     		font: black;
@@ -216,6 +291,12 @@
 			font-size: 100%;
 		}
 
+		
+
+		#bin_module>div>div {
+			padding: 1%;
+		}
+
     </style>
     <title>Наши контейнеры</title>
 </head>
@@ -244,15 +325,15 @@
       <a class="mdl-navigation__link" id = "bin_link">Контейнер</a>
       <a class="mdl-navigation__link" id = "measurements_link">Измерения</a>
       <a class="mdl-navigation__link" id = "speed_link">Скорости</a>
-      <a class="mdl-navigation__link" id = "history_link">История</a>
+      <a class="mdl-navigation__link" id = "history_lin">История</a>
     </nav>
   </div>
-  <main class="mdl-layout__content">
-    <div class="page-content"><!-- Your content goes here -->
+ 
+    <!-- Your content goes here -->
 
 
 
-
+    <div id = "page_content">
 		<div class="container" id="short_bin_info">
 			<div class="row try_make_juice">
 				<div class="row short_bin_info">
@@ -438,7 +519,7 @@
 			</div>
 		</div>
 
-		<div id="history_module">
+		<div id="history_modul">
 			<div class="container">
 				<div class="row">
 					<h1>История контейнера</h1>
@@ -488,9 +569,9 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
-  </main>
+
+
 </div>
 
 
