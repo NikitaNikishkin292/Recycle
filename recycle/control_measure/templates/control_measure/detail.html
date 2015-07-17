@@ -85,6 +85,8 @@
 			$('#date_of_volume').attr("placeholder", "");
 	});
 
+    	$('input[type="submit"]').css('background':'black');	
+
 
     	function addChart (chartLabels, chartData) {
 			var lineChartData = {
@@ -159,6 +161,8 @@
 			width: 100%;
 		}
 
+		
+
 		.add_button_percent>span, .unload_button_percent>span {
 			font-size: 250%;
 			color: rgb(53, 59, 90);
@@ -180,7 +184,37 @@
 			font-size: 200%;
 		}
 
+		.juicy_button {
+			border: 2px solid #353a5a;
+			background: #353a5a;
+			-webkit-border-radius: 0px;
+			-moz-border-radius: 0px;
+			border-radius: 0px;
+			color: #ffffff;
+			padding:3%;
+			margin-bottom:20px;
+			width: 50%;
+			font-size: 200%;
+			vertical-align: middle;
+		}
 
+		.juicy_button:hover {
+			background: rgb(247, 231, 153);
+			color: #353a5a;
+
+		}
+
+		.field_to_add_mass {
+			height: 30px;
+			font-size: 100%;
+			padding: 0;
+			margin:0;
+			vertical-align: middle;
+		}
+
+		span.time_icon {
+			font-size: 100%;
+		}
 
     </style>
     <title>Наши контейнеры</title>
@@ -261,12 +295,13 @@
 										{% else %}
 											<form action = '{% url "control_measure:add_mass" a_bin.bin_id measurement.id %}' method = 'post'>
 												{% csrf_token %}
-												<div class="col-md-3">
-												<input type = "text" name = "measurement_mass" id = "measurement_mass" placeholder = "Масса пластика" />
+												<div class="col-md-3" style="text-align:center">
+												<input type = "text" class="field_to_add_mass" name = "measurement_mass_{{measurement.id}}" id = "measurement_mass_{{measurement.id}}" placeholder = "Масса пластика"  />
 												</div>
 												<div class="col-md-1">
-												<input type="submit" value = "+"/>
+												<input type="submit" value = "+" class="field_to_add_mass juicy_button"/>
 												</div>
+											</form>
 										{% endif %}
 									
 								</div>
@@ -310,13 +345,13 @@
 										<input type = "text" name="measurement_time_percent" placeholder = "Время" id = "time_of_measurement_percent"/>
 									</div>
 									<div class='row'>
-										<button type="button" id="current_date_percent">Сейчас</button>
+										<button type="button" id="current_date_percent" class="juicy_button">Сейчас</button>
 									</div>
 									<div class='row'>
 										<input type = "text" name = "measurement_percent_inside" placeholder = "Процент наполненности" />
 									</div>
 									<div class='row'>
-										<input type = 'submit' value = "Добавить"/>
+										<input type = 'submit' value = "Добавить"  class="juicy_button"/>
 									</div>
 								</form>
 							</div>
@@ -337,7 +372,7 @@
 										<input type="text" name = "unload_time_percent" placeholder = "Время" id = "time_of_upload_percent" />
 									</div>
 									<div class='row'>
-										<button type = 'button' id = "button_unload_current_percent"> Сейчас </button>
+										<button type = 'button' class="juicy_button" id = "button_unload_current_percent"> Сейчас </button>
 									</div>
 									<div class="row">
 										<input type="text" name="unload_percent_before" placeholder="Процентов было" />
@@ -349,7 +384,7 @@
 										<input type="text" name="unload_bag_id" placeholder="Номер мешка"/>
 									</div>
 									<div class='row'>
-										<input type = 'submit' value = 'Выгрузить'/>
+										<input type = 'submit' value = 'Выгрузить'  class="juicy_button"/>
 									</div>
 								</form>
 							</div>

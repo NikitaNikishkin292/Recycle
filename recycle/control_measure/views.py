@@ -143,8 +143,9 @@ def add_volume(request, bin_ident):
 def add_mass(request, bin_ident, meas_id):
 	a_measurement = get_object_or_404(Measurement, id = meas_id)
 	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
+	need_index = "measurement_mass_" + str(meas_id)
 	try:
-		a_mass = int(request.POST['measurement_mass'])
+		a_mass = int(request.POST[need_index])
 	except (KeyError, Measurement.DoesNotExist):
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
 	else:
