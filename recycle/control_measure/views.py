@@ -39,8 +39,21 @@ def add_bin(request):
 
 def detail(request, bin_ident):
 	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
+	measure_set = a_bin.measurement_set.all().order_by('measurement_date')
+	if measure_set.count() > 1:
+		mes_first = measure_set[0]
+		for mes in measure_set[1:]:
+			if mes.measurement_volume > mes_first.measurement_volume:
+				pace_of_date = a_bin.bin_generate_volume_pace_of_date(mes.measurement_date)
+				if pace_of_date:
+					time_delta_usual = mes.measurement_date - mes_first.measurement_date
+					time_delta_in_hours = time_delta_usual.days * 24 + time_delta_usual.seconds / 3600
+					fill_of_date = mes_first.measurement_volume + pace_of_date * time_delta_in_hours
+					mes.measurement_error = ((fill_of_date - mes.measurement_volume) / mes.measurement_bin.bin_get_volume()) * 100
+					mes.save()
+			mes_first = mes
 	#return HttpResponse("You're looking at question %s." % a_bin.bin_adress)
-	return render(request, 'control_measure/detail.html', { 'a_bin': a_bin  })
+	return render(request, 'control_measure/detail.html', { 'a_bin': a_bin })
 
 
 def data_for_chart(request, bin_ident):

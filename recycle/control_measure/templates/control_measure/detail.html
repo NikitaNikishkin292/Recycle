@@ -23,16 +23,20 @@
 
 
 
-    	var menuList = ["#bin_module", "#measurements_module", "#speed_module", "history_modul"];
+    	var menuList = ["#bin_module", "#measurements_module", "#speed_module", "#history_modul"];
     	var bufferList = [$("#bin_module").detach(), $('#measurements_module'), $('#speed_module').detach(), $('#history_modul').detach()];
 
     	function setActiveDivId (id_string) {
+    		console.log(id_string);
     		if (!($('div').is(id_string))) {
     			var this_index = 0;
     			for (var j = 0; j < menuList.length; j++) {
-    				if (id_string == menuList[j])
+    				if (id_string == menuList[j]) {
+    					console.log(j, menuList[j]);
     					this_index = j;
+    				}
     			}
+    			console.log(this_index);
 	    		for (var i = 0; i < menuList.length; ++i) {
 	    			if ($('div').is(menuList[i])) {
 	    				bufferList[i] = $(menuList[i]).detach();
@@ -46,6 +50,7 @@
     	$('#bin_link').click(function(e){
 	    		//measurements_module_buffer = $('div#measurements_module').detach();
 	    		//bin_module_buffer.appendTo('#short_bin_info');
+    			console.log("click bin link");
 	    		setActiveDivId("#bin_module");	    	
     	});
 
@@ -58,6 +63,7 @@
     	$('#history_lin').click(function(e){
     		//bin_module_buffer = $('div#bin_module').detach();
     		//measurements_module_buffer.appendTo('#short_bin_info');
+    		console.log("click history link");
     		setActiveDivId("#history_modul");	
     	});
     	
@@ -70,7 +76,12 @@
     		setActiveDivId("#speed_module");
     		$.getJSON('{% url "control_measure:data_for_chart" a_bin.bin_id %}', function(data){
     			for (var i in data) {
-    				chartLabels.push(data[i].month + "/" + data[i].day);
+    				var cool_date = data[i].day + "/";
+    				if (data[i].month < 10) {
+    					cool_date += "0";
+    				}
+    				cool_date += data[i].month;
+    				chartLabels.push(cool_date);
     				chartData.push(parseInt(data[i].pace));
     			}
     			console.log(chartData);
@@ -97,13 +108,25 @@
 		});
 
 		$('.unload_button_percent').click(function(event){
-			$('#new_unload_info_percent').removeClass('hidden_menu');
-			$('#new_unload_info_percent').addClass('visible_menu');
+			if ($('#new_unload_info_percent').hasClass('hidden_menu')) {
+				$('#new_unload_info_percent').removeClass('hidden_menu');
+				$('#new_unload_info_percent').addClass('visible_menu');
+			}
+			else {
+				$('#new_unload_info_percent').removeClass('visible_menu');
+				$('#new_unload_info_percent').addClass('hidden_menu');
+			}
 		});
 
 		$('.add_event').click(function(event){
-			$('#new_event_info').removeClass('hidden_menu');
-			$('#new_event_info').addClass('visible_menu');
+			if ($('#new_event_info').hasClass('hidden_menu')) {
+				$('#new_event_info').removeClass('hidden_menu');
+				$('#new_event_info').addClass('visible_menu');
+			}
+			else {
+				$('#new_event_info').removeClass('visible_menu');
+				$('#new_event_info').addClass('hidden_menu');
+			}
 		});
 
 
@@ -112,6 +135,10 @@
 			var day = now.getDate();
 			var mon = now.getMonth() + 1;
 			var year = now.getFullYear();
+			if (day < 10)
+				day = "0" + day;
+			if (mon < 10)
+				mon = "0" + mon;
 			var current_date = year + "-" + mon + "-" + day;
 			//alert(current_date);
 			$('#date_of_volume').attr("value", current_date);
@@ -125,6 +152,14 @@
 		var year = now.getFullYear();
 		var hours = now.getHours()
 		var minutes = now.getMinutes();
+		if (day < 10)
+				day = "0" + day;
+		if (mon < 10)
+			mon = "0" + mon;
+		if (hours < 10)
+			hours = "0" + hours;
+		if (minutes < 10)
+			minutes = "0" + minutes;
 		var current_time = hours + ":" + minutes;
 		var current_date = year + "-" + mon + "-" + day;
 		//alert(current_date);
@@ -152,6 +187,7 @@
 	});
 
 	$('#button_event_current').click(function(event){
+			console.log("now click");
 			var now = new Date();
 			var day = now.getDate();
 			var mon = now.getMonth() + 1;
@@ -389,9 +425,9 @@
 							{% endif %}
 							<div class="row">	
 								<div class="col-xs-4"> {{ measurement.measurement_date }} </div>
-								<div class="col-xs-4"> {{ measurement.measurement_get_percentage }}% </div>
+								<div class="col-xs-4"> {{ measurement.measurement_volume }}л/{{ measurement.measurement_get_percentage }}% </div>
 								{% if measurement.measurement_error %}
-									<div class="col-xs-4"> <span class = "measure_error"></span>% </div>
+									<div class="col-xs-4"> <span class = "measure_error"></span> {{measurement.measurement_error}}% </div>
 								{% else %}
 									<div class="col-xs-4"> - </div>
 								{% endif %}
@@ -402,7 +438,7 @@
 					<div class="row">
 						<div class="col-md-3"></div>
 						<div class="col-md-6 col-xs-12">
-							<h2>No avaliable measurements</h2>
+							<h2>Пока нет измерений</h2>
 						</div>
 					</div>
 					
@@ -545,10 +581,10 @@
 				<div class="row">
 					<div class="col-md-4"></div>
 					<div class="col-md-4 col-xs-12">
-						<div class="row add_event">
+						<!--<div class="row add_event" id = "add_event">
 							<span> Добавить событие </span>
-						</div>
-						<div class="row hidden_menu" id = "new_event_info">
+						</div> -->
+						<div class="row " id = "new_event_info">
 							<form action = '{% url "control_measure:add_event" a_bin.bin_id %}' method = "post" >
 								{% csrf_token %}
 								<div class="row">

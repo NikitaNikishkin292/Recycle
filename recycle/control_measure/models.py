@@ -59,6 +59,29 @@ class Bin(models.Model):
 		else:
 			return 0
 
+	def bin_generate_volume_pace_of_date(self, our_date):
+		measure_set = self.measurement_set.all().order_by('measurement_date')
+		if measure_set.count() > 1:
+			summ = 0.
+			last_meas = 0
+			mes_first = measure_set.first()
+			for mes_second in measure_set[1:]:
+				if mes_second.measurement_date == our_date:
+					last_meas = mes_first
+					break
+				if mes_second.measurement_volume - mes_first.measurement_volume > 0:
+					summ += float(mes_second.measurement_volume - mes_first.measurement_volume)
+				mes_first = mes_second
+			time_summ = last_meas.measurement_date - measure_set.first().measurement_date
+			time_summ = time_summ.days * 24 + time_summ.seconds / 3600
+			if time_summ:
+				result = summ / time_summ
+				return result
+			else:
+				return 0
+		else:
+			return 0
+
 
 	#Средний темп заполняемости в %/час за всё время для вывода
 	def bin_get_average_pace_per_hour_output(self):
@@ -106,7 +129,7 @@ class Bin(models.Model):
 			delta = pytz.utc.localize(dt) - measure_set.last().measurement_date
 			if delta > timedelta(0):
 				delta = delta.days * 24 + delta.seconds / 3600
-				volume_inside =  self.bin_generate_volume_pace() * delta + measure_set.last().measurement_volume
+				volume_inside =  self.bin_generate_volume_pace_of_date(dt) * delta + measure_set.last().measurement_volume
 				return volume_inside
 
 	def bin_get_events(self):
@@ -120,7 +143,7 @@ class Measurement(models.Model):
 	measurement_bin = models.ForeignKey(Bin, verbose_name = "Контейнер")
 	measurement_date = models.DateTimeField(verbose_name = "Дата замера")
 	measurement_volume = models.IntegerField(verbose_name = "Объём в литрах", blank = 'True', null = 'True')
-	#measurement_error = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = "Ошибка", blank = 'True', null = 'True')
+	measurement_error = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = "Ошибка", blank = 'True', null = 'True')
 	#заполненность контейнера в процентах
 	measurement_percentage = models.DecimalField(max_digits = 4, decimal_places = 1, default = 50, verbose_name = "Процент")
 	measurement_mass = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = 'Масса PET', blank = 'True', null = 'True')

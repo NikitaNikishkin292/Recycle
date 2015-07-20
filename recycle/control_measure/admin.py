@@ -26,7 +26,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 		('Important Information', {'fields': ['measurement_bin', 'measurement_date', 'measurement_volume', 'measurement_mass', 'measurement_bag']}),
 		('Left Information', {'fields': ['measurement_percentage']}),
 	]
-	list_display = ['id', 'measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume', 'measurement_mass']
+	list_display = ['id', 'measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume', 'measurement_mass', 'measurement_error']
 	ordering = ('-measurement_date',)
 	list_filter = ['measurement_bin']
 
