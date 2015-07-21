@@ -139,14 +139,20 @@ class Bin(models.Model):
 
 	def bin_get_ordered_bins_list(self):
 		dict_for_sort = []
+		early_stage_bins = []
 		for a_bin in Bin.objects.all():
-			dict_for_sort.append([a_bin.bin_get_upload_date(), a_bin])
+			if a_bin.bin_get_upload_date():
+				dict_for_sort.append([a_bin.bin_get_upload_date(), a_bin])
+			else:
+				early_stage_bins.append(a_bin)
 		def getDate(item):
 			return item[0]
 		dict_for_sort.sort(key = getDate)
 		result = []
 		for pair in dict_for_sort:
 			result.append(pair[1])
+		for bins in early_stage_bins:
+			result.append(bins)
 		return result
 
 
