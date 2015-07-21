@@ -15,7 +15,7 @@
     <script type="text/javascript">
     $(document).ready(function() {
 
-
+    	
 
 
 
@@ -199,6 +199,19 @@
 	});
 
 
+
+	/*Нужно для тестиорования разных прогнозных моделей*/
+
+	/*$('#count_error').click(function(event) {
+		$.ajax({
+			url: '{% url "control_measure:count_error" a_bin.bin_id %}',
+			success: function(){
+				console.log('successfully ajaxed');
+			}
+		});
+	});*/
+
+
     	function addChart (chartLabels, chartData) {
 			var lineChartData = {
 				labels : chartLabels,
@@ -333,6 +346,10 @@
 			padding: 1%;
 		}
 
+		/*div#count_error {
+			cursor: pointer;
+		}*/
+
     </style>
     <title>Наши контейнеры</title>
 </head>
@@ -396,7 +413,7 @@
 					<div class="row measurements_table_header">
 						<div class="col-xs-4"> Дата </div>
 						<div class="col-xs-4"> Уровень заполненности </div>
-						<div class="col-xs-4"> Прогноз - Факт </div>
+						<div class="col-xs-4"> <div id = "count_error"> Прогноз - Факт </div> </div>
 					</div>
 					{%	for measurement in a_bin.bin_get_last_five_measurements %}
 						<div class="row measurements_rows">	

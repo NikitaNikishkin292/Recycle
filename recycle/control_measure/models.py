@@ -135,8 +135,19 @@ class Bin(models.Model):
 	def bin_get_events(self):
 		return self.event_set.all().order_by('-event_date')
 
+	
 
-
+	def bin_get_ordered_bins_list(self):
+		dict_for_sort = []
+		for a_bin in Bin.objects.all():
+			dict_for_sort.append([a_bin.bin_get_upload_date(), a_bin])
+		def getDate(item):
+			return item[0]
+		dict_for_sort.sort(key = getDate)
+		result = []
+		for pair in dict_for_sort:
+			result.append(pair[1])
+		return result
 
 
 class Measurement(models.Model):

@@ -24,7 +24,7 @@ class TypeAdmin(admin.ModelAdmin):
 class MeasurementAdmin(admin.ModelAdmin):
 	fieldsets = [
 		('Important Information', {'fields': ['measurement_bin', 'measurement_date', 'measurement_volume', 'measurement_mass', 'measurement_bag']}),
-		('Left Information', {'fields': ['measurement_percentage']}),
+		('Left Information', {'fields': ['measurement_percentage', 'measurement_error']}),
 	]
 	list_display = ['id', 'measurement_date', 'measurement_bin', 'measurement_percentage', 'measurement_volume', 'measurement_mass', 'measurement_error']
 	ordering = ('-measurement_date',)
