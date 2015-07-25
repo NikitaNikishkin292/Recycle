@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
 	url(r'^$', views.dashboard, name = 'dashboard'),
 	url(r'^warehouse/$', views.warehouse, name = 'warehouse'),
+	url(r'^warehouse/(?P<bag_ident>[0-9]+)/(?P<bag_stat>[0-9]+)$', views.change_bag_status, name = "change_bag_status"),
 	#url(r'^$', views.index, name = 'index'),
 	url(r'^(?P<bin_ident>[0-9]+)/$', views.detail, name = 'detail'),
 	url(r'^add/$', views.add_bin, name = 'add_bin'),

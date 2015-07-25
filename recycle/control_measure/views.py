@@ -31,6 +31,17 @@ def warehouse(request):
 	context = { 'inside_bin_bags': inside_bin_bags, 'full_bags':full_bags, 'empty_bags': empty_bags }
 	return render(request, 'control_measure/warehouse.html', context)
 
+def change_bag_status(request, bag_ident, bag_stat):
+	a_bag = get_object_or_404(Bag, bag_id = bag_ident)
+	a_bag.bag_status = bag_stat
+	a_bag.save()
+	inside_bin_bags = Bag.objects.filter(bag_status=1)
+	full_bags = Bag.objects.filter(bag_status=2)
+	empty_bags = Bag.objects.filter(bag_status=3)
+	context = { 'inside_bin_bags': inside_bin_bags, 'full_bags':full_bags, 'empty_bags': empty_bags }
+	return render(request, 'control_measure/warehouse.html', context)
+
+
 def add_bin(request):
 	all_number = Bin.objects.count() + 1
 	try:

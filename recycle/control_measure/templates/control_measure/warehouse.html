@@ -8,12 +8,27 @@
     <script src="http://yastatic.net/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css" />
     <link rel = 'stylesheet' type = 'text/css' href = '{% static "style.css" %}' /> 
-    <script src= '{% static "script.js" %}'></script>	
+    <script src= '{% static "script.js" %}'></script>   
+    <script src= '{% static "tooltip.js" %}'></script>	
+    <script src= '{% static "popover.js" %}'></script>  
+    <script src= '{% static "dropdown.js" %}'></script>  
     <script src= '{% static "Chart.js" %}'></script>
     <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.indigo-pink.min.css">
 	<script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">	
     <script type="text/javascript">
+        $(document).ready(function() {
+            var a_bag_id = 4;
+            $('.a_bag').hover(function(){
+                $(this).css('background-color','#D5DBED ');
+                $(this).css('color','white');
+            } ,function() {
+                $(this).css('background-color','white');
+                $(this).css('color','black');
+            });
+             $('[data-toggle="popover"]').popover(); 
+             
+        });
     </script>
     <style type="text/css">
         header.mdl-layout__header {
@@ -24,8 +39,26 @@
             text-align: center;
         }
         #bags_title {
-            margin: 2% 0;
+            margin-top: 2%;
         }
+
+        div.col-xs-2 {
+            margin-top: 3%;
+            height: 40px;
+            padding-top: 3%;
+        }
+        .a_bag {
+            cursor: pointer;
+        }
+        a {
+            color: black;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        
     </style>
 </head>
 <body>
@@ -54,9 +87,19 @@
                   <div class="container-fluid">
                         {% if inside_bin_bags %}
                             {% for bag in inside_bin_bags %}
-                                    <div class="col-xs-2">
-                                        {{ bag.bag_id }}
-                                    </div>
+                                      <div class="dropdown col-xs-2 a_bag">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
+                                        <ul id="menu{{bag.bag_id}}" class="dropdown-menu">
+                                          <li class="dropdown-header"> Изменить статус мешка</li>
+                                          <li class="from_bin_to_warehouse_full"><a href="/control_measure/warehouse/{{bag.bag_id}}/2">На складе полный</a></li>
+                                          <li><a href="/control_measure/warehouse/{{bag.bag_id}}/3">На складе пустой</a></li>
+                                          <li class="divider"></li>
+                                          <li><a href="#">Ссылка</a></li>
+                                          <li><a href="#">Отделенная ссылка</a></li>
+                                        </ul>
+                                        </a>
+                                      </div>
+                                    
                             {% endfor %}
                         {% else %}
                             <div class="col-xs-1"></div>
@@ -69,9 +112,19 @@
                         {% if empty_bags %}
                         
                             {% for bag in empty_bags %}
-                                    <div class="col-xs-2">
-                                        {{ bag.bag_id }}
-                                    </div>
+
+                                    <div class="dropdown col-xs-2 a_bag">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
+                                        <ul id="menu{{bag.bag_id}}" class="dropdown-menu">
+                                          <li class="dropdown-header"> Изменить статус мешка</li>
+                                          <li class="from_bin_to_warehouse_full"><a href="/control_measure/warehouse/{{bag.bag_id}}/2">На складе полный</a></li>
+                                          <li><a href="/control_measure/warehouse/{{bag.bag_id}}/1">В контейнере</a></li>
+                                          <li class="divider"></li>
+                                          <li><a href="#">Ссылка</a></li>
+                                          <li><a href="#">Отделенная ссылка</a></li>
+                                        </ul>
+                                        </a>
+                                      </div>
                             {% endfor %}
                         {% else %}
                             <div class="col-xs-1"></div>
@@ -83,9 +136,18 @@
                   <div class="container-fluid">
                         {% if full_bags %}
                             {% for bag in full_bags %}
-                                    <div class="col-xs-2">
-                                        {{ bag.bag_id }}
-                                    </div>
+                                     <div class="dropdown col-xs-2 a_bag">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
+                                        <ul id="menu{{bag.bag_id}}" class="dropdown-menu">
+                                          <li class="dropdown-header"> Изменить статус мешка</li>
+                                          <li class="from_bin_to_warehouse_full"><a href="/control_measure/warehouse/{{bag.bag_id}}/3">На складе пустой</a></li>
+                                          <li><a href="/control_measure/warehouse/{{bag.bag_id}}/1">В контейнере</a></li>
+                                          <li class="divider"></li>
+                                          <li><a href="#">Ссылка</a></li>
+                                          <li><a href="#">Отделенная ссылка</a></li>
+                                        </ul>
+                                        </a>
+                                      </div>
                             {% endfor %}
                         {% else %}
                             <div class="col-xs-1"></div>
