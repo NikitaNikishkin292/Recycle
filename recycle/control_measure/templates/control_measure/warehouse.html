@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load staticfiles %}
+    <title>Склад</title>
+	<meta http-equiv='Content-Type' content = 'text/html; charset=utf-8' />
+	<script src="http://yastatic.net/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+    <script src="http://yastatic.net/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <link rel = 'stylesheet' type = 'text/css' href = '{% static "style.css" %}' /> 
+    <script src= '{% static "script.js" %}'></script>	
+    <script src= '{% static "Chart.js" %}'></script>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.indigo-pink.min.css">
+	<script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">	
+    <script type="text/javascript">
+    </script>
+    <style type="text/css">
+        header.mdl-layout__header {
+                background-color: rgb(53, 59, 90);
+                font: black;
+            }
+        div {
+            text-align: center;
+        }
+        #bags_title {
+            margin: 2% 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title"> <a href="/control_measure" style = "color: white; text-decoration: none;"> Znaik 1.4 </a> </span>
+          <!-- Add spacer, to align navigation to the right -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation. We hide it in small screens. -->
+          <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <a class="mdl-navigation__link" href="/control_measure">Контейнеры</a>
+            <a class="mdl-navigation__link" href="/control_measure/warehouse">Склад</a>
+          </nav>
+        </div>
+      </header>
+      <div class="container">
+          <div class="row" id="bags_title">
+              <div class="col-md-4"> В контейнере</div>
+              <div class="col-md-4"> Пустой на складе</div>
+              <div class="col-md-4"> Полный на складе</div>
+          </div>
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="container-fluid">
+                        {% if inside_bin_bags %}
+                            {% for bag in inside_bin_bags %}
+                                    <div class="col-xs-2">
+                                        {{ bag.bag_id }}
+                                    </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-10">Нет мешков в контейнерах</div>
+                        {% endif %}
+                  </div>
+                  </div>
+              <div class="col-md-4">
+                  <div class="container-fluid">
+                        {% if empty_bags %}
+                        
+                            {% for bag in empty_bags %}
+                                    <div class="col-xs-2">
+                                        {{ bag.bag_id }}
+                                    </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-10">Нет пустых мешков на складе</div>
+                        {% endif %}
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="container-fluid">
+                        {% if full_bags %}
+                            {% for bag in full_bags %}
+                                    <div class="col-xs-2">
+                                        {{ bag.bag_id }}
+                                    </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-xs-1"></div>
+                            <div class="col-xs-10">Нет полных мешков на складе</div>
+                        {% endif %}
+              </div>
+          </div>
+        </div>
+    </div>
+</body>
+</html>

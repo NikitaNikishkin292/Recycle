@@ -24,6 +24,13 @@ def dashboard(request):
 	#from django.conf import settings
 	return render(request, 'control_measure/dashboard.html', context)
 
+def warehouse(request):
+	inside_bin_bags = Bag.objects.filter(bag_status=1)
+	full_bags = Bag.objects.filter(bag_status=2)
+	empty_bags = Bag.objects.filter(bag_status=3)
+	context = { 'inside_bin_bags': inside_bin_bags, 'inside_rows':inside_bin_bags.count()/6 + 1, full_bags':full_bags, 'empty_bags': empty_bags}
+	return render(request, 'control_measure/warehouse.html', context)
+
 def add_bin(request):
 	all_number = Bin.objects.count() + 1
 	try:
