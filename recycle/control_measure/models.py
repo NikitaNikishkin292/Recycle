@@ -191,6 +191,10 @@ class Bag(models.Model):
 			(3, "На складе пустой"),
 		)
 	bag_status = models.IntegerField(verbose_name = 'Статус мешка', choices = BAG_STATUS, default = 2)
+	bag_in_bin = models.OneToOneField(Bin, verbose_name = "В контейнере", null = 'True', blank = 'True')
+
+	def bag_get_types(self):
+		return self.bag_type.all()
 
 	def __str__ (self):
 		return str(self.bag_id)

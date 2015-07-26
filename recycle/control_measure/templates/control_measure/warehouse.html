@@ -19,15 +19,76 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var a_bag_id = 4;
-            $('.a_bag').hover(function(){
+            $('.a_bag.col-xs-3').hover(function(){
                 $(this).css('background-color','#D5DBED ');
                 $(this).css('color','white');
             } ,function() {
                 $(this).css('background-color','white');
-                $(this).css('color','black');
+                $(this).css('color','#333');
             });
              $('[data-toggle="popover"]').popover(); 
-             
+
+            function change_status_of_bag(bag_id, stat) {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'control_measure:change_bag_status' %}",
+                    data: {'bag_ident': bag_id, 'bag_status': stat },
+                    success: function() {
+                        console.log('ok');
+                    },
+                    error: function() {
+                        console.log('fail');
+                    }
+                });
+                window.location.reload();
+            }; 
+
+            //Обработка смены статусов мешков
+
+             $('.from_bin_to_warehouse_full').click(function(){
+                console.log('click');
+                var a_bag_id = $(this).parent().attr('id').substring(5);
+                console.log(a_bag_id);
+                change_status_of_bag(a_bag_id, 2);
+             });
+
+             $('.from_bin_to_warehouse_empty').click(function(){
+                console.log('click');
+                var a_bag_id = $(this).parent().attr('id').substring(5);
+                console.log(a_bag_id);
+                change_status_of_bag(a_bag_id, 3);
+             });
+
+            $('.from_warehouse_empty_to_warehouse_full').click(function(){
+                console.log('click');
+                var a_bag_id = $(this).parent().attr('id').substring(5);
+                console.log(a_bag_id);
+                change_status_of_bag(a_bag_id, 2);
+             });
+
+            $('.from_warehouse_empty_to_bin').click(function(){
+                console.log('click');
+                var a_bag_id = $(this).parent().attr('id').substring(5);
+                console.log(a_bag_id);
+                change_status_of_bag(a_bag_id, 1);
+             });
+
+
+            $('.from_warehouse_full_to_warehouse_empty').click(function(){
+                console.log('click');
+                var a_bag_id = $(this).parent().attr('id').substring(5);
+                console.log(a_bag_id);
+                change_status_of_bag(a_bag_id, 3);
+             });
+
+            $('.from_warehouse_full_to_bin').click(function(){
+                console.log('click');
+                var a_bag_id = $(this).parent().attr('id').substring(5);
+                console.log(a_bag_id);
+                change_status_of_bag(a_bag_id, 1);
+             });
+            
+                  
         });
     </script>
     <style type="text/css">
@@ -39,22 +100,29 @@
             text-align: center;
         }
         #bags_title {
-            margin-top: 2%;
+            margin-top: 3.5%;
+            font-size: 200%;
         }
 
-        div.col-xs-2 {
-            margin-top: 3%;
-            height: 40px;
-            padding-top: 3%;
+        div.col-xs-3 {
+            
         }
         .a_bag {
+            margin-top: 10%;
+            height: 40px;
+            padding-top: 3%;
+            font-size: 200%;
+        }
+
+        .a_bag.col-xs-3 {
             cursor: pointer;
         }
+
         a {
             color: black;
         }
 
-        a:hover {
+        a:hover, a:active {
             text-decoration: none;
         }
 
@@ -87,15 +155,22 @@
                   <div class="container-fluid">
                         {% if inside_bin_bags %}
                             {% for bag in inside_bin_bags %}
-                                      <div class="dropdown col-xs-2 a_bag">
+                                      <div class="dropdown col-xs-3 a_bag">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
-                                        <ul id="menu{{bag.bag_id}}" class="dropdown-menu">
+                                        <ul id="menu1{{bag.bag_id}}" class="dropdown-menu">
                                           <li class="dropdown-header"> Изменить статус мешка</li>
-                                          <li class="from_bin_to_warehouse_full"><a href="/control_measure/warehouse/{{bag.bag_id}}/2">На складе полный</a></li>
-                                          <li><a href="/control_measure/warehouse/{{bag.bag_id}}/3">На складе пустой</a></li>
+                                          <li class="from_bin_to_warehouse_full"><a href="#">На складе полный</a></li>
+                                          <li class="from_bin_to_warehouse_empty"><a href="#">На складе пустой</a></li>
                                           <li class="divider"></li>
-                                          <li><a href="#">Ссылка</a></li>
-                                          <li><a href="#">Отделенная ссылка</a></li>
+                                          <li class="dropdown-header"> Подходит для </li>
+                                          {% for type in bag.bag_get_types %}
+                                            <li class="disabled"><a href="#">{{type.type_name}}</a></li>
+                                          {% endfor %}
+                                          <li class="divider"></li>
+                                          <li class="dropdown-header"> В контейнере </li>
+                                          {% if bag.bag_in_bin %}
+                                            <li class="disabled"><a href="#">{{ bag.bag_in_bin.bin_adress }}</a></li>
+                                          {% endif %}
                                         </ul>
                                         </a>
                                       </div>
@@ -103,7 +178,7 @@
                             {% endfor %}
                         {% else %}
                             <div class="col-xs-1"></div>
-                            <div class="col-xs-10">Нет мешков в контейнерах</div>
+                            <div class="col-xs-10 a_bag">Нет мешков в контейнерах</div>
                         {% endif %}
                   </div>
                   </div>
@@ -113,22 +188,24 @@
                         
                             {% for bag in empty_bags %}
 
-                                    <div class="dropdown col-xs-2 a_bag">
+                                    <div class="dropdown col-xs-3 a_bag">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
-                                        <ul id="menu{{bag.bag_id}}" class="dropdown-menu">
+                                        <ul id="menu2{{bag.bag_id}}" class="dropdown-menu">
                                           <li class="dropdown-header"> Изменить статус мешка</li>
-                                          <li class="from_bin_to_warehouse_full"><a href="/control_measure/warehouse/{{bag.bag_id}}/2">На складе полный</a></li>
-                                          <li><a href="/control_measure/warehouse/{{bag.bag_id}}/1">В контейнере</a></li>
+                                          <li class="from_warehouse_empty_to_warehouse_full"><a href="#">На складе полный</a></li>
+                                          <li class="from_warehouse_empty_to_bin"><a href="#">В контейнере</a></li>
                                           <li class="divider"></li>
-                                          <li><a href="#">Ссылка</a></li>
-                                          <li><a href="#">Отделенная ссылка</a></li>
+                                          <li class="dropdown-header"> Подходит для </li>
+                                          {% for type in bag.bag_get_types %}
+                                            <li class="disabled"><a href="#">{{type.type_name}}</a></li>
+                                          {% endfor %}
                                         </ul>
                                         </a>
                                       </div>
                             {% endfor %}
                         {% else %}
                             <div class="col-xs-1"></div>
-                            <div class="col-xs-10">Нет пустых мешков на складе</div>
+                            <div class="col-xs-10 a_bag">Нет пустых мешков на складе</div>
                         {% endif %}
                   </div>
               </div>
@@ -136,22 +213,24 @@
                   <div class="container-fluid">
                         {% if full_bags %}
                             {% for bag in full_bags %}
-                                     <div class="dropdown col-xs-2 a_bag">
+                                     <div class="dropdown col-xs-3 a_bag">
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
-                                        <ul id="menu{{bag.bag_id}}" class="dropdown-menu">
+                                        <ul id="menu3{{bag.bag_id}}" class="dropdown-menu">
                                           <li class="dropdown-header"> Изменить статус мешка</li>
-                                          <li class="from_bin_to_warehouse_full"><a href="/control_measure/warehouse/{{bag.bag_id}}/3">На складе пустой</a></li>
-                                          <li><a href="/control_measure/warehouse/{{bag.bag_id}}/1">В контейнере</a></li>
+                                          <li class="from_warehouse_full_to_warehouse_empty"><a href="#">На складе пустой</a></li>
+                                          <li class="from_warehouse_full_to_bin"><a href="#">В контейнере</a></li>
                                           <li class="divider"></li>
-                                          <li><a href="#">Ссылка</a></li>
-                                          <li><a href="#">Отделенная ссылка</a></li>
+                                          <li class="dropdown-header"> Подходит для </li>
+                                          {% for type in bag.bag_get_types %}
+                                            <li class="disabled"><a href="#">{{type.type_name}}</a></li>
+                                          {% endfor %}
                                         </ul>
                                         </a>
                                       </div>
                             {% endfor %}
                         {% else %}
                             <div class="col-xs-1"></div>
-                            <div class="col-xs-10">Нет полных мешков на складе</div>
+                            <div class="col-xs-10 a_bag">Нет полных мешков на складе</div>
                         {% endif %}
               </div>
           </div>

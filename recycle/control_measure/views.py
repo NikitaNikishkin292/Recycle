@@ -31,7 +31,9 @@ def warehouse(request):
 	context = { 'inside_bin_bags': inside_bin_bags, 'full_bags':full_bags, 'empty_bags': empty_bags }
 	return render(request, 'control_measure/warehouse.html', context)
 
-def change_bag_status(request, bag_ident, bag_stat):
+def change_bag_status(request):
+	bag_ident = request.GET['bag_ident']
+	bag_stat = request.GET['bag_status']
 	a_bag = get_object_or_404(Bag, bag_id = bag_ident)
 	a_bag.bag_status = bag_stat
 	a_bag.save()
@@ -141,7 +143,8 @@ def unload_bin_percent(request, bin_ident):
 		unload_time = request.POST['unload_time_percent']
 		percent_before = int(request.POST['unload_percent_before'])
 		percent_after = int(request.POST['unload_percent_after'])
-		bag_id = int(request.POST['unload_bag_id'])
+		a_bag_id = int(request.POST['unload_bag_id'])
+		a_bag_id_new = int(request.POST['unload_bag_id_new'])
 	except (KeyError, Bin.DoesNotExist):
 		return render(request, 'control-measure/detail.html', {'a_bin': a_bin})
 	else:
@@ -152,10 +155,18 @@ def unload_bin_percent(request, bin_ident):
 		current_client_time = timezone(tz).fromutc(current_server_time)
 		our_date_for_comparison = pytz.utc.localize(the_date_of_begin_datetime) - timedelta(hours = 3)
 		if our_date_for_comparison <= current_client_time:
-			if bag_id <= Bag.objects.all().order_by('bag_id').last().bag_id:
+			if a_bag_id <= Bag.objects.all().order_by('bag_id').last().bag_id:
+				old_bag = Bag.objects.get(bag_id = a_bag_id)
+				new_bag = Bag.objects.get(bag_id = a_bag_id_new)
+				old_bag.bag_status = 2
+				old_bag.bag_in_bin = None
+				old_bag.save()
+				new_bag.bag_status = 1
+				new_bag.bag_in_bin = a_bin
+				new_bag.save()
 				volume_in_fact_before = (percent_before * a_bin.bin_type.type_get_volume()) / 100
 				the_date_of_finish = the_date_of_begin_datetime + timedelta(minutes = 5)
-				a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_percentage = percent_before, measurement_volume = volume_in_fact_before, measurement_bag = bag_id)
+				a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_percentage = percent_before, measurement_volume = volume_in_fact_before, measurement_bag = a_bag_id)
 				a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_percentage = percent_after, measurement_volume = (percent_after * a_bin.bin_type.type_get_volume()) / 100)
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
 
