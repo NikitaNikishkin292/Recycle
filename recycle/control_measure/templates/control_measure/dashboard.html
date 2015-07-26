@@ -44,6 +44,16 @@
     	.navbar a {
     		color: white;
     	}
+
+    	.main_digits {
+    		padding-top: 2%;
+    		text-align: center;
+    		font-size: 500%;
+    	}
+    	.main_digits_description {
+    		text-align: center;
+    		font-size: 200%;
+    	}
     </style>
     <title>Наши контейнеры</title>
 </head>
@@ -65,12 +75,17 @@
 </nav>
 
 <div id = 'city_info'>
-	<div class="row">
-		<div class="col-md-2"></div>
-		<div class="col-md-8 col-xs-12">
-			<h1> Welcome, garbage king </h1>
-			<h2>  </h2>
-		</div>
+	<div class="row main_digits">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-4"> {{pace}} </div>
+		<div class="col-xs-4"> {{volume}} </div>
+		<div class="col-xs-2"></div>
+	</div>
+	<div class="row main_digits_description">
+		<div class="col-xs-2"></div>
+		<div class="col-xs-4"> Темп в м3 пластика в сутки </div>
+		<div class="col-xs-4"> м3 сейчас в контейнерах</div>
+		<div class="col-xs-2"></div>
 	</div>
 </div>
 

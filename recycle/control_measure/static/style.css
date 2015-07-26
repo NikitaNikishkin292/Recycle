@@ -11,9 +11,11 @@ nav.navbar-default {
 
 
 #city_info {
-	height: 500px;
-	background-image: url('images/dolgopa.jpg');
+	height: 200px;
+	background-image: url('images/dolgopa2.jpg');
 	background-size: cover;
+	color: white;
+	font-style: bold;
 	margin: 0;
 	padding: 0;
 }
