@@ -86,7 +86,14 @@
                 change_status_of_bag(a_bag_id, 1);
              });
             
-                  
+              $('.logout').click(function(event) {
+                    console.log('fuck');
+                    $.ajax({
+                        type: 'GET',
+                        url: '{% url "control_measure:log_out" %}'
+                    });
+                });
+    
         });
     </script>
     <style type="text/css">
@@ -153,13 +160,15 @@
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
           <!-- Title -->
-          <span class="mdl-layout-title"> <a href="/control_measure" style = "color: white; text-decoration: none;"> Znaik 1.4 </a> </span>
+          <span class="mdl-layout-title"> <a href="/" style = "color: white; text-decoration: none;"> Znaik 1.4 </a> </span>
           <!-- Add spacer, to align navigation to the right -->
           <div class="mdl-layout-spacer"></div>
           <!-- Navigation. We hide it in small screens. -->
           <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <a class="mdl-navigation__link" href="/control_measure">Контейнеры</a>
-            <a class="mdl-navigation__link" href="/control_measure/warehouse">Склад</a>
+            <a class="mdl-navigation__link" href="/">Город</a>
+            <a class="mdl-navigation__link" href="/">Офис</a>
+            <a class="mdl-navigation__link" href="/warehouse">Склад</a>
+            <a class="mdl-navigation__link logout" href="">Выйти</a>
           </nav>
         </div>
       </header>

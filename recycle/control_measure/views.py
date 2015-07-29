@@ -2,18 +2,71 @@ from django.template import RequestContext, loader
 from django.shortcuts import render, get_object_or_404
 from .models import Bin, Measurement, Type, Bag
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from pytz import timezone
 import pytz
 from datetime import datetime, timedelta
+from django.contrib.auth.models import User
 import json
 #import date
 tz = 'Europe/Moscow'
 
-def index(request):
-    return render(request, 'control_measure/index.html', {})
+def inside(request):
+	#from django.contrib.auth import authenticate, login
+	if request.user.is_authenticated():
+		bins_list = Bin.objects.all().order_by('bin_id')
+		context = {}
+		if bins_list:
+			city_pace = 0
+			recycle_now_in_bins = 0
+			for a_bin in bins_list:
+				city_pace += a_bin.bin_generate_volume_pace()
+				recycle_now_in_bins += a_bin.bin_get_current_fill_litres()
+			city_pace *= 0.024
+			recycle_now_in_bins /= 1000
+			city_pace = ("{0:.2f}".format(city_pace))
+			recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
+			context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
+		return render(request, 'control_measure/dashboard.html', context)
+	else:
+		try:
+			e_mail = request.POST['e_mail']
+			passw = request.POST['passw']
+		except (KeyError, User.DoesNotExist):
+			return render(request, 'control_measure/inside.html', {'err_msg': ''})
+		else:
+			user = authenticate(username = e_mail, password = passw)
+			if user is not None:
+				if user.is_active:
+					login(request, user)
+					bins_list = Bin.objects.all().order_by('bin_id')
+					context = {}
+					if bins_list:
+						city_pace = 0
+						recycle_now_in_bins = 0
+						for a_bin in bins_list:
+							city_pace += a_bin.bin_generate_volume_pace()
+							recycle_now_in_bins += a_bin.bin_get_current_fill_litres()
+						city_pace *= 0.024
+						recycle_now_in_bins /= 1000
+						city_pace = ("{0:.2f}".format(city_pace))
+						recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
+						context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
+					return render(request, 'control_measure/dashboard.html', context)
+				else:
+					err_msg = 'Account has been disabled'
+			else:
+				err_msg = 'Account and password are incorrect'
+			return render(request, 'control_measure/inside.html', {'err_msg': err_msg})
+
+
+
+def log_out(request):
+	logout(request)
+	return render(request, 'control_measure/inside.html', {'err_msg': ''})
+		
 
 
 def dashboard(request):
@@ -34,11 +87,14 @@ def dashboard(request):
 	return render(request, 'control_measure/dashboard.html', context)
 
 def warehouse(request):
-	inside_bin_bags = Bag.objects.filter(bag_status=1)
-	full_bags = Bag.objects.filter(bag_status=2)
-	empty_bags = Bag.objects.filter(bag_status=3)
-	context = { 'inside_bin_bags': inside_bin_bags, 'full_bags':full_bags, 'empty_bags': empty_bags }
-	return render(request, 'control_measure/warehouse.html', context)
+	if request.user.is_authenticated():
+		inside_bin_bags = Bag.objects.filter(bag_status=1)
+		full_bags = Bag.objects.filter(bag_status=2)
+		empty_bags = Bag.objects.filter(bag_status=3)
+		context = { 'inside_bin_bags': inside_bin_bags, 'full_bags':full_bags, 'empty_bags': empty_bags }
+		return render(request, 'control_measure/warehouse.html', context)
+	else:
+		return render(request, 'control_measure/inside.html', {'err_msg': ""})
 
 def change_bag_status(request):
 	bag_ident = request.GET['bag_ident']
@@ -69,21 +125,24 @@ def add_bin(request):
 		return render(request, 'control_measure/dashboard.html', context)
 
 def detail(request, bin_ident):
-	a_bin = get_object_or_404(Bin, bin_id = bin_ident)
-	measure_set = a_bin.measurement_set.all().order_by('measurement_date')
-	if measure_set.count() > 1:
-		mes_first = measure_set[0]
-		for mes in measure_set[1:]:
-			if mes.measurement_volume > mes_first.measurement_volume:
-				pace_of_date = a_bin.bin_generate_volume_pace_of_date(mes.measurement_date)
-				if pace_of_date:
-					time_delta_usual = mes.measurement_date - mes_first.measurement_date
-					time_delta_in_hours = time_delta_usual.days * 24 + time_delta_usual.seconds / 3600
-					fill_of_date = mes_first.measurement_volume + pace_of_date * time_delta_in_hours
-					mes.measurement_error = ((fill_of_date - mes.measurement_volume) / mes.measurement_bin.bin_get_volume()) * 100
-					mes.save()
-			mes_first = mes
-	return render(request, 'control_measure/detail.html', { 'a_bin': a_bin })
+	if request.user.is_authenticated():
+		a_bin = get_object_or_404(Bin, bin_id = bin_ident)
+		measure_set = a_bin.measurement_set.all().order_by('measurement_date')
+		if measure_set.count() > 1:
+			mes_first = measure_set[0]
+			for mes in measure_set[1:]:
+				if mes.measurement_volume > mes_first.measurement_volume:
+					pace_of_date = a_bin.bin_generate_volume_pace_of_date(mes.measurement_date)
+					if pace_of_date:
+						time_delta_usual = mes.measurement_date - mes_first.measurement_date
+						time_delta_in_hours = time_delta_usual.days * 24 + time_delta_usual.seconds / 3600
+						fill_of_date = mes_first.measurement_volume + pace_of_date * time_delta_in_hours
+						mes.measurement_error = ((fill_of_date - mes.measurement_volume) / mes.measurement_bin.bin_get_volume()) * 100
+						mes.save()
+				mes_first = mes
+		return render(request, 'control_measure/detail.html', { 'a_bin': a_bin })
+	else:
+		return render(request, 'control_measure/inside.html', {'err_msg': ""})
 
 
 def count_error(request, bin_ident):

@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-	url(r'^control_measure/', include('control_measure.urls', namespace = 'control_measure')),
+	url(r'^', include('control_measure.urls', namespace = 'control_measure')),
 	#(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    url(r'^', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

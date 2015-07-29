@@ -30,7 +30,7 @@
 	    	}
     	};
     	menu_list = ['#simple_bins_list', '#ordered_bins_list'];
-    	buffer_list = [$('#simple_bins_list'), $('#ordered_bins_list').detach()];
+    	buffer_list = [$('#simple_bins_list').detach(), $('#ordered_bins_list')];
     	$('#Chronology').click(function(event) {
     		setActiveElement(menu_list, buffer_list, '#simple_bins_list')
     	});
@@ -38,6 +38,15 @@
     	$('#Date').click(function(event) {
     		setActiveElement(menu_list, buffer_list, '#ordered_bins_list')
     	});
+
+    	$('.logout').click(function(event) {
+		console.log('fuck');
+        $.ajax({
+            type: 'GET',
+            url: '{% url "control_measure:log_out" %}'
+        });
+    });
+
     });
     </script>
     <style type="text/css">
@@ -62,13 +71,14 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand navbar-center" href="/control_measure">ZnaiK 1.4</a>
+      <a class="navbar-brand navbar-center" href="/">ZnaiK 1.4</a>
     </div>
     <div>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#">Город</a></li>
         <li><a href="#">Офис</a></li>
         <li><a href="warehouse">Склад</a></li>
+        <li><a href="" class="logout">Выйти</a></li>
       </ul>
     </div>
   </div>
@@ -111,7 +121,7 @@
 	    </div>
 	    <div id = "simple_bins_list">
 		    {% for bin in bins_list %}
-		    <a href="/control_measure/{{bin.bin_id}}/">
+		    <a href="/{{bin.bin_id}}/">
 			    <div class="row bin_info">
 			    	<div class="col-xs-1">{{ forloop.counter }}</div>
 			    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
