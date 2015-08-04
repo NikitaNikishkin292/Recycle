@@ -5,6 +5,7 @@ urlpatterns = [
 	url(r'^$', views.inside, name = 'inside'),
 	#url(r'^control_measure/$', views.dashboard, name = 'dashboard'),
 	url(r'^warehouse/$', views.warehouse, name = 'warehouse'),
+	url(r'^office/$', views.office, name = 'office'),
 	url(r'^warehouse/change_bag_status/$', views.change_bag_status, name = "change_bag_status"),
 	url(r'^logout/$', views.log_out, name = 'log_out'),
 	#url(r'^$', views.index, name = 'index'),

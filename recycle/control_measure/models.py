@@ -28,6 +28,11 @@ class Bin(models.Model):
 	#bin_volume = models.IntegerField(default = 200)
 	#тип контейнера
 	bin_type = models.ForeignKey(Type, null = 'True')
+	BIN_STATUS = (
+		(True, 'Включен в вывоз'),
+		(False, 'Не включен в вывоз'),
+	)
+	bin_status = models.BooleanField(choices = BIN_STATUS, verbose_name = 'Статус контейнера', default = False)
 	#средний темп заполняемости контейнера, выраженный в процентах от общего объёма в день
 	#bin_pace = models.DecimalField(max_digits = 4, decimal_places = 2)
 	def __str__(self):
@@ -155,12 +160,33 @@ class Bin(models.Model):
 			result.append(bins)
 		return result
 
+	def bin_get_ordered_bins_list_filtered(value):
+		dict_for_sort = []
+		early_stage_bins = []
+		for a_bin in Bin.objects.filter(bin_status = value):
+			if a_bin.bin_get_upload_date():
+				dict_for_sort.append([a_bin.bin_get_upload_date(), a_bin])
+			else:
+				early_stage_bins.append(a_bin)
+		def getDate(item):
+			return item[0]
+		dict_for_sort.sort(key = getDate)
+		result = []
+		for pair in dict_for_sort:
+			result.append(pair[1])
+		for bins in early_stage_bins:
+			result.append(bins)
+		return result
+
+	def bin_get_bins_not_included_into_unloadings():
+		return Bin.bin_get_ordered_bins_list_filtered(False)
+
 
 class Measurement(models.Model):
 	measurement_bin = models.ForeignKey(Bin, verbose_name = "Контейнер")
 	measurement_date = models.DateTimeField(verbose_name = "Дата замера")
 	measurement_volume = models.IntegerField(verbose_name = "Объём в литрах", blank = 'True', null = 'True')
-	measurement_error = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = "Ошибка", blank = 'True', null = 'True')
+	measurement_error = models.DecimalField(max_digits = 4, decimal_places = 1, verbose_name = "Ошибка", blank = 'True', null = 'True')
 	#заполненность контейнера в процентах
 	measurement_percentage = models.DecimalField(max_digits = 4, decimal_places = 1, default = 50, verbose_name = "Процент")
 	measurement_mass = models.DecimalField(max_digits = 3, decimal_places = 1, verbose_name = 'Масса PET', blank = 'True', null = 'True')
@@ -198,6 +224,18 @@ class Bag(models.Model):
 
 	def __str__ (self):
 		return str(self.bag_id)
+
+class Unload(models.Model):
+	unload_id = models.IntegerField(primary_key = True, verbose_name = 'id выгрузки')
+	unload_date = models.DateTimeField(verbose_name = 'Дата выгрузки')
+	unload_bins_list = models.ManyToManyField(Bin, verbose_name = 'Выгружаемые контейнеры')
+	UNLOAD_STATUS = (
+		(0, 'Осуществленный'),
+		(1, 'Запланированный'),
+	)
+	unload_status = models.IntegerField(verbose_name = 'Статус выгрузки', choices = UNLOAD_STATUS, default = 1)
+	unload_time_spent = models.IntegerField(verbose_name = 'Минут потрачено', blank = 'True', null = 'True')
+	unload_money_spent = models.IntegerField(verbose_name = 'израсходовано денег', blank = 'True', null = 'True')
 
 #Выполняя makemigrations, вы говорите Django, что внесли 
 #некоторые изменения в ваши модели и хотели бы сохранить их в миграции.

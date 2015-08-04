@@ -166,7 +166,7 @@
           <!-- Navigation. We hide it in small screens. -->
           <nav class="mdl-navigation mdl-layout--large-screen-only">
             <a class="mdl-navigation__link" href="/">Город</a>
-            <a class="mdl-navigation__link" href="/">Офис</a>
+            <a class="mdl-navigation__link" href="/office">Офис</a>
             <a class="mdl-navigation__link" href="/warehouse">Склад</a>
             <a class="mdl-navigation__link logout" href="">Выйти</a>
           </nav>
@@ -175,12 +175,12 @@
       <div class="container">
           <div class="bags_title"> Мешки </div>
           <div class="row" id="bags_title">
-              <div class="col-md-4"> В контейнере</div>
-              <div class="col-md-4"> Пустой на складе</div>
-              <div class="col-md-4"> Полный на складе</div>
+              <div class="col-xs-4"> В контейнере</div>
+              <div class="col-xs-4"> Пустой на складе</div>
+              <div class="col-xs-4"> Полный на складе</div>
           </div>
           <div class="row">
-              <div class="col-md-4">
+              <div class="col-xs-4">
                   <div class="container-fluid">
                         {% if inside_bin_bags %}
                             <div class="row different_columns">
@@ -192,10 +192,10 @@
                                   <div class="dropdown col-xs-3 a_bag">
                                     <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
                                     <ul id="menu1{{bag.bag_id}}" class="dropdown-menu">
-                                      <li class="dropdown-header"> Изменить статус мешка</li>
+                                      <!--<li class="dropdown-header"> Изменить статус мешка</li>
                                       <li class="from_bin_to_warehouse_full"><a href="#">На складе полный</a></li>
                                       <li class="from_bin_to_warehouse_empty"><a href="#">На складе пустой</a></li>
-                                      <li class="divider"></li>
+                                      <li class="divider"></li> -->
                                       <li class="dropdown-header"> В контейнере </li>
                                       {% if bag.bag_in_bin %}
                                         <li class="disabled"><a href="#">{{ bag.bag_in_bin.bin_adress }}</a></li>
@@ -224,12 +224,12 @@
                             {% for bag in empty_bags %}
                                 <div class="row a_bag_row">
                                     <div class="dropdown col-xs-3 a_bag">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <!--<b class="caret"></b>
                                             <ul id="menu2{{bag.bag_id}}" class="dropdown-menu">
                                               <li class="dropdown-header"> Изменить статус мешка</li>
                                               <li class="from_warehouse_empty_to_warehouse_full"><a href="#">На складе полный</a></li>
                                               <li class="from_warehouse_empty_to_bin"><a href="#">В контейнере</a></li>
-                                              
+                                              -->
                                             </ul>
                                         </a>
                                     </div>
@@ -257,13 +257,13 @@
                                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ bag.bag_id }} <b class="caret"></b>
                                         <ul id="menu3{{bag.bag_id}}" class="dropdown-menu">
                                           <li class="dropdown-header"> Изменить статус мешка</li>
-                                          <li class="from_warehouse_full_to_warehouse_empty"><a href="#">На складе пустой</a></li>
-                                          <li class="from_warehouse_full_to_bin"><a href="#">В контейнере</a></li>
+                                          <li class="from_warehouse_full_to_warehouse_empty"><a href="#">Спрессовать</a></li>
+                                          <!--<li class="from_warehouse_full_to_bin"><a href="#">В контейнере</a></li>
                                           <li class="divider"></li>
                                           <li class="dropdown-header"> Подходит для </li>
                                           {% for type in bag.bag_get_types %}
                                             <li class="disabled"><a href="#">{{type.type_name}}</a></li>
-                                          {% endfor %}
+                                          {% endfor %}-->   
                                         </ul>
                                         </a>
                                       </div>
@@ -279,6 +279,7 @@
               </div>
           </div>
         </div>
+    </div>
     </div>
 </body>
 </html>

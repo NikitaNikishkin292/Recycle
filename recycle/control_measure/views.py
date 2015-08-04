@@ -1,6 +1,6 @@
 from django.template import RequestContext, loader
 from django.shortcuts import render, get_object_or_404
-from .models import Bin, Measurement, Type, Bag
+from .models import Bin, Measurement, Type, Bag, Unload
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -95,6 +95,16 @@ def warehouse(request):
 		return render(request, 'control_measure/warehouse.html', context)
 	else:
 		return render(request, 'control_measure/inside.html', {'err_msg': ""})
+
+def office(request):
+	context = {}
+	if request.user.is_authenticated():
+		if Bin.bin_get_bins_not_included_into_unloadings():
+			unload_list = Unload.objects.filter(unload_status = 1)
+			context = { 'waiting_bins_list': Bin.bin_get_bins_not_included_into_unloadings(), 'unload_list': unload_list }
+		return render(request, 'control_measure/office.html', context)
+	else:
+		return render(request, 'control_measure/inside.html', context)
 
 def change_bag_status(request):
 	bag_ident = request.GET['bag_ident']
