@@ -310,8 +310,9 @@ def office(request):
 def plan_new_unload(request):
 	context = {}
 	a_bins_list = []
+	logger.info(Unload.objects.all().order_by('unload_id').last().unload_id)
 	if Unload.objects.all().order_by('unload_id'):
-		new_id = Unload.objects.all().order_by('unload_id')[0].unload_id + 1
+		new_id = Unload.objects.all().order_by('unload_id').last().unload_id + 1
 	else:
 		new_id = 1
 	try:
