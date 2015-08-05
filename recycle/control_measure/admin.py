@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Measurement, Event, Bin, Type, Bag
+from .models import Measurement, Event, Bin, Type, Bag, Unload
 
 class MeasurementInline(admin.TabularInline):
 	model = Measurement
@@ -14,7 +14,7 @@ class EventInline(admin.TabularInline):
 
 class BinAdmin(admin.ModelAdmin):
 	fields = ['bin_id', 'bin_adress', 'bin_type']
-	list_display = ('bin_id', 'bin_adress', 'bin_get_average_pace_per_day_output', 'bin_type', 'bin_get_volume')
+	list_display = ('bin_id', 'bin_adress', 'bin_get_average_pace_per_day_output', 'bin_type', 'bin_get_volume', 'bin_status')
 	ordering = ('bin_id',)
 	inlines = [MeasurementInline, EventInline]
 
@@ -41,3 +41,4 @@ admin.site.register(Type, TypeAdmin)
 admin.site.register(Measurement, MeasurementAdmin)
 admin.site.register(Event)
 admin.site.register(Bag, BagAdmin)
+admin.site.register(Unload)

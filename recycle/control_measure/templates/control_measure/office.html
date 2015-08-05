@@ -57,15 +57,50 @@
             displayDropdownOnFocus: true
         });
 
-        /*$('#plan_unload').click(function(){
-            date_of_unload = $('new_unload_date').attr('value');
-            data_for_send = {
-                'date_of_unload': date_of_unload, 
-                'list_of_bins_for_unload': {
+        $('#plan_unload').click(function(){
+            date_of_unload = $('#new_unload_date').val();
+            var i = 0;
+            data_for_send = {};
+            $('li.Token').each(function() {
+                //j = i.toString()
+                data_for_send[i] = $(this).attr('data-value');
+                i = i + 1;
+            });
+            data_for_send.date_of_unload = date_of_unload;
 
+
+
+            /*date_of_unload = $('#new_unload_date').val();
+            var i = 0;
+            data_for_send = {};
+            a_bins_list = {};
+            $('li.Token').each(function() {
+                //j = i.toString()
+                a_bins_list[i] = $(this).attr('data-value');
+                i = i + 1;
+            });
+            data_for_send.date_of_unload = date_of_unload;
+            data_for_send.list_of_bins_for_unload = a_bins_list;*/
+
+
+            console.log(data_for_send);
+
+
+            $.ajax({
+                type: 'GET',
+                data: data_for_send,
+                url: "{% url 'control_measure:plan_new_unload' %}",
+                success: function() {
+                    console.log('new planned is made up successfully');
+                },
+                error: function() {
+                    console.log('new planned was made with errors');
                 }
-            }
-        });*/
+            });
+            window.location.reload();
+        });
+
+        
     });
     
     </script>
@@ -118,16 +153,22 @@
                 </div>
                 {% if unload_list %}
                     {% for unload in unload_list %}
+                    <div class="row not_aligned ">
+                        <div class="col-xs-3">{{ unload.unload_date.date }}</div>
+                        {% for a_bin in unload.unload_get_bins %}
+                            <div class="col-xs-2">{{ a_bin.bin_adress }}</div> 
+                        {% endfor %}
+                    </div>
                     {% endfor %}
                 {% else %}
                     <div>Нет запланированных вывозов, создайте первый, заполнив форму ниже</div>
                 {% endif %}
-                <div class="row">
+                <div class="row not_aligned">
                     <div class="col-xs-4">
-                        <input type = "text" id="new_unload_date" placeholder = "Дата"/>
+                        <input type = "text" id="new_unload_date" placeholder = "YYYY-MM-DD"/>
                     </div>
                     <div class="col-xs-6">
-                        <select id="tokenize" multiple="multiple" class="tokenize-sample" sortable = "true">
+                        <select id="tokenize" multiple="multiple" class="tokenize-sample" placeholder = "Выберите контейнеры">
                         {% for bin in waiting_bins_list %}
                             <option value = "{{ bin.bin_adress }}">{{ bin.bin_adress }} </option>
                         {% endfor %}

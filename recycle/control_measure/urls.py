@@ -7,6 +7,7 @@ urlpatterns = [
 	url(r'^warehouse/$', views.warehouse, name = 'warehouse'),
 	url(r'^office/$', views.office, name = 'office'),
 	url(r'^warehouse/change_bag_status/$', views.change_bag_status, name = "change_bag_status"),
+	url(r'^office/plan_new_unload/$', views.plan_new_unload, name = "plan_new_unload"),
 	url(r'^logout/$', views.log_out, name = 'log_out'),
 	#url(r'^$', views.index, name = 'index'),
 	url(r'^(?P<bin_ident>[0-9]+)/$', views.detail, name = 'detail'),

@@ -10,6 +10,15 @@ import pytz
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 import json
+from django.conf import settings
+# import the logging library
+import logging
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
+def my_view(request, arg1, arg):
+    if bad_mojo:
+        logger.error('Something went wrong!')
 #import date
 tz = 'Europe/Moscow'
 
@@ -96,15 +105,6 @@ def warehouse(request):
 	else:
 		return render(request, 'control_measure/inside.html', {'err_msg': ""})
 
-def office(request):
-	context = {}
-	if request.user.is_authenticated():
-		if Bin.bin_get_bins_not_included_into_unloadings():
-			unload_list = Unload.objects.filter(unload_status = 1)
-			context = { 'waiting_bins_list': Bin.bin_get_bins_not_included_into_unloadings(), 'unload_list': unload_list }
-		return render(request, 'control_measure/office.html', context)
-	else:
-		return render(request, 'control_measure/inside.html', context)
 
 def change_bag_status(request):
 	bag_ident = request.GET['bag_ident']
@@ -248,6 +248,8 @@ def unload_bin_percent(request, bin_ident):
 						the_date_of_finish = the_date_of_begin_datetime + timedelta(minutes = 5)
 						a_bin.measurement_set.create(measurement_date = the_date_of_begin_datetime, measurement_percentage = percent_before, measurement_volume = volume_in_fact_before, measurement_bag = a_bag_id)
 						a_bin.measurement_set.create(measurement_date = the_date_of_finish, measurement_percentage = percent_after, measurement_volume = (percent_after * a_bin.bin_type.type_get_volume()) / 100)
+						a_bin.bin_status = 'False'
+						a_bin.save()
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
 
 def add_event(request, bin_ident):
@@ -294,4 +296,54 @@ def add_mass(request, bin_ident, meas_id):
 		a_measurement.save()
 		return render(request, 'control_measure/detail.html', {'a_bin': a_bin })
 
+def office(request):
+	context = {}
+	if request.user.is_authenticated():
+		if Bin.bin_get_bins_not_included_into_unloadings():
+			unload_list = Unload.objects.filter(unload_status = 1)
+			context = { 'waiting_bins_list': Bin.bin_get_bins_not_included_into_unloadings(), 'unload_list': unload_list }
+			logger.info(context)
+		return render(request, 'control_measure/office.html', context)
+	else:
+		return render(request, 'control_measure/inside.html', context)
+
+def plan_new_unload(request):
+	context = {}
+	a_bins_list = []
+	if Unload.objects.all().order_by('unload_id'):
+		new_id = Unload.objects.all().order_by('unload_id')[0].unload_id + 1
+	else:
+		new_id = 1
+	try:
+		a_date = request.GET['date_of_unload']
+	except (KeyError, Measurement.DoesNotExist):
+		logger.info('stop')
+	else:
+		logger.info(a_date)
+		new_unload = Unload(unload_id = new_id, unload_date = a_date, unload_status = 1)
+		new_unload.save()
+	#пока можно максимум 6 контейнеров добавить в вывоз
+	for i in range (6):
+		try:
+			new_bin_for_unload = request.GET[str(i)]
+		except (KeyError, Measurement.DoesNotExist):
+			logger.info('error')
+			break
+		else:
+			a_bins_list.append(new_bin_for_unload)
+			a_real_bin = Bin.objects.get(bin_adress = new_bin_for_unload)
+			a_real_bin.bin_status = 'True'
+			a_real_bin.save()
+			new_unload.unload_bins_list.add(a_real_bin)
+			new_unload.save()
+			logger.info(a_real_bin)
+	logger.info(a_bins_list)
+	return render(request, 'control_measure/office.html', context)
+
+	#new_unload = Unload(unload_date = a_date, unload_status = 1)
+	#for a_bin in a_bins_list:
+	#	a_real_bin = Bin.objects.get(bin_adress = a_bin)
+	#	new_unload.unload_bins_list.add(a_real_bin)
+	#	a_real_bin.bin_status = True
+	#return render(request, 'control_measure/office.html', context)
 

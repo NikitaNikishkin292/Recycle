@@ -228,7 +228,7 @@ class Bag(models.Model):
 class Unload(models.Model):
 	unload_id = models.IntegerField(primary_key = True, verbose_name = 'id выгрузки')
 	unload_date = models.DateTimeField(verbose_name = 'Дата выгрузки')
-	unload_bins_list = models.ManyToManyField(Bin, verbose_name = 'Выгружаемые контейнеры')
+	unload_bins_list = models.ManyToManyField(Bin, verbose_name = 'Выгружаемые контейнеры', blank = 'True', null = 'True')
 	UNLOAD_STATUS = (
 		(0, 'Осуществленный'),
 		(1, 'Запланированный'),
@@ -236,6 +236,12 @@ class Unload(models.Model):
 	unload_status = models.IntegerField(verbose_name = 'Статус выгрузки', choices = UNLOAD_STATUS, default = 1)
 	unload_time_spent = models.IntegerField(verbose_name = 'Минут потрачено', blank = 'True', null = 'True')
 	unload_money_spent = models.IntegerField(verbose_name = 'израсходовано денег', blank = 'True', null = 'True')
+
+	def __str__(self):
+		return str(self.unload_date)
+
+	def unload_get_bins(self):
+		return self.unload_bins_list.all()
 
 #Выполняя makemigrations, вы говорите Django, что внесли 
 #некоторые изменения в ваши модели и хотели бы сохранить их в миграции.
