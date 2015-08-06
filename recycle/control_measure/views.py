@@ -299,10 +299,10 @@ def add_mass(request, bin_ident, meas_id):
 def office(request):
 	context = {}
 	if request.user.is_authenticated():
-		if Bin.bin_get_bins_not_included_into_unloadings():
-			unload_list = Unload.objects.filter(unload_status = 1)
-			context = { 'waiting_bins_list': Bin.bin_get_bins_not_included_into_unloadings(), 'unload_list': unload_list }
-			logger.info(context)
+		#if Bin.bin_get_bins_not_included_into_unloadings():
+		unload_list = Unload.objects.filter(unload_status = 1)
+		context = { 'waiting_bins_list': Bin.bin_get_bins_not_included_into_unloadings(), 'unload_list': unload_list }
+		logger.info(context)
 		return render(request, 'control_measure/office.html', context)
 	else:
 		return render(request, 'control_measure/inside.html', context)
@@ -310,10 +310,11 @@ def office(request):
 def plan_new_unload(request):
 	context = {}
 	a_bins_list = []
-	logger.info(Unload.objects.all().order_by('unload_id').last().unload_id)
+	#logger.info(Unload.objects.all().order_by('unload_id').last().unload_id)
 	if Unload.objects.all().order_by('unload_id'):
 		new_id = Unload.objects.all().order_by('unload_id').last().unload_id + 1
 	else:
+		logger.info('first unload')
 		new_id = 1
 	try:
 		a_date = request.GET['date_of_unload']
@@ -348,3 +349,20 @@ def plan_new_unload(request):
 	#	a_real_bin.bin_status = True
 	#return render(request, 'control_measure/office.html', context)
 
+def cancel_planned_unload(request):
+	context = {}
+	try:
+		an_unload_id = request.GET['id']
+	except (KeyEror, Measurement.DoesNotExist):
+		logger.info('error')
+	else:
+		logger.info(an_unload_id)
+		an_unload = Unload.objects.get(unload_id = an_unload_id)
+		for a_bin in an_unload.unload_get_bins():
+			#changed_bin = Bin.objects.get(bin_id = a_bin.bin_id)
+			a_bin.bin_status = False
+			a_bin.save()
+			#logger.info(Bin.objects.get(bin_id = a_bin.bin_id).bin_status)
+		an_unload.delete()
+		#an_unload.save()
+		return render (request, 'control_measure/office.html', context)

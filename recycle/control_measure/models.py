@@ -243,6 +243,12 @@ class Unload(models.Model):
 	def unload_get_bins(self):
 		return self.unload_bins_list.all()
 
+	#def delete(self, *args, **kwargs):
+	#	for a_bin in self.unload_get_bins():
+	#		a_bin.bin_status = 'False'
+	#		a_bin.save()
+	#	super(Unload, self).delete()
+
 #Выполняя makemigrations, вы говорите Django, что внесли 
 #некоторые изменения в ваши модели и хотели бы сохранить их в миграции.
 

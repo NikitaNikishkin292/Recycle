@@ -100,7 +100,15 @@
             window.location.reload();
         });
 
-        
+        $('.cancel_button').click(function() {
+            unload_id = ($(this).attr('id')).substring(7);
+            $.ajax({
+                type: 'GET',
+                data: {'id': unload_id },
+                url: "{% url 'control_measure:cancel_planned_unload' %}"
+            });
+            window.location.reload();
+        });
     });
     
     </script>
@@ -159,6 +167,9 @@
                             <div class="col-xs-2">{{ a_bin.bin_adress }}</div> 
                         {% endfor %}
                     </div>
+                    <div class="row">
+                        <button id = "cancel_{{unload.unload_id}}" class = "cancel_button">Отменить</button>
+                    </div> 
                     {% endfor %}
                 {% else %}
                     <div>Нет запланированных вывозов, создайте первый, заполнив форму ниже</div>
