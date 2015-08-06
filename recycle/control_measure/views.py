@@ -321,6 +321,7 @@ def plan_new_unload(request):
 	except (KeyError, Measurement.DoesNotExist):
 		logger.info('stop')
 	else:
+		a_date += " 10:00"
 		logger.info(a_date)
 		new_unload = Unload(unload_id = new_id, unload_date = a_date, unload_status = 1)
 		new_unload.save()

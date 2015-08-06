@@ -81,7 +81,7 @@
                     console.log('new planned was made with errors');
                 }
             });
-            window.location.href = "http://znaik.com/office";
+            window.location.href = "{% url 'control_measure:office' %}";
         });
 
         $('.cancel_button').click(function() {
