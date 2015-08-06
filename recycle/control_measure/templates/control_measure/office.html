@@ -68,23 +68,7 @@
             });
             data_for_send.date_of_unload = date_of_unload;
 
-
-
-            /*date_of_unload = $('#new_unload_date').val();
-            var i = 0;
-            data_for_send = {};
-            a_bins_list = {};
-            $('li.Token').each(function() {
-                //j = i.toString()
-                a_bins_list[i] = $(this).attr('data-value');
-                i = i + 1;
-            });
-            data_for_send.date_of_unload = date_of_unload;
-            data_for_send.list_of_bins_for_unload = a_bins_list;*/
-
-
             console.log(data_for_send);
-
 
             $.ajax({
                 type: 'GET',
@@ -97,7 +81,7 @@
                     console.log('new planned was made with errors');
                 }
             });
-            window.location.reload();
+            window.location.href = "http://znaik.com/office";
         });
 
         $('.cancel_button').click(function() {
