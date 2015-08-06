@@ -100,7 +100,7 @@ def warehouse(request):
 		inside_bin_bags = Bag.objects.filter(bag_status=1)
 		full_bags = Bag.objects.filter(bag_status=2)
 		empty_bags = Bag.objects.filter(bag_status=3)
-		context = { 'inside_bin_bags': inside_bin_bags, 'full_bags':full_bags, 'empty_bags': empty_bags }
+		context = { 'inside_bin_bags': inside_bin_bags, 'full_bags':full_bags, 'empty_bags': empty_bags, 'unload': Unload.objects.all().order_by('unload_date').first() }
 		return render(request, 'control_measure/warehouse.html', context)
 	else:
 		return render(request, 'control_measure/inside.html', {'err_msg': ""})
@@ -300,7 +300,7 @@ def office(request):
 	context = {}
 	if request.user.is_authenticated():
 		#if Bin.bin_get_bins_not_included_into_unloadings():
-		unload_list = Unload.objects.filter(unload_status = 1)
+		unload_list = Unload.objects.all()
 		context = { 'waiting_bins_list': Bin.bin_get_bins_not_included_into_unloadings(), 'unload_list': unload_list }
 		logger.info(context)
 		return render(request, 'control_measure/office.html', context)
@@ -339,6 +339,7 @@ def plan_new_unload(request):
 			a_real_bin.save()
 			new_unload.unload_bins_list.add(a_real_bin)
 			new_unload.save()
+
 			logger.info(a_real_bin)
 	logger.info(a_bins_list)
 	return render(request, 'control_measure/office.html', context)

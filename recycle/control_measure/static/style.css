@@ -125,3 +125,12 @@ span.measure_error {
 
 
 
+#warehouse_info_for_bins {
+	height: 150px;
+	background-image: url('images/warehouse1.jpg');
+	background-size: cover;
+	color: white;
+	font-style: bold;
+	margin: 0;
+	padding: 0;
+}

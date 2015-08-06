@@ -26,8 +26,9 @@
         div {
             text-align: center;
         }
-        .not_aligned>div {
+        .not_aligned>div, .not_aligned>div>div {
             text-align: left;
+            vertical-align: middle;
         }
 
         .planning_upload {
@@ -49,6 +50,49 @@
         .tokenize-sample {
             width: 100%;
         }
+
+
+        .measurements_table_header {
+            margin-bottom: 2%;
+            font-size: 20pt;
+        }
+
+        .measurements_rows {
+            font-size: 18pt;
+            padding: 1.5% 0%;
+            border-top: black solid 1px;
+            /*border-bottom: 1px solid black;*/
+            cursor: pointer;
+
+        }
+
+        .measurements_rows_active {
+            background-color: #D5DBED;
+        }
+
+        .measurements_rows_active_1 {
+            background-color: #D5DBED;
+        }
+
+        .measurements_rows_passive {
+            background-color: #FFF;
+        }
+
+        .detailed_measurements_rows {
+            font-size: 18pt;
+            padding: 1.5% 0%;
+            display: none;
+        }
+
+        .detailed_detailed {
+            padding-bottom: 5%;
+        }
+
+        .not_icon_item {
+            margin-top: 0.35%;
+        }
+
+
     </style>
     <script type="text/javascript">
     $(document).ready(function() {
@@ -93,27 +137,103 @@
             });
             window.location.reload();
         });
+
+        $('.measurements_rows').last().addClass("bordered_down");
+
+        $('.measurements_rows').click(function() {
+            var object_for_movement = $(this).next(".detailed_measurements_rows");
+            console.log(object_for_movement.css('display'));
+            if (object_for_movement.css('display') == "none") {
+                 object_for_movement.slideDown(300);
+                 $(this).addClass('measurements_rows_active_1')
+                 $(this).removeClass('measurements_rows_passive')
+            }
+            else {
+                 object_for_movement.slideUp(300);
+                 $(this).addClass('measurements_rows_passive')
+                 $(this).removeClass('measurements_rows_active_1')
+            }
+           
+        });
+
+        $('.measurements_rows').mouseover(function(){
+            $(this).addClass('measurements_rows_active')
+                 $(this).removeClass('measurements_rows_passive')
+        });
+
+        $('.measurements_rows').mouseout(function(){
+            $(this).removeClass('measurements_rows_active')
+            $(this).addClass('measurements_rows_passive')
+        });
     });
     
     </script>
 </head>
 <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-          <!-- Title -->
-          <span class="mdl-layout-title"> <a href="/" style = "color: white; text-decoration: none;"> Znaik 1.5 </a> </span>
-          <!-- Add spacer, to align navigation to the right -->
-          <div class="mdl-layout-spacer"></div>
-          <!-- Navigation. We hide it in small screens. -->
-          <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <a class="mdl-navigation__link" href="/">Город</a>
-            <a class="mdl-navigation__link" href="/office">Офис</a>
-            <a class="mdl-navigation__link" href="/warehouse">Склад</a>
-            <a class="mdl-navigation__link logout" href="">Выйти</a>
-          </nav>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand navbar-center" href="/">ZnaiK 1.5</a>
         </div>
-      </header>
+        <div>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Город</a></li>
+            <li><a href="/office">Офис</a></li>
+            <li><a href="/warehouse">Склад</a></li>
+            <li><a href="" class="logout">Выйти</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+ 
+
+    <div class="container">
+        <div class="row">
+            <h3>Список вывозов</h3>
+        </div>
+        {% if unload_list %}
+            <div class="row measurements_table_header not_aligned">
+                <div class = "col-xs-3">Статус</div>
+                <div class = "col-xs-3">Дата</div>
+                <div class = "col-xs-3">Тайминг</div>
+                <div class = "col-xs-3">Деньги</div>
+            </div>
+        {% else %}
+            <div class="row">
+                Пока нет вывозов. Запланируйте первый ниже
+            </div>
+        {% endif %}
+        {% for an_unload in unload_list %}
+            <div class="row measurements_rows not_aligned">
+                <div class = "col-xs-3">
+                    {% if an_unload.unload_status %}
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    {% else %}
+                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                    {% endif %}
+                </div>
+                <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_date.date }}</div>
+                <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_time_spent }}</div>
+                <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_money_spent }}</div>
+            </div>
+            <div class="row detailed_measurements_rows not_aligned">
+                <div class="col-xs-3">Контейнеры</div>
+                <div class="col-xs-3">
+                    {% for a_bin in an_unload.unload_get_bins %}
+                        <div class="row detailed_detailed"> {{ a_bin.bin_adress }} </div>
+                    {% endfor %}
+                </div>
+                <div class="col-xs-3">Тип контейнера</div>
+                <div class="col-xs-3">
+                    {% for a_bin in an_unload.unload_get_bins %}
+                        <div class="row detailed_detailed"> {{ a_bin.bin_type }} </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
       <div class="container">
           <div class="row planning_upload">
               <div class="col-xs-7 bordered_right">
@@ -176,6 +296,5 @@
                 </div>
               </div>
           </div>
-      </div>
     </div>
 </body>

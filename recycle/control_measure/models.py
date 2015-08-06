@@ -229,6 +229,7 @@ class Unload(models.Model):
 	unload_id = models.IntegerField(primary_key = True, verbose_name = 'id выгрузки')
 	unload_date = models.DateTimeField(verbose_name = 'Дата выгрузки')
 	unload_bins_list = models.ManyToManyField(Bin, verbose_name = 'Выгружаемые контейнеры', blank = 'True', null = 'True')
+	unload_bags_list = models.ManyToManyField(Bag, verbose_name = 'Необходимые мешки', blank = 'True')
 	UNLOAD_STATUS = (
 		(0, 'Осуществленный'),
 		(1, 'Запланированный'),

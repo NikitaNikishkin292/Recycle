@@ -153,25 +153,49 @@
             border-bottom: 1px solid black;
             width: 100%;
         }
+
+        .warehouse_main_digits {
+            padding-top: 4%;
+            text-align: center;
+            font-size: 200%;
+        }
+
+
+        .warehouse_main_digits>div>div {
+            padding-bottom: 5%;
+        }
+
     </style>
 </head>
 <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-          <!-- Title -->
-          <span class="mdl-layout-title"> <a href="/" style = "color: white; text-decoration: none;"> Znaik 1.5 </a> </span>
-          <!-- Add spacer, to align navigation to the right -->
-          <div class="mdl-layout-spacer"></div>
-          <!-- Navigation. We hide it in small screens. -->
-          <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <a class="mdl-navigation__link" href="/">Город</a>
-            <a class="mdl-navigation__link" href="/office">Офис</a>
-            <a class="mdl-navigation__link" href="/warehouse">Склад</a>
-            <a class="mdl-navigation__link logout" href="">Выйти</a>
-          </nav>
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand navbar-center" href="/">ZnaiK 1.5</a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/">Город</a></li>
+        <li><a href="/office">Офис</a></li>
+        <li><a href="/warehouse">Склад</a></li>
+        <li><a href="" class="logout">Выйти</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="container-fluid" id = "warehouse_info_for_bins">
+        <div class="row warehouse_main_digits">
+            <div class="col-xs-3">Ближайший вывоз:</div>
+            <div class="col-xs-3">{{ unload.unload_date.date }}</div>
+            <div class="col-xs-3"> Нужные типы мешков: </div>
+            <div class="col-xs-3">
+                {% for a_bin in unload.unload_get_bins %}
+                    <div class="row">{{a_bin.bin_type}} </div>
+                {% endfor %}
+            </div>
         </div>
-      </header>
+    </div>
       <div class="container">
           <div class="bags_title"> Мешки </div>
           <div class="row" id="bags_title">
