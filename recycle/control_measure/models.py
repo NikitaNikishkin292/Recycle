@@ -4,10 +4,17 @@ import decimal
 import pytz
 from pytz import timezone
 import datetime
+import time
 from datetime import datetime, timedelta
 tz = 'Europe/Moscow'
 # Create your models here.
 # coding=utf8 
+import logging
+logger = logging.getLogger(__name__)
+
+def my_view(request, arg1, arg):
+    if bad_mojo:
+        logger.error('Something went wrong!')
 
 class Type(models.Model):
 	type_short_name = models.CharField(max_length = 20, null='True')
@@ -70,18 +77,24 @@ class Bin(models.Model):
 			summ = 0.
 			last_meas = 0
 			mes_first = measure_set.first()
-			for mes_second in measure_set[1:]:
-				if mes_second.measurement_date == our_date:
-					last_meas = mes_first
-					break
-				if mes_second.measurement_volume - mes_first.measurement_volume > 0:
-					summ += float(mes_second.measurement_volume - mes_first.measurement_volume)
-				mes_first = mes_second
-			time_summ = last_meas.measurement_date - measure_set.first().measurement_date
-			time_summ = time_summ.days * 24 + time_summ.seconds / 3600
-			if time_summ:
-				result = summ / time_summ
-				return result
+			#logger.info(mes_first)
+			if our_date > mes_first.measurement_date:
+				for mes_second in measure_set[1:]:
+					if mes_second.measurement_date >= our_date:
+						last_meas = mes_first
+						break
+					if mes_second.measurement_volume - mes_first.measurement_volume > 0:
+						summ += float(mes_second.measurement_volume - mes_first.measurement_volume)
+					mes_first = mes_second
+				if last_meas == 0:
+					last_meas = self.measurement_set.all().order_by('measurement_date').last()
+				time_summ = last_meas.measurement_date - measure_set.first().measurement_date
+				time_summ = time_summ.days * 24 + time_summ.seconds / 3600
+				if time_summ:
+					result = summ / time_summ
+					return result
+				else:
+					return 0
 			else:
 				return 0
 		else:
@@ -243,6 +256,39 @@ class Unload(models.Model):
 
 	def unload_get_bins(self):
 		return self.unload_bins_list.all()
+
+
+class City_Pace(models.Model):
+	city_pace_date = models.DateField(verbose_name = 'Дата')
+	city_pace_value = models.DecimalField (max_digits = 6, decimal_places = 3, verbose_name = 'Темп м3/сутки')
+
+	def __str__(self):
+		return str(self.city_pace_date)
+
+	def city_pace_count_rest():
+		current_server_time = datetime.utcnow()
+		current_client_date = timezone(tz).fromutc(current_server_time)
+		if City_Pace.objects.all().order_by('city_pace_date').last():
+			last_date_counted = City_Pace.objects.all().order_by('city_pace_date').last().city_pace_date
+			mytime = datetime.strptime('2130','%H%M').time()
+			last_date_counted = datetime.combine(last_date_counted, mytime)
+		else:
+			last_date_counted = Measurement.objects.all().order_by('measurement_date').first().measurement_date
+		#logger.info(last_date_counted)
+		#logger.info(current_client_date)
+		if current_client_date.date() != last_date_counted.date():
+			for a_date in range((current_server_time - last_date_counted).days):
+				new_pace = 0.
+				logger.info(last_date_counted + timedelta(days = a_date + 1))
+				for a_bin in Bin.objects.all():
+					new_date = last_date_counted + timedelta(days = a_date + 1)
+					new_pace += a_bin.bin_generate_volume_pace_of_date(last_date_counted + timedelta(days = a_date + 1))
+					#logger.info(a_bin.bin_adress)
+					#logger.info(a_bin.bin_generate_volume_pace_of_date(last_date_counted + timedelta(days = a_date + 1)))
+				logger.info(float("{0:.2f}".format(new_pace * 24 / 1000)))
+				new_city_pace = City_Pace(city_pace_date = last_date_counted + timedelta(days = a_date + 1), city_pace_value = new_pace * 24 / 1000)
+				new_city_pace.save()
+
 
 	#def delete(self, *args, **kwargs):
 	#	for a_bin in self.unload_get_bins():

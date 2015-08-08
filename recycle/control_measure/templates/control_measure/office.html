@@ -91,7 +91,23 @@
         .not_icon_item {
             margin-top: 0.35%;
         }
+        .nav-tabs>li>a {
+            color: #333;
+        }
+        .panel {
+            margin-bottom: 0;
+            margin-top: 2%;
+       }
 
+       .panel-footer {
+            padding: 3%;
+            border: none;
+            background-color: white;
+       }
+
+       #my_footer {
+        background-color: white;
+       }
 
     </style>
     <script type="text/javascript">
@@ -165,136 +181,282 @@
             $(this).removeClass('measurements_rows_active')
             $(this).addClass('measurements_rows_passive')
         });
+
+
+        function addChartOffice (chartLabels, chartData) {
+            var lineChartData = {
+                labels : chartLabels,
+                datasets : [                    
+                    {
+                        label: "My Second dataset",
+                        fillColor : "rgba(151,187,205,0.2)",
+                        strokeColor : "rgba(151,187,205,1)",
+                        //pointColor : "rgba(151,187,205,1)",
+                        //pointStrokeColor : "#fff",
+                        //pointHighlightFill : "#fff",
+                        //pointHighlightStroke : "rgba(151,187,205,1)",
+                        data : chartData
+                    }
+                ]
+            };
+            console.log('addChartOffice');
+            var ctx = document.getElementById("myChartOffice").getContext("2d");
+            console.log('getContext');
+            myLine = new Chart(ctx).Line(lineChartData, {
+                 scaleShowGridLines : true,
+                 pointDot: false,
+                 animation: false,
+            });
+            myLine.stop(); 
+            console.log('myLine');
+
+            //myChart.reDraw();
+        };
+
+        $('#speed_tab').click(function(){
+            setTimeout(function() {
+                if ($('#speed').hasClass('active')) {
+                    console.log("speed_tab");
+                    var chartLabels = []
+                    var chartData = []
+                    $.getJSON('{% url "control_measure:data_for_global_chart" %}', function(data){
+                        var i_count = 0;
+                        for (var i in data) {
+                            ++i_count;
+                            if (i_count % 3) 
+                                continue;
+                            var cool_date = data[i].day + "/";
+                            if (data[i].month < 10) {
+                                cool_date += "0";
+                            }
+                            cool_date += data[i].month;
+                            chartLabels.push(cool_date);
+                            chartData.push(parseFloat(data[i].pace));
+                            
+                        }
+                        /*for (i = 0; i < 10; ++i) {
+                            chartLabels.push(i);
+                            chartData.push(i);
+                        }*/
+                        console.log(chartData);
+                        console.log(chartLabels);
+                        addChartOffice(chartLabels, chartData);
+                        
+                    }, function(data) {
+                        console.log('Error');
+                    }); 
+                }
+            }, 500);
+            
+        });
+        
+        /*$('#speed').ready(function(e) {
+            //bin_module_buffer = $('div#bin_module').detach();
+            //measurements_module_buffer.appendTo('#short_bin_info');
+            console.log("speed_tab");
+            var chartLabels = []
+            var chartData = []
+            $.getJSON('{% url "control_measure:data_for_global_chart" %}', function(data){
+                var i_count = 0;
+                for (var i in data) {
+                    
+                    var cool_date = data[i].day + "/";
+                    if (data[i].month < 10) {
+                        cool_date += "0";
+                    }
+                    cool_date += data[i].month;
+                    chartLabels.push(cool_date);
+                    chartData.push(parseFloat(data[i].pace));
+                    ++i_count;
+                }
+                /*for (i = 0; i < 10; ++i) {
+                    chartLabels.push(i);
+                    chartData.push(i);
+                }
+                console.log(chartData);
+                console.log(chartLabels);
+                addChartOffice(chartLabels, chartData);
+                
+            }, function(data) {
+                console.log('Error');
+            }); 
+                         
+        });*/
+
+        
     });
     
     </script>
 </head>
 <body>
     <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand navbar-center" href="/">ZnaiK 1.5</a>
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand navbar-center" href="/">ZnaiK 1.5</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">Город</a></li>
+                    <li><a href="/office">Офис</a></li>
+                    <li><a href="/warehouse">Склад</a></li>
+                    <li><a href="" class="logout">Выйти</a></li>
+                </ul>
+            </div>
         </div>
-        <div>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/">Город</a></li>
-            <li><a href="/office">Офис</a></li>
-            <li><a href="/warehouse">Склад</a></li>
-            <li><a href="" class="logout">Выйти</a></li>
-          </ul>
-        </div>
-      </div>
     </nav>
 
- 
+    <div class = "container-fluid" id = 'city_info'>
+    </div>
 
-    <div class="container">
-        <div class="row">
-            <h3>Список вывозов</h3>
-        </div>
-        {% if unload_list %}
-            <div class="row measurements_table_header not_aligned">
-                <div class = "col-xs-3">Статус</div>
-                <div class = "col-xs-3">Дата</div>
-                <div class = "col-xs-3">Тайминг</div>
-                <div class = "col-xs-3">Деньги</div>
-            </div>
-        {% else %}
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#unloads">Вывозы</a></li>
+        <li><a data-toggle="tab" id="speed_tab" href="#speed">Скорость</a></li>
+        <li><a data-toggle="tab" href="#events">События</a></li>
+        <li><a data-toggle="tab" href="#people">Люди</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="container tab-pane fade in active" id = "unloads">
             <div class="row">
-                Пока нет вывозов. Запланируйте первый ниже
+                <h3>Список вывозов</h3>
             </div>
-        {% endif %}
-        {% for an_unload in unload_list %}
-            <div class="row measurements_rows not_aligned">
-                <div class = "col-xs-3">
-                    {% if an_unload.unload_status %}
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-                    {% else %}
-                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
-                    {% endif %}
+            {% if unload_list %}
+                <div class="row measurements_table_header not_aligned">
+                    <div class = "col-xs-3">Статус</div>
+                    <div class = "col-xs-3">Дата</div>
+                    <div class = "col-xs-3">Тайминг</div>
+                    <div class = "col-xs-3">Деньги</div>
                 </div>
-                <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_date.date }}</div>
-                <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_time_spent }}</div>
-                <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_money_spent }}</div>
-            </div>
-            <div class="row detailed_measurements_rows not_aligned">
-                <div class="col-xs-3">Контейнеры</div>
-                <div class="col-xs-3">
-                    {% for a_bin in an_unload.unload_get_bins %}
-                        <div class="row detailed_detailed"> {{ a_bin.bin_adress }} </div>
-                    {% endfor %}
+            {% else %}
+                <div class="row">
+                    Пока нет вывозов. Запланируйте первый ниже
                 </div>
-                <div class="col-xs-3">Тип контейнера</div>
-                <div class="col-xs-3">
-                    {% for a_bin in an_unload.unload_get_bins %}
-                        <div class="row detailed_detailed"> {{ a_bin.bin_type }} </div>
-                    {% endfor %}
+            {% endif %}
+            {% for an_unload in unload_list %}
+                <div class="row measurements_rows not_aligned">
+                    <div class = "col-xs-3">
+                        {% if an_unload.unload_status %}
+                            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        {% else %}
+                            <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                        {% endif %}
+                    </div>
+                    <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_date.date }}</div>
+                    <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_time_spent }}</div>
+                    <div class = "col-xs-3 not_icon_item">{{ an_unload.unload_money_spent }}</div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+                <div class="row detailed_measurements_rows not_aligned">
+                    <div class="col-xs-3">Контейнеры</div>
+                    <div class="col-xs-3">
+                        {% for a_bin in an_unload.unload_get_bins %}
+                            <div class="row detailed_detailed"> {{ a_bin.bin_adress }} </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-xs-3">Тип контейнера</div>
+                    <div class="col-xs-3">
+                        {% for a_bin in an_unload.unload_get_bins %}
+                            <div class="row detailed_detailed"> {{ a_bin.bin_type }} </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
 
-      <div class="container">
-          <div class="row planning_upload">
-              <div class="col-xs-7 bordered_right">
-                <div class="row planning_upload_title bordered_down">Контейнеры</div>
-                {% if waiting_bins_list %}
-                <div class="row not_aligned bordered_down chapter_title">
-                    <div class="col-xs-1"> #</div>
-                    <div class="col-xs-4">Адрес</div>
-                    <div class="col-xs-2">Fill</div>
-                    <div class="col-xs-1">Темп</div>
-                    <div class="col-xs-3">Вывоз</div>
-                </div>
-                {% endif %}
-                {% for bin in waiting_bins_list %}
-                    <div class="row not_aligned">
-                        <div class="col-xs-1">{{ forloop.counter }}</div>
-                        <div class="col-xs-4">{{ bin.bin_adress }}</div>
-                        <div class="col-xs-2">{{ bin.bin_get_current_fill_percentage }}%</div>
-                        <div class="col-xs-1">{{ bin.bin_get_average_pace_per_day_output }}%</div>
-                        <div class="col-xs-3">{{ bin.bin_get_upload_date }} </div>
-                    </div>
-                {% endfor %}
-              </div>
-              <div class="col-xs-5">
-                <div class="row planning_upload_title bordered_down">Запланировать вывоз</div>
-                <div class="row not_aligned bordered_down chapter_title">
-                    <div class="col-xs-4">Дата</div>
-                    <div class="col-xs-8">Контейнеры</div> 
-                </div>
-                {% if unload_list %}
-                    {% for unload in unload_list %}
-                    <div class="row not_aligned ">
-                        <div class="col-xs-3">{{ unload.unload_date.date }}</div>
-                        {% for a_bin in unload.unload_get_bins %}
-                            <div class="col-xs-2">{{ a_bin.bin_adress }}</div> 
-                        {% endfor %}
-                    </div>
-                    <div class="row">
-                        <button id = "cancel_{{unload.unload_id}}" class = "cancel_button">Отменить</button>
-                    </div> 
-                    {% endfor %}
-                {% else %}
-                    <div>Нет запланированных вывозов, создайте первый, заполнив форму ниже</div>
-                {% endif %}
-                <div class="row not_aligned">
-                    <div class="col-xs-4">
-                        <input type = "text" id="new_unload_date" placeholder = "YYYY-MM-DD"/>
-                    </div>
-                    <div class="col-xs-6">
-                        <select id="tokenize" multiple="multiple" class="tokenize-sample" placeholder = "Выберите контейнеры">
+
+            <div class="container">
+                <div class="row planning_upload">
+                    <div class="col-xs-7 bordered_right">
+                        <div class="row planning_upload_title bordered_down">Контейнеры</div>
+                        {% if waiting_bins_list %}
+                            <div class="row not_aligned bordered_down chapter_title">
+                                <div class="col-xs-1"> #</div>
+                                <div class="col-xs-4">Адрес</div>
+                                <div class="col-xs-2">Fill</div>
+                                <div class="col-xs-1">Темп</div>
+                                <div class="col-xs-3">Вывоз</div>
+                            </div>
+                        {% endif %}
                         {% for bin in waiting_bins_list %}
-                            <option value = "{{ bin.bin_adress }}">{{ bin.bin_adress }} </option>
+                            <div class="row not_aligned">
+                                <div class="col-xs-1">{{ forloop.counter }}</div>
+                                <div class="col-xs-4">{{ bin.bin_adress }}</div>
+                                <div class="col-xs-2">{{ bin.bin_get_current_fill_percentage }}%</div>
+                                <div class="col-xs-1">{{ bin.bin_get_average_pace_per_day_output }}%</div>
+                                <div class="col-xs-3">{{ bin.bin_get_upload_date }} </div>
+                            </div>
                         {% endfor %}
-                        </select>
                     </div>
-                    <div class="col-xs-1">
-                        <button id="plan_unload">Запланировать</button>
+                    <div class="col-xs-5">
+                        <div class="row planning_upload_title bordered_down">Запланировать вывоз</div>
+                        <div class="row not_aligned bordered_down chapter_title">
+                            <div class="col-xs-4">Дата</div>
+                            <div class="col-xs-8">Контейнеры</div> 
+                        </div>
+                        {% if unload_list %}
+                        {% for unload in unload_list %}
+                            <div class="row not_aligned ">
+                                <div class="col-xs-3">{{ unload.unload_date.date }}</div>
+                                {% for a_bin in unload.unload_get_bins %}
+                                    <div class="col-xs-2">{{ a_bin.bin_adress }}</div> 
+                                {% endfor %}
+                            </div>
+                            <div class="row">
+                                <button id = "cancel_{{unload.unload_id}}" class = "cancel_button">Отменить</button>
+                            </div> 
+                        {% endfor %}
+                        {% else %}
+                            <div>Нет запланированных вывозов, создайте первый, заполнив форму ниже</div>
+                        {% endif %}
+                        <div class="row not_aligned">
+                            <div class="col-xs-4">
+                                <input type = "text" id="new_unload_date" placeholder = "YYYY-MM-DD"/>
+                            </div>
+                            <div class="col-xs-5">
+                                <select id="tokenize" multiple="multiple" class="tokenize-sample" placeholder = "Выберите контейнеры">
+                                {% for bin in waiting_bins_list %}
+                                    <option value = "{{ bin.bin_adress }}">{{ bin.bin_adress }} </option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xs-1">
+                                <button id="plan_unload">Запланировать</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                </div>
-              </div>
-          </div>
+            </div>
+        </div>
+        <div id="speed" class="tab-pane fade">
+            <h3 id = "test_text">Динамика сбора PET в Долгопрудном М3/сутки</h3>
+             <div>
+                <canvas id="myChartOffice" width="1000%" height="500%"></canvas>
+            </div>
+        </div>
+        <div id="events" class="tab-pane fade">
+            <h3>События</h3>
+            <p>Здесь будет веститсь учёт и измерение проводимой политики, направленной на увеличение сдаваемого людьми пластика </p>
+        </div>
+        <div id="people" class="tab-pane fade">
+            <h3>Люди</h3>
+            <p>Здесь будет информация о людях, которые будут измерять наполненность контейнеров и перердавать нам информацию через сайт znaik.com</p>
+        </div>
     </div>
+    <div class="panel panel-default" id="my_footer">
+      <div class="panel-footer">
+        <div class="row">
+            <div class="col-xs-3">
+                Znaik.com
+            </div>
+            <div class="col-xs-3">
+                Чистое Дело. Все права защищены
+            </div>
+            <div class="col-xs-3">
+                <a href = "http://www.chistoedelo.org">chistoedelo.org</a>
+            </div>
+            <div class="col-xs-3">
+                2015
+            </div>
+        </div>
+      </div>
+    </div>
+   
 </body>

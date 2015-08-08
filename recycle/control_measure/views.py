@@ -1,6 +1,6 @@
 from django.template import RequestContext, loader
 from django.shortcuts import render, get_object_or_404
-from .models import Bin, Measurement, Type, Bag, Unload
+from .models import Bin, Measurement, Type, Bag, Unload, City_Pace
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -190,7 +190,21 @@ def data_for_chart(request, bin_ident):
 			mes_beg = mes
 		dump = json.dumps(dict_for_send)
 		return HttpResponse(dump, content_type='application/json')
-	return render(request, 'control_measure/detail.html', { 'a_bin': a_bin  })
+	#return render(request, 'control_measure/detail.html', { 'a_bin': a_bin  })
+
+def data_for_global_chart(request):
+	dict_for_send = []
+	if City_Pace.objects.all():
+		for a_city_pace in City_Pace.objects.all().order_by('city_pace_date'):
+			dict_elem = {}
+			dict_elem['day'] = a_city_pace.city_pace_date.day
+			dict_elem['month'] = a_city_pace.city_pace_date.month
+			dict_elem['pace'] = float(a_city_pace.city_pace_value)
+			logger.info(dict_elem)
+			dict_for_send.append(dict_elem)
+		dump = json.dumps(dict_for_send)
+		return HttpResponse(dump, content_type='application/json')
+
 
 
 def add_measurement_percent(request, bin_ident):
@@ -301,6 +315,7 @@ def office(request):
 	if request.user.is_authenticated():
 		#if Bin.bin_get_bins_not_included_into_unloadings():
 		unload_list = Unload.objects.all()
+		City_Pace.city_pace_count_rest()
 		context = { 'waiting_bins_list': Bin.bin_get_bins_not_included_into_unloadings(), 'unload_list': unload_list }
 		logger.info(context)
 		return render(request, 'control_measure/office.html', context)
