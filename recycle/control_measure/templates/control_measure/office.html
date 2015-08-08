@@ -214,6 +214,10 @@
         };
 
         $('#speed_tab').click(function(){
+            addChartWithDevider(1);
+        });
+
+        function addChartWithDevider(i_devider) {
             setTimeout(function() {
                 if ($('#speed').hasClass('active')) {
                     console.log("speed_tab");
@@ -223,8 +227,8 @@
                         var i_count = 0;
                         for (var i in data) {
                             ++i_count;
-                            //if (i_count % 3) 
-                              //  continue;
+                            if (i_count % i_devider) 
+                                continue;
                             var cool_date = data[i].day + "/";
                             if (data[i].month < 10) {
                                 cool_date += "0";
@@ -247,7 +251,22 @@
                     }); 
                 }
             }, 500);
-            
+        }
+
+        $('#devided_by_1').click(function() {
+            addChartWithDevider(1);
+        });
+
+        $('#devided_by_2').click(function() {
+            addChartWithDevider(2);
+        });
+
+        $('#devided_by_3').click(function() {
+            addChartWithDevider(3);
+        });
+
+        $('#devided_by_4').click(function() {
+            addChartWithDevider(4);
         });
         
         /*$('#speed').ready(function(e) {
@@ -429,6 +448,12 @@
             <h3 id = "test_text">Динамика сбора PET в Долгопрудном М3/сутки</h3>
              <div>
                 <canvas id="myChartOffice" width="1000%" height="500%"></canvas>
+            </div>
+            <div class="row">
+                <div class="col-xs-3"><button id="devided_by_1">Все показания</button></div>
+                <div class="col-xs-3"><button id="devided_by_2">Половина показаний</button></div>
+                <div class="col-xs-3"><button id="devided_by_3">Треть показаний</button></div>
+                <div class="col-xs-3"><button id="devided_by_4">Четверть показаний</button></div>
             </div>
         </div>
         <div id="events" class="tab-pane fade">
