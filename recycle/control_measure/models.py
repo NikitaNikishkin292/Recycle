@@ -267,22 +267,26 @@ class City_Pace(models.Model):
 
 	def city_pace_count_rest():
 		current_server_time = datetime.utcnow()
-		current_client_date = timezone(tz).fromutc(current_server_time)
+		#current_client_date = timezone(tz).fromutc(current_server_time)
 		if City_Pace.objects.all().order_by('city_pace_date').last():
 			last_date_counted = City_Pace.objects.all().order_by('city_pace_date').last().city_pace_date
 			mytime = datetime.strptime('2130','%H%M').time()
 			last_date_counted = datetime.combine(last_date_counted, mytime)
 		else:
+			#aware - абсолютное время, так как берётся из БД
 			last_date_counted = Measurement.objects.all().order_by('measurement_date').first().measurement_date
+			current_server_time = timezone(tz).fromutc(current_server_time)
 		#logger.info(last_date_counted)
 		#logger.info(current_client_date)
-		if current_client_date.date() != last_date_counted.date():
+		if current_server_time.date() != last_date_counted.date():
 			for a_date in range((current_server_time - last_date_counted).days):
 				new_pace = 0.
 				logger.info(last_date_counted + timedelta(days = a_date + 1))
 				for a_bin in Bin.objects.all():
 					new_date = last_date_counted + timedelta(days = a_date + 1)
-					new_pace += a_bin.bin_generate_volume_pace_of_date(last_date_counted + timedelta(days = a_date + 1))
+					new_date = timezone('UTC').fromutc(new_date)
+					logger.info(new_date)
+					new_pace += a_bin.bin_generate_volume_pace_of_date(new_date)
 					#logger.info(a_bin.bin_adress)
 					#logger.info(a_bin.bin_generate_volume_pace_of_date(last_date_counted + timedelta(days = a_date + 1)))
 				logger.info(float("{0:.2f}".format(new_pace * 24 / 1000)))
