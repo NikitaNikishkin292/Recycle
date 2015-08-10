@@ -45,6 +45,7 @@
 	            type: 'GET',
 	            url: '{% url "control_measure:log_out" %}'
 	        });
+	        window.location.reload();
 	    });
 
     });
@@ -79,7 +80,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#">Город</a></li>
         <li><a href="/office">Офис</a></li>
-        <li><a href="warehouse">Склад</a></li>
+        <li><a href="/warehouse">Склад</a></li>
         <li><a href="" class="logout">Выйти</a></li>
       </ul>
     </div>

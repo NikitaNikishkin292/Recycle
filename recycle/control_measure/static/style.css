@@ -7,6 +7,15 @@
 }
 
 
+#root_page {
+	height: 100%;
+	background-image: url('images/nature.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: inline;
+	font-size: 400%;
+}
+
 
 /*стили панели навигации*/
 

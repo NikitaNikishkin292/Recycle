@@ -144,6 +144,15 @@
             window.location.href = "{% url 'control_measure:office' %}";
         });
 
+        $('.logout').click(function(event) {
+            console.log('fuck');
+            $.ajax({
+                type: 'GET',
+                url: '{% url "control_measure:log_out" %}'
+            });
+            window.location.reload();
+        });
+
         $('.cancel_button').click(function() {
             unload_id = ($(this).attr('id')).substring(7);
             $.ajax({
@@ -315,7 +324,7 @@
             </div>
             <div>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/">Город</a></li>
+                    <li><a href="/city">Город</a></li>
                     <li><a href="/office">Офис</a></li>
                     <li><a href="/warehouse">Склад</a></li>
                     <li><a href="" class="logout">Выйти</a></li>

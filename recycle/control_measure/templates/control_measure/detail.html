@@ -241,6 +241,7 @@
 	            type: 'GET',
 	            url: '{% url "control_measure:log_out" %}'
 	        });
+	        window.location.reload();
 	    });
 
 
@@ -376,7 +377,7 @@
       <div class="mdl-layout-spacer"></div>
       <!-- Navigation. We hide it in small screens. -->
       <nav class="mdl-navigation mdl-layout--large-screen-only">
-        <a class="mdl-navigation__link" href="/">Город</a>
+        <a class="mdl-navigation__link" href="/city">Город</a>
         <a class="mdl-navigation__link" href="/office">Офис</a>
         <a class="mdl-navigation__link" href="/warehouse">Склад</a>
         <a class="mdl-navigation__link logout" href="">Выйти</a>

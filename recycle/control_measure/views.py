@@ -38,7 +38,7 @@ def inside(request):
 			city_pace = ("{0:.2f}".format(city_pace))
 			recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
 			context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
-		return render(request, 'control_measure/dashboard.html', context)
+		return render(request, 'control_measure/rootpage.html', context)
 	else:
 		try:
 			e_mail = request.POST['e_mail']
@@ -63,37 +63,57 @@ def inside(request):
 						city_pace = ("{0:.2f}".format(city_pace))
 						recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
 						context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
-					return render(request, 'control_measure/dashboard.html', context)
+					return render(request, 'control_measure/rootpage.html', context)
 				else:
 					err_msg = 'Account has been disabled'
 			else:
 				err_msg = 'Account and password are incorrect'
 			return render(request, 'control_measure/inside.html', {'err_msg': err_msg})
 
+def rootpage (request):
+	if request.user.is_authenticated():
+		return render(request, 'control_measure/rootpage.html', context)
+	else:
+		return render(request, 'control_measure/inside.html', context)
 
 
 def log_out(request):
 	logout(request)
 	return render(request, 'control_measure/inside.html', {'err_msg': ''})
+
+
+def unload(request):
+	if request.user.is_authenticated():
+		unload_list_planned = Unload.objects.all().filter(unload_status = 1).order_by('unload_date')
+		unload_list_fulfilled = Unload.objects.all().filter(unload_status = 0).order_by('unload_date')
+		context = {'unload_list_planned': unload_list_planned, 'unload_list_fulfilled': unload_list_fulfilled }
+		return render(request, 'control_measure/unload.html', context)
+	else:
+		return render(request, 'control_measure/inside.html', {})
+
 		
 
 
 def dashboard(request):
-	bins_list = Bin.objects.all().order_by('bin_id')
-	context = {}
-	if bins_list:
-		city_pace = 0
-		recycle_now_in_bins = 0
-		for a_bin in bins_list:
-			city_pace += a_bin.bin_generate_volume_pace()
-			recycle_now_in_bins += a_bin.bin_get_current_fill_litres()
-		city_pace *= 0.024
-		recycle_now_in_bins /= 1000
-		city_pace = ("{0:.2f}".format(city_pace))
-		recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
-		context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
-	#from django.conf import settings
-	return render(request, 'control_measure/dashboard.html', context)
+	if request.user.is_authenticated():
+		bins_list = Bin.objects.all().order_by('bin_id')
+		context = {}
+		if bins_list:
+			city_pace = 0
+			recycle_now_in_bins = 0
+			for a_bin in bins_list:
+				city_pace += a_bin.bin_generate_volume_pace()
+				recycle_now_in_bins += a_bin.bin_get_current_fill_litres()
+			city_pace *= 0.024
+			recycle_now_in_bins /= 1000
+			city_pace = ("{0:.2f}".format(city_pace))
+			recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
+			context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
+		#from django.conf import settings
+		return render(request, 'control_measure/dashboard.html', context)
+	else:
+		return render(request, 'control_measure/inside.html', {})
+
 
 def warehouse(request):
 	if request.user.is_authenticated():

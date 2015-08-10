@@ -3,7 +3,9 @@ from . import views
 
 urlpatterns = [
 	url(r'^$', views.inside, name = 'inside'),
-	#url(r'^control_measure/$', views.dashboard, name = 'dashboard'),
+	url(r'^unload/$', views.unload, name = 'unload'),
+	url(r'^root/$', views.rootpage, name = 'rootpage'),
+	url(r'^city/$', views.dashboard, name = 'dashboard'),
 	url(r'^warehouse/$', views.warehouse, name = 'warehouse'),
 	url(r'^office/$', views.office, name = 'office'),
 	url(r'^warehouse/change_bag_status/$', views.change_bag_status, name = "change_bag_status"),
@@ -12,7 +14,7 @@ urlpatterns = [
 	url(r'^office/data_for_global_chart/$', views.data_for_global_chart, name = "data_for_global_chart"),
 	url(r'^logout/$', views.log_out, name = 'log_out'),
 	#url(r'^$', views.index, name = 'index'),
-	url(r'^(?P<bin_ident>[0-9]+)/$', views.detail, name = 'detail'),
+	url(r'^city/(?P<bin_ident>[0-9]+)/$', views.detail, name = 'detail'),
 	url(r'^add/$', views.add_bin, name = 'add_bin'),
 	#url(r'^(?P<bin_ident>[0-9]+)/add_meas/$', views.add_measurement, name = 'add_measurement'),
 	#url(r'^(?P<bin_ident>[0-9]+)/unload/$', views.unload_bin, name = "unload_bin"),
