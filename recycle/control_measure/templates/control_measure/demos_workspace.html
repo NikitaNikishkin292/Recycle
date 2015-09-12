@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load staticfiles %}
+	<meta http-equiv='Content-Type' content = 'text/html; charset=utf-8' />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="http://yastatic.net/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+    <script src="http://yastatic.net/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{% static 'datedropper-master/datedropper.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{% static 'datedropper-master/datedropper.css' %}">
+	<title>Профиль</title>
+	<style type="text/css">
+		@import "http://webfonts.ru/import/comfortaa.css";
+		@import "http://webfonts.ru/import/amaranth.css";
+		body {
+	        background: url("{% static 'images/sea.jpg' %}") no-repeat center center fixed;
+	        -webkit-background-size: cover;
+	        -moz-background-size: cover;
+	        -o-background-size: cover;
+	        background-size: cover;
+	        height: 100%;
+		}
+
+		.soznaik-title {
+			text-align: center;
+			margin-top: 1%;
+			font-family: 'Amaranth';
+			font-style: italic;
+			
+		}
+
+		#soznaik-cards-set {
+			margin-top: 1%;
+			padding-bottom: 20px;
+		}
+
+		#soznaik-cards-set>div {
+			padding: 0.5%;
+		}
+
+		.soznaik-card {
+			padding: 2%;
+			border: 1px solid black;
+			background-color: white;
+		}
+
+		.soznaik-card-title {
+			font-size: 210%;
+			
+		}
+
+		.soznaik-card-title-border {
+			border-bottom: 1px black solid;
+			padding-bottom: 5%;
+			font-family: 'Comfortaa';
+		}
+
+		.soznaik-card-row {
+			margin-top: 1%;
+			padding: 0 10%;
+
+		}
+
+		.soznaik-card-row-aligned {
+			text-align: center;
+			padding: 5% 5%;
+		}
+
+		#soznaik-card-profile {
+			padding-left: 3%;
+			padding-bottom: 4%;
+			border-radius: 10px 0 0 10px;
+			font-size: 120%;
+			font-weight: bold;
+			font-family: 'Comfortaa';
+		}
+
+		@media screen and (min-width: 480px) and (max-width: 970px) {
+			
+			.soznaik-card-row {
+				font-size: 200%;
+			}
+
+			.soznaik-card-title {
+				font-size: 300%;
+			}
+
+			input:not(#soznaik-form-button) {
+				padding: 10%;
+			}
+
+			#soznaik-form-button {
+				padding-bottom: 65px;
+				
+			}
+
+			select {
+				height: 300px;
+			}
+
+			.soznaik-card-row-history {
+				font-size: 200%;
+			}
+
+			h3 {
+				font-size: 150%;
+			}
+
+		}
+
+		@media screen and (min-width: 970px) {
+			.soznaik-card {
+				height: 500px;
+			}
+		}
+
+		#soznaik-form-button {
+			background-color:#80B574;
+			color: #FFF;
+			border: 0;
+		}
+		#soznaik-form-button:hover {
+			color: #E0F4E7;
+		}
+		/*#80B574*/
+		.soznaik-profile-button:hover {
+			background-color: #80B574;
+			cursor: pointer;
+			color:white;
+		}
+
+		#soznaik-card-tutorial {
+			padding-left: 3%;
+			font-family: 'Comfortaa';
+			font-size: 96%;
+		}
+
+		#soznaik-card-history {
+			border-radius: 0 10px 10px 0;
+			font-family: 'Comfortaa';
+			overflow-y: auto;
+			overflow-x: hidden;	
+		}
+
+		#soznaik-card-history-scrolled {
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+
+		.soznaik-card-row-history {
+			font-size: 120%;
+		}
+
+		#soznaik-card-contacts {
+			text-align: center;
+			color: white;
+			font-family: 'Comfortaa';
+			font-size: 120%;
+			
+		}
+
+		.soznaik-form>div>input, textarea, select {
+			width: 100%;
+			height: 50px;
+			text-align: center;
+			font-family: 'Comfortaa';
+			font-size: 150%;
+		}
+
+		textarea {
+			height: 70px;
+		}
+
+		.soznaik-avatar {
+			width: 80%;
+		}
+
+		#soznaik-avatar {
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+
+		h3 {
+			margin-top: 3%;
+		}
+
+		.aligned {
+			text-align: center;
+		}
+
+		hr {
+			background-color: black;
+			height: 1px;
+			margin: 3%;
+		}
+
+	</style>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#departue").dateDropper({
+				format: "d/m/Y",
+				lang: 'ru',
+				placeholder: 'Дата',
+				minYear: '2015',
+				maxYear: '2016',
+				animate_current: false,
+				color: "#80B574",
+				borderColor: "grey",
+				textColor: "#333",
+				boxShadow: "0",
+				borderRadius: "1px",
+				lock: 'from'
+			});
+		});
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-4 col-xs-12 soznaik-title" id="soznaik-title"><h1>soZnaik</h1></div>
+			<div class="col-md-4"></div>
+		</div>
+		<div class="row" id="soznaik-cards-set">
+			<div class="col-md-3 col-xs-12">
+				<div class="soznaik-card" id="soznaik-card-profile">
+					<div class="row soznaik-card-row soznaik-card-row-aligned" id="soznaik-avatar">
+						<img src="{{ user.demos_avatar.path }}" class="soznaik-avatar" />
+					</div>
+					<div class="row soznaik-card-row">
+						<h3>Привет, {{ user.first_name }}!</h3>
+					</div>
+					<div class="row soznaik-card-row">
+						Спасибо, что делаете этот мир лучше вместе с нами!
+					</div>
+					<div class="row soznaik-card-row">
+						{% if user.sochnik_count %}
+							У вас {{ user.sochnik_count }} сочник
+						{% else %}
+							У вас пока нет сочников
+						{% endif %}
+					</div>
+					<hr>
+					<div class="row soznaik-card-row soznaik-profile-button">
+						Профиль
+					</div>
+					<div class="row soznaik-card-row soznaik-profile-button">
+						Изменить контейнеры
+					</div>
+					<div class="row soznaik-card-row soznaik-profile-button">
+						В ыйти
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 col-xs-12">
+				<div class="soznaik-card" id="soznaik-card-tutorial">
+					<div class="soznaik-card-row-aligned soznaik-card-title">
+						<div class="row soznaik-card-title-border">
+							<div class="col-xs-2 "><span class="glyphicon glyphicon-wrench aligned"></span></div>
+							<div class="col-xs-9 aligned">Инструкция</div>
+						</div>
+					</div>
+					<div class="row soznaik-card-row">
+						1. Подойдите к контейнеру и узнайте его номер: для этого посмотрите на одну из его боковых сторон, где вы увидите надпись #N. N - и есть номер контейнера
+					</div>
+					<div class="row soznaik-card-row">
+						2. Оцените по шкале на боковой стороне контейнера, сколько процентов пластика  скопилось внутри
+					</div>
+					<div class="row soznaik-card-row">
+						3. Внесите данные (номер контейнера, количество процентов внутри, дату и время замера) в форму на этой странице
+					</div>
+					<div class="row soznaik-card-row">
+						4. По желанию оставьте любой комментарий
+					</div>
+					<div class="row soznaik-card-row">
+						5. За каждый замер вы получаете сочник! Можно делать не более 1 замера в день!
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 col-xs-12">
+				<div class="soznaik-card" id="soznaik-card-measure">
+					<div class="soznaik-card-title soznaik-card-row-aligned">
+						<div class="row soznaik-card-title-border">
+							<div class="col-xs-2 "><span class="glyphicon glyphicon-signal aligned"></span></div>
+							<div class="col-xs-9 aligned">Измерить</div>
+						</div>
+					</div>
+					<form class="soznaik-form">
+						<div class="row soznaik-card-row">
+							<select value="Контейнер">
+								<option>1. Первомайская 32к3</option>
+								<option>2. Первомайская 9/4</option>
+							</select>
+						</div>
+						<div class="row soznaik-card-row">
+							<input type="text" placeholder="Дата" id="departue" />
+						</div>
+						<div class="row soznaik-card-row">
+							<input type="text" placeholder="Время"/>
+						</div>
+						<div class="row soznaik-card-row">
+							<input type="text" placeholder="Заполненность %"/>
+						</div>
+						<div class="row soznaik-card-row soznaik-form-textarea">
+							<textarea placeholder="Комментарий"></textarea>
+						</div>
+						<div class="row soznaik-card-row">
+							<input type="submit" id="soznaik-form-button" value="Добавить"/>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-md-3 col-xs-12">
+				<div class="soznaik-card" id="soznaik-card-history">
+					<div class="soznaik-card-title soznaik-card-row-aligned">
+						<div class="row soznaik-card-title-border">
+							<div class="col-xs-2 "><span class="glyphicon glyphicon-th-list aligned"></span></div>
+							<div class="col-xs-9 aligned">История</div>
+						</div>
+					</div>
+					
+						<div class="row soznaik-card-row soznaik-card-row-history">
+							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
+							<div class="col-xs-10">11.09.2015 15% в контейнере №1</div>
+						</div>
+						<hr>
+						<div class="row soznaik-card-row soznaik-card-row-history">
+							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
+							<div class="col-xs-10">07.09.2015 7% в контейнере №3</div>
+						</div>	
+						<hr>
+						<div class="row soznaik-card-row soznaik-card-row-history">
+							<div class="col-xs-2"><span class="glyphicon glyphicon-thumbs-up aligned"></span></div>
+							<div class="col-xs-10">02.09.2015<br>Поздравляем Вас, Анна! Вы получили 10-ый сочник</div>
+						</div>	
+						<hr>
+						<div class="row soznaik-card-row soznaik-card-row-history">
+							<div class="col-xs-2"><span class="glyphicon glyphicon-transfer aligned"></span></div>
+							<div class="col-xs-10">02.09.2015. Благодаря Вам, сегодня мы осуществили вывоз точно в срок, не допустив переполнения контейнера</div>
+						</div>	
+						<hr>	
+						<div class="row soznaik-card-row soznaik-card-row-history">
+							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
+							<div class="col-xs-10">01.09.2015 98% в контейнере №3</div>
+						</div>	
+						<hr>	
+						<div class="row soznaik-card-row soznaik-card-row-history">
+							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
+							<div class="col-xs-10">01.09.2015 98% в контейнере №3</div>
+						</div>	
+						
+				</div>
+			</div>
+		</div>
+		<div id="footer">
+			<div class="container">
+				<div class = "row " id="soznaik-card-contacts">
+					<div class="col-md-3 col-xs-12">
+						+7 965 170 53 09
+					</div>
+					<div class="col-md-3 col-xs-12">
+						chistoe.d@gmail.com
+					</div>
+					<div class="col-md-3 col-xs-12">
+						<a href = "http://chistoedelo.org" target="blank">chistoedelo.org</a>
+					</div>
+					<div class="col-md-3 col-xs-12">
+						Все права защищены. 2015
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
 	url(r'^$', views.inside, name = 'inside'),
+	url(r'^soznaik/$', views.soznaik, name = 'soznaik'),
 	url(r'^unload/$', views.unload, name = 'unload'),
 	url(r'^root/$', views.rootpage, name = 'rootpage'),
 	url(r'^city/$', views.dashboard, name = 'dashboard'),
