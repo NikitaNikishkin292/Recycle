@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User, UserManager
 from decimal import*
 import decimal
 import pytz
@@ -293,7 +294,17 @@ class City_Pace(models.Model):
 				new_city_pace = City_Pace(city_pace_date = last_date_counted + timedelta(days = a_date + 1), city_pace_value = new_pace * 24 / 1000)
 				new_city_pace.save()
 
+class Demos_Measurement(models.Model):
+	demos_measurement_user = models.ForeignKey(User)
+	demos_measurement_date = models.DateTimeField(verbose_name = "Дата замера")
+	demos_measurement_percentage = models.DecimalField(max_digits = 4, decimal_places = 1, default = 50, verbose_name = "Процент")
+	demos_measurement_comment = models.CharField(max_length = 1000)
 
+class Demos(User):
+	demos_sochnik_count = models.IntegerField(verbose_name = 'Сочников накполено', default = 0)
+	demos_avatar = models.ImageField(upload_to="avatars")
+
+	objects = UserManager()
 	#def delete(self, *args, **kwargs):
 	#	for a_bin in self.unload_get_bins():
 	#		a_bin.bin_status = 'False'

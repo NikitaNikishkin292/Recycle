@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Measurement, Event, Bin, Type, Bag, Unload, City_Pace
+from .models import Measurement, Event, Bin, Type, Bag, Unload, City_Pace, Demos_Measurement, Demos
+from django.contrib.auth.models import User
 
 class MeasurementInline(admin.TabularInline):
 	model = Measurement
@@ -35,6 +36,10 @@ class BagAdmin(admin.ModelAdmin):
 	list_display = ('bag_id', 'bag_status')
 	list_filter = ['bag_status']
 
+class DemosMeasurementAdmin(admin.ModelAdmin):
+	ordering = ('demos_measurement_date')
+	list_display = ('demos_measurement_date', 'demos_measurement_user', 'demos_measurement_percentage')
+
 
 admin.site.register(Bin, BinAdmin)
 admin.site.register(Type, TypeAdmin)
@@ -43,3 +48,5 @@ admin.site.register(Event)
 admin.site.register(Bag, BagAdmin)
 admin.site.register(Unload)
 admin.site.register(City_Pace)
+admin.site.register(Demos_Measurement)
+admin.site.register(Demos)
