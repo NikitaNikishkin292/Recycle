@@ -173,7 +173,7 @@
 		}
 
 		.soznaik-avatar {
-			width: 80%;
+			height: 220px;
 		}
 
 		#soznaik-avatar {
@@ -202,15 +202,12 @@
 				format: "d/m/Y",
 				lang: 'ru',
 				placeholder: 'Дата',
-				minYear: '2015',
-				maxYear: '2016',
 				animate_current: false,
 				color: "#80B574",
 				borderColor: "grey",
 				textColor: "#333",
 				boxShadow: "0",
-				borderRadius: "1px",
-				lock: 'from'
+				borderRadius: "1px"
 			});
 		});
 	</script>
@@ -226,7 +223,7 @@
 			<div class="col-md-3 col-xs-12">
 				<div class="soznaik-card" id="soznaik-card-profile">
 					<div class="row soznaik-card-row soznaik-card-row-aligned" id="soznaik-avatar">
-						<img src="{% static 'images/anj.jpg' %}" class="soznaik-avatar" />
+						<img src= "{{ ava.url }}" class="soznaik-avatar" />
 					</div>
 					<div class="row soznaik-card-row">
 						<h3>Привет, {{ user.first_name }}!</h3>

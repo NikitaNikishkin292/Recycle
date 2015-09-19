@@ -78,7 +78,7 @@
     </div>
     <div>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Город</a></li>
+        <li><a href="/city">Город</a></li>
         <li><a href="/office">Офис</a></li>
         <li><a href="/warehouse">Склад</a></li>
         <li><a href="" class="logout">Выйти</a></li>
@@ -124,7 +124,7 @@
 	    </div>
 	    <div id = "simple_bins_list">
 		    {% for bin in bins_list %}
-		    <a href="/{{bin.bin_id}}/">
+		    <a href="/city/{{bin.bin_id}}/">
 			    <div class="row bin_info">
 			    	<div class="col-xs-1">{{ forloop.counter }}</div>
 			    	<div class="col-xs-4">{{ bin.bin_adress }}</div>
@@ -138,7 +138,7 @@
 	    
 	    <div id = "ordered_bins_list">
 		    {% for bin in bins_list_ordered %}
-		    <a href="{{bin.bin_id}}/">
+		    <a href="/city/{{bin.bin_id}}/">
 			    <div class="row bin_info">
 			    	<div class="col-xs-1">{{ forloop.counter }}</div>
 			    	<div class="col-xs-4">{{ bin.bin_adress }}</div>

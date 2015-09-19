@@ -80,7 +80,7 @@ def inside(request):
 					if user is not None:
 						if user.is_active:
 							login(request, user)
-							context = {'user': demos_search }
+							context = {'user': demos_search, 'ava': demos_search.demos_avatar }
 							logger.info(demos_search.demos_avatar.url)
 							return render(request, 'control_measure/demos_workspace.html', context)
 						else:
@@ -94,7 +94,9 @@ def inside(request):
 
 def soznaik (request):
 	if request.user.is_authenticated():
-		return render(request, 'control_measure/demos_workspace.html', {})
+		demos_search = Demos.objects.get(email = request.user.email)
+		logger.info(demos_search.demos_avatar.url)
+		return render(request, 'control_measure/demos_workspace.html', {'user': demos_search, 'ava': demos_search.demos_avatar})
 
 def rootpage (request):
 	if request.user.is_authenticated():
