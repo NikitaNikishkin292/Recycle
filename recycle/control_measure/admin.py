@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Measurement, Event, Bin, Type, Bag, Unload, City_Pace, Demos_Measurement, Demos
+from .models import Measurement, Event, Bin, Type, Bag, Unload, City_Pace, Demos_Measurement, Demos, Demos_Message
 from django.contrib.auth.models import User
 
 class MeasurementInline(admin.TabularInline):
@@ -50,3 +50,4 @@ admin.site.register(Unload)
 admin.site.register(City_Pace)
 admin.site.register(Demos_Measurement)
 admin.site.register(Demos)
+admin.site.register(Demos_Message)

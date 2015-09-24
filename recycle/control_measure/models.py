@@ -296,20 +296,54 @@ class City_Pace(models.Model):
 
 class Demos_Measurement(models.Model):
 	demos_measurement_user = models.ForeignKey(User)
-	demos_measurement_date = models.DateTimeField(verbose_name = "Дата замера")
+	demos_measurement_date = models.DateField(verbose_name = "Дата замера")
 	demos_measurement_percentage = models.DecimalField(max_digits = 4, decimal_places = 1, default = 50, verbose_name = "Процент")
 	demos_measurement_comment = models.CharField(max_length = 1000)
+	demos_measurement_bin = models.ForeignKey(Bin, verbose_name = "Измеренный контейнер", blank = 'True', null = 'True')
+
+	def __str__(self):
+		return str(self.demos_measurement_date)
 
 class Demos(User):
 	demos_sochnik_count = models.IntegerField(verbose_name = 'Сочников накполено', default = 0)
 	demos_avatar = models.ImageField(upload_to="avatars")
 	demos_bins = models.ManyToManyField(Bin, verbose_name = 'Выгружаемые контейнеры', blank = 'True', null = 'True')
 	objects = UserManager()
+
+	def demos_get_messages(self):
+		inbox = self.demos_message_set.all().order_by('-demos_message_date')
+		return inbox
+
+	
+
 	#def delete(self, *args, **kwargs):
 	#	for a_bin in self.unload_get_bins():
 	#		a_bin.bin_status = 'False'
 	#		a_bin.save()
 	#	super(Unload, self).delete()
+
+class Demos_Message(models.Model):
+	demos_message_user = models.ForeignKey(Demos, verbose_name = "Пользователь")
+	demos_message_date = models.DateField(verbose_name = "Дата сообщения")
+	demos_message_content = models.CharField(verbose_name = "Сообщение", max_length = 500)
+	MESSAGE_STATUS = (
+		(0, 'Измерение'),
+		(1, 'Поздравление'),
+		(2, 'Вывоз'),
+	)
+	demos_message_status = models.IntegerField(verbose_name = "Тип сообщения", choices = MESSAGE_STATUS)
+
+	def demos_get_message_icon_class(self):
+		if self.demos_message_status == 0:
+			return "glyphicon glyphicon-pencil aligned"
+		else:
+			if self.demos_message_status == 1:
+				return "glyphicon glyphicon-thumbs-up aligned"
+			else:
+				return "glyphicon glyphicon-transfer aligned"
+
+	def __str__(self):
+		return str(self.demos_message_content)
 
 #Выполняя makemigrations, вы говорите Django, что внесли 
 #некоторые изменения в ваши модели и хотели бы сохранить их в миграции.

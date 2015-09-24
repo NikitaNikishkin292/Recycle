@@ -195,11 +195,15 @@
 			margin: 3%;
 		}
 
+		option {
+			text-align: left;
+		}
+
 	</style>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$("#departue").dateDropper({
-				format: "d/m/Y",
+				format: "Y-m-d",
 				lang: 'ru',
 				placeholder: 'Дата',
 				animate_current: false,
@@ -233,8 +237,8 @@
 						Спасибо, что делаете этот мир лучше вместе с нами!
 					</div>
 					<div class="row soznaik-card-row">
-						{% if user.sochnik_count %}
-							У вас {{ user.sochnik_count }} сочник
+						{% if user.demos_sochnik_count %}
+							У вас {{ user.demos_sochnik_count }} сочник
 						{% else %}
 							У вас пока нет сочников
 						{% endif %}
@@ -284,29 +288,36 @@
 							<div class="col-xs-9 aligned">Измерить</div>
 						</div>
 					</div>
-					<form class="soznaik-form">
+					<form action = "{% url 'control_measure:demos_add_measurement' %}" method = "post" class="soznaik-form">
+						{% csrf_token %}
 						<div class="row soznaik-card-row">
-							<select value="Контейнер">
+							<select value="Контейнер" name = "demos_bin">
 								{% if bins %}
-									{{bins}}
+									<optgroup label = "Ваши контейнеры"> </optgroup>
+									{% for bin in bins %}
+										<option> #{{ bin.bin_id }}. {{ bin.bin_adress }} </option>
+									{% endfor %}
 								{% endif %}
-								<optgroup> Остальные контейнеры </optgroup>
-								
+									<optgroup> Остальные контейнеры </optgroup>
 							</select>
 						</div>
 						<div class="row soznaik-card-row">
-							<input type="text" placeholder="Дата" id="departue" />
+							<input type="text" placeholder="Дата" id="departue" name = "demos_date"/>
 						</div>
 						<div class="row soznaik-card-row">
-							<input type="text" placeholder="Заполненность %"/>
+							<input type="text" placeholder="Заполненность %" name = "demos_fill"/>
 						</div>
 						<div class="row soznaik-card-row soznaik-form-textarea">
-							<textarea placeholder="Комментарий"></textarea>
+							<textarea placeholder="Комментарий" name = "demos_comment"></textarea>
 						</div>
 						<div class="row soznaik-card-row">
 							<input type="submit" id="soznaik-form-button" value="Добавить"/>
 						</div>
 					</form>
+					<div class="row">
+						<div class="col-xs-1"></div>
+						<div class="col-xs-10">{{ err_msg }} </div>	
+					</div>
 				</div>
 			</div>
 			<div class="col-md-3 col-xs-12">
@@ -317,36 +328,20 @@
 							<div class="col-xs-9 aligned">История</div>
 						</div>
 					</div>
-					
-						<div class="row soznaik-card-row soznaik-card-row-history">
-							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
-							<div class="col-xs-10">11.09.2015 15% в контейнере №1</div>
-						</div>
-						<hr>
-						<div class="row soznaik-card-row soznaik-card-row-history">
-							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
-							<div class="col-xs-10">07.09.2015 7% в контейнере №3</div>
-						</div>	
-						<hr>
-						<div class="row soznaik-card-row soznaik-card-row-history">
-							<div class="col-xs-2"><span class="glyphicon glyphicon-thumbs-up aligned"></span></div>
-							<div class="col-xs-10">02.09.2015<br>Поздравляем Вас, Анна! Вы получили 10-ый сочник</div>
-						</div>	
-						<hr>
-						<div class="row soznaik-card-row soznaik-card-row-history">
-							<div class="col-xs-2"><span class="glyphicon glyphicon-transfer aligned"></span></div>
-							<div class="col-xs-10">02.09.2015. Благодаря Вам, сегодня мы осуществили вывоз точно в срок, не допустив переполнения контейнера</div>
-						</div>	
-						<hr>	
-						<div class="row soznaik-card-row soznaik-card-row-history">
-							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
-							<div class="col-xs-10">01.09.2015 98% в контейнере №3</div>
-						</div>	
-						<hr>	
-						<div class="row soznaik-card-row soznaik-card-row-history">
-							<div class="col-xs-2"><span class="glyphicon glyphicon-pencil aligned"></span></div>
-							<div class="col-xs-10">01.09.2015 98% в контейнере №3</div>
-						</div>	
+						{% if user.demos_get_messages %}
+							{% for message in user.demos_get_messages %}
+								<div class="row soznaik-card-row soznaik-card-row-history">
+									<div class="col-xs-2"><span class = "{{ message.demos_get_message_icon_class }}" ></span></div>
+									<div class="col-xs-10">{{message.demos_message_date}} {{message.demos_message_content}}</div>
+								</div>
+								<hr>
+							{% endfor %}
+						{% else %}
+							<div class="row soznaik-card-row soznaik-card-row-history">
+								<div class="col-xs-12">Пока история ваших действий пуста. Сделайте первое измерение, и вы уидите первое сообщение в этом окне</div>
+							</div>
+						{% endif %}
+						
 						
 				</div>
 			</div>

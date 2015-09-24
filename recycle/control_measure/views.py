@@ -1,6 +1,6 @@
 from django.template import RequestContext, loader
 from django.shortcuts import render, get_object_or_404, render_to_response
-from .models import Bin, Measurement, Type, Bag, Unload, City_Pace, Demos
+from .models import Bin, Measurement, Type, Bag, Unload, City_Pace, Demos, Demos_Measurement, Demos_Message
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
@@ -25,6 +25,9 @@ tz = 'Europe/Moscow'
 def inside(request):
 	#from django.contrib.auth import authenticate, login
 	if request.user.is_authenticated():
+		demos_search = Demos.objects.get(email = request.user.email)
+		if demos_search:
+			return HttpResponseRedirect("/soznaik")
 		bins_list = Bin.objects.all().order_by('bin_id')
 		context = {}
 		if bins_list:
@@ -80,8 +83,8 @@ def inside(request):
 					if user is not None:
 						if user.is_active:
 							login(request, user)
-							context = {'user': demos_search, 'ava': demos_search.demos_avatar }
-							logger.info(demos_search.demos_avatar.url)
+							demos_bins_list = demos_search.demos_bins.all()
+							context = {'user': demos_search, 'ava': demos_search.demos_avatar, 'bins': demos_bins_list }
 							return HttpResponseRedirect("/soznaik")#render_to_response('control_measure/demos_workspace.html', context)
 						else:
 							err_msg = 'Account has been disabled'
@@ -94,11 +97,60 @@ def inside(request):
 
 def soznaik (request):
 	if request.user.is_authenticated():
+		logger.info(request.user.email)
 		demos_search = Demos.objects.get(email = request.user.email)
-		demos_bins_list = demos_search.demos_bins
+		demos_bins_list = demos_search.demos_bins.all()
+		other_bins = Bin.objects.all()
 		logger.info(demos_search)
 		logger.info(demos_bins_list)
 		return render(request, 'control_measure/demos_workspace.html', {'user': demos_search, 'ava': demos_search.demos_avatar, 'bins': demos_bins_list })
+
+def demos_add_measurement (request):
+	err_msg = ""
+	logger.info(request.user.email)
+	demos_search = Demos.objects.get(email = request.user.email)
+	demos_bins_list = demos_search.demos_bins.all()
+	try:
+		demos_bin = request.POST['demos_bin']
+		demos_date = request.POST['demos_date']
+		demos_comment = request.POST['demos_comment']
+		demos_fill = request.POST['demos_fill']
+	except (KeyError, User.DoesNotExist):
+		err_msg = 'Data is incorrect. Try again'
+	else:
+		#logger.info(demos_bin)
+		
+		if demos_comment:
+			logger.info(demos_comment)
+		if demos_date == "Дата":
+			err_msg +=  'Вы не ввели дату'
+		else:
+			if demos_fill == "":
+				err_msg +=  "Вы не ввели цифру заполненности. Попробуйте ещё раз!"
+			else:
+				err_msg += "Ваше измерение успешно добавлено! Хорошего вам дня"
+				a_bin_id = demos_bin[1:].split(".")
+				logger.info(a_bin_id[0])
+				measured_bin = Bin.objects.get(bin_id = a_bin_id[0])
+				logger.info(measured_bin)
+				new_meas = Demos_Measurement(demos_measurement_bin = measured_bin, demos_measurement_user = demos_search, demos_measurement_date = demos_date, demos_measurement_percentage = demos_fill)
+				if demos_comment:
+					new_meas.demos_measurement_comment = demos_comment
+				new_meas.save()
+				message = "вы добавили измерение: " + demos_fill + "% в контейнер #" + str(measured_bin.bin_id) + " по адресу " + measured_bin.bin_adress
+				logger.info(message)
+				new_message = Demos_Message (demos_message_user = demos_search, demos_message_date = demos_date, demos_message_status = 0, demos_message_content = message)
+				new_message.save()
+				demos_search.demos_sochnik_count += 1;
+				demos_search.save()
+		#logger.info(demos_bin)
+		#logger.info(demos_date)
+		#logger.info(demos_fill)
+		#logger.info(demos_comment)
+		
+		
+	return render(request, 'control_measure/demos_workspace.html', {'err_msg': err_msg, 'user': demos_search, 'ava': demos_search.demos_avatar, 'bins': demos_bins_list })
+
 
 def rootpage (request):
 	if request.user.is_authenticated():
