@@ -1,5 +1,5 @@
 from django.template import RequestContext, loader
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, render_to_response
 from .models import Bin, Measurement, Type, Bag, Unload, City_Pace, Demos
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -54,20 +54,20 @@ def inside(request):
 				if user is not None:
 					if user.is_active:
 						login(request, user)
-						bins_list = Bin.objects.all().order_by('bin_id')
-						context = {}
-						if bins_list:
-							city_pace = 0
-							recycle_now_in_bins = 0
-							for a_bin in bins_list:
-								city_pace += a_bin.bin_generate_volume_pace()
-								recycle_now_in_bins += a_bin.bin_get_current_fill_litres()
-							city_pace *= 0.024
-							recycle_now_in_bins /= 1000
-							city_pace = ("{0:.2f}".format(city_pace))
-							recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
-							context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
-						return render(request, 'control_measure/dashboard.html', context)
+						#bins_list = Bin.objects.all().order_by('bin_id')
+						#context = {}
+						#if bins_list:
+						#	city_pace = 0
+						#	recycle_now_in_bins = 0
+						#	for a_bin in bins_list:
+						#		city_pace += a_bin.bin_generate_volume_pace()
+						#		recycle_now_in_bins += a_bin.bin_get_current_fill_litres()
+						#	city_pace *= 0.024
+						#	recycle_now_in_bins /= 1000
+						#	city_pace = ("{0:.2f}".format(city_pace))
+						#	recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
+						#	context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
+						return HttpResponseRedirect("/city") #render(request, 'control_measure/dashboard.html', context)
 					else:
 						err_msg = 'Account has been disabled'
 				else:
@@ -82,7 +82,7 @@ def inside(request):
 							login(request, user)
 							context = {'user': demos_search, 'ava': demos_search.demos_avatar }
 							logger.info(demos_search.demos_avatar.url)
-							return render(request, 'control_measure/demos_workspace.html', context)
+							return HttpResponseRedirect("/soznaik")#render_to_response('control_measure/demos_workspace.html', context)
 						else:
 							err_msg = 'Account has been disabled'
 							return render(request, 'control_measure/inside.html', {'err_msg': err_msg})
@@ -95,8 +95,10 @@ def inside(request):
 def soznaik (request):
 	if request.user.is_authenticated():
 		demos_search = Demos.objects.get(email = request.user.email)
-		logger.info(demos_search.demos_avatar.url)
-		return render(request, 'control_measure/demos_workspace.html', {'user': demos_search, 'ava': demos_search.demos_avatar})
+		demos_bins_list = demos_search.demos_bins
+		logger.info(demos_search)
+		logger.info(demos_bins_list)
+		return render(request, 'control_measure/demos_workspace.html', {'user': demos_search, 'ava': demos_search.demos_avatar, 'bins': demos_bins_list })
 
 def rootpage (request):
 	if request.user.is_authenticated():
@@ -107,7 +109,7 @@ def rootpage (request):
 
 def log_out(request):
 	logout(request)
-	return render(request, 'control_measure/inside.html', {'err_msg': ''})
+	return HttpResponseRedirect("/")#render(request, 'control_measure/inside.html', {'err_msg': ''})
 
 
 def unload(request):

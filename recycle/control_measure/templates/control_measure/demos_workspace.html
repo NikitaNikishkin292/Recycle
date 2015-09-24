@@ -207,7 +207,8 @@
 				borderColor: "grey",
 				textColor: "#333",
 				boxShadow: "0",
-				borderRadius: "1px"
+				borderRadius: "1px",
+				lock: "to"
 			});
 		});
 	</script>
@@ -286,15 +287,15 @@
 					<form class="soznaik-form">
 						<div class="row soznaik-card-row">
 							<select value="Контейнер">
-								<option>1. Первомайская 32к3</option>
-								<option>2. Первомайская 9/4</option>
+								{% if bins %}
+									{{bins}}
+								{% endif %}
+								<optgroup> Остальные контейнеры </optgroup>
+								
 							</select>
 						</div>
 						<div class="row soznaik-card-row">
 							<input type="text" placeholder="Дата" id="departue" />
-						</div>
-						<div class="row soznaik-card-row">
-							<input type="text" placeholder="Время"/>
 						</div>
 						<div class="row soznaik-card-row">
 							<input type="text" placeholder="Заполненность %"/>

@@ -303,7 +303,7 @@ class Demos_Measurement(models.Model):
 class Demos(User):
 	demos_sochnik_count = models.IntegerField(verbose_name = 'Сочников накполено', default = 0)
 	demos_avatar = models.ImageField(upload_to="avatars")
-
+	demos_bins = models.ManyToManyField(Bin, verbose_name = 'Выгружаемые контейнеры', blank = 'True', null = 'True')
 	objects = UserManager()
 	#def delete(self, *args, **kwargs):
 	#	for a_bin in self.unload_get_bins():
