@@ -214,6 +214,15 @@
 				borderRadius: "1px",
 				lock: "to"
 			});
+
+			$('.logout').click(function(event) {
+                    console.log('fuck');
+                    $.ajax({
+                        type: 'GET',
+                        url: '{% url "control_measure:log_out" %}'
+                    });
+                    window.location.reload();
+                });
 		});
 	</script>
 </head>
@@ -250,7 +259,7 @@
 					<div class="row soznaik-card-row soznaik-profile-button">
 						Изменить контейнеры
 					</div>
-					<div class="row soznaik-card-row soznaik-profile-button">
+					<div class="row soznaik-card-row soznaik-profile-button logout">
 						В ыйти
 					</div>
 				</div>
