@@ -27,8 +27,9 @@
     		margin-bottom: 1%;
     	}*/
 
-    	input {
-    		border: 4px solid #33423F;
+
+    	input, button.signup {
+    		border: 2px solid #33423F;
 			background: #ffffff;
 			-webkit-border-radius: 0px;
 			-moz-border-radius: 0px;
@@ -37,16 +38,22 @@
 			-webkit-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
 			-moz-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
 			box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(000,000,000,0.7) 0 0px 0px;
-			margin-bottom: 0;
-			width: 90%;
+			margin-bottom: 2%;
+			text-align: center;
+			padding: 3% 0;
+			width: 95%;
+			font-size: 150%;
+    	}
+
+    	form {
+    		text-align: center;
     	}
 
     	.input_form {
     		margin-top: 10%;
     	}
-
     	
-
+    	
 		
 		
 		
@@ -69,7 +76,6 @@
 
 		h1 {
 			font-weight: bold;
-			
 			margin-bottom: 0;
 		}
 
@@ -165,10 +171,11 @@
 
 		#soznaik-main-howto {
 			
-			background-image: url("{% static 'images/sea.jpg' %}");
+			background-image: url("{% static 'images/phone.jpg' %}");
 			background-size: cover;
 			font-family: 'Boblic';
 			text-align: center;
+			max-height: 650px;
 			color: #FFF;		
 		}
 
@@ -190,8 +197,30 @@
 		}
 
 		img {
-			margin: 2%;
-			height: 200px;
+			margin: 30% 0;
+			height: 40px;
+		}
+
+		#soznaik-tutorial-signin {
+			padding-top: 5%;
+			min-height: 700px;
+			font-family: 'Boblic';
+		}
+
+		.soznaik-tutorial-signin-title {
+			font-size: 300%;
+		}
+
+		.soznaik-signin-title {
+			margin-top: 10%;
+			margin-bottom: 5%;
+			text-align: center;
+			font-size: 300%;
+		}
+
+		.soznaik-tutorial-signin-points {
+			margin: 2% 0;
+			font-size: 150%;
 		}
     </style>
 </head>
@@ -236,70 +265,84 @@
 			<div class="col-md-3"></div>
 		</div>
 	</div>
-	<div class="containter-fluid" id="soznaik-main-howto">
-		<div class="row" id="soznaik-main-howto-first">
-			<div class="col-md-3"></div>
-			<div class="col-md-6 col-xs-12">
-				<span>Как это работает?</span>
-			</div>
-			<div class="col-md-3"></div>
-		</div>
-		<div class="row">
-			<div class="col-md-4 col-xs-12">
-				<div class="row">
-					<img src="{% static 'images/target50.png' %}" />
-				</div>
-				<div class="row soznaik-main-howto-steps">
-					Если вы проживаете рядом с одним из контейнеров Чистого Дела и бла бла бла
-				</div>
-			</div>
-			<div class="col-md-4 col-xs-12">
-				<div class="row">
-					<img src="{% static 'images/paper11.png' %}" />
-				</div>
-				<div class="row soznaik-main-howto-steps">
-					Регулярно сообщаете нам данные о заполненности контейнеров, получая за это "сочники" - виртуальную валюту
-				</div>
-			</div>
-			<div class="col-md-4 col-xs-12">
-				<div class="row">
-					<img src="{% static 'images/wax1.png' %}" />
-				</div>
-				<div class="row soznaik-main-howto-steps">
-					Мы всегда в курсе того, сколько пластка скопилось в контейнере, и сможем вовремя осуществить вывоз!
-				</div>
-			</div>
-		</div>
-		<div class="row">
-		<div class="col-xs-4"></div>
-		<div class="col-xs-4">
-			<div class="row"></div>
-			<form method="post" action = '{% url "control_measure:inside" %}'>
-			{% csrf_token %}
-				<div class="row">
-					<div class="col-xs-12">
-						<input type="text" name="e_mail" placeholder="Email" value="" />
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<input type="password" name="passw" placeholder="Password" value="" />
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 psh">
-						<input type="submit" value="Войти" class = "input_form"/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						{{err_msg}}
-					</div>
-				</div>
-			</form>
-		</div>
-		<div class="col-xs-4"></div>
+	<div class="containter-fluid" id="soznaik-main-howto">	
 	</div>
+
+	<div class="container-fluid" id="soznaik-tutorial-signin">
+		<div class="row">
+			<div class="col-md-6 col-xs-12 soznaik-tutorial-signin-blocks">
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-xs-12 col-md-8 soznaik-tutorial-signin-title"><span>Как это работает?</span></div>
+					<div class="col-md-2"></div>
+				</div>
+				<div class = "row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-2"><img src = "{% static 'images/paper11.png' %}" /></div>
+					<div class="col-xs-8 soznaik-tutorial-signin-points">Вы регулярно оказываетесь рядом с нашим контейнером для пластика и отправляете нам данные о его заполненности</div>
+					
+				</div>
+				
+				<div class = "row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-2"><img src = "{% static 'images/wax1.png' %}" /></div>
+					<div class="col-xs-8 soznaik-tutorial-signin-points">За каждое измерение получаете "сочники", накапливаете их и обмениваете на бонусы от наших партнёров</div>
+				
+				</div>
+				<div class = "row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-2"><img src = "{% static 'images/logistics3.png' %}" /></div>
+					<div class="col-xs-8 soznaik-tutorial-signin-points">Мы всегда в курсе того, сколько пластка скопилось в контейнере, и всегда вовремя осуществляем вывоз!</div>
+					
+				</div>
+				<div class = "row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-2"><img src = "{% static 'images/smiley40.png' %}" /></div>
+					<div class="col-xs-8 soznaik-tutorial-signin-points">Вместе с вами	 мы делаем систему раздельного сбора возможной!</div>
+					
+				</div>
+			</div>
+			<div class="col-md-6 col-xs-12">
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-8 soznaik-signin-title">Вход для членов клуба</div>
+					<div class="col-xs-2"></div>
+				</div>
+				<div class="row">
+					<div class="col-xs-2"></div>
+					<div class="col-xs-8">
+						<form method="post" action = '{% url "control_measure:inside" %}'>
+							{% csrf_token %}
+							<div class="row">
+								<div class="col-xs-12">
+									<input type="text" name="e_mail" placeholder="Email" value="" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<input type="password" name="passw" placeholder="Пароль" value="" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6 psh">
+									<input type="submit" value="Войти" class = "input_form"/>
+								</div>
+								<div class="col-xs-6">
+									<button class="signup input_form">Регистрация</button>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									{{err_msg}}
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="col-xs-2"></div>
+				</div>
+			</div>
+		</div>
+		
 	</div>
 <!--<div class="container-fluid form">
 	<div class="row">
@@ -338,5 +381,45 @@
 		<div class="col-xs-4"></div>
 	</div>
 </div>-->
+
+<!--
+<div class="row" id="soznaik-main-howto-first">
+			<div class="col-md-3"></div>
+			<div class="col-md-6 col-xs-12">
+				<span>Как это работает?</span>
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 col-xs-12">
+				<div class="row">
+					<img src="{% static 'images/target50.png' %}" />
+				</div>
+				<div class="row soznaik-main-howto-steps">
+					Если вы проживаете рядом с одним из контейнеров Чистого Дела и бла бла бла
+				</div>
+			</div>
+			<div class="col-md-4 col-xs-12">
+				<div class="row">
+					<img src="{% static 'images/paper11.png' %}" />
+				</div>
+				<div class="row soznaik-main-howto-steps">
+					Регулярно сообщаете нам данные о заполненности контейнеров, получая за это "сочники" - виртуальную валюту
+				</div>
+			</div>
+			<div class="col-md-4 col-xs-12">
+				<div class="row">
+					<img src="{% static 'images/wax1.png' %}" />
+				</div>
+				<div class="row soznaik-main-howto-steps">
+					Мы всегда в курсе того, сколько пластка скопилось в контейнере, и сможем вовремя осуществить вывоз!
+				</div>
+			</div>
+		</div>
+-->
+
+
+
+
 </body>
 </html>
