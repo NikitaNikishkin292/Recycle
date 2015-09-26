@@ -156,6 +156,21 @@ def demos_add_measurement (request):
 		
 	return render(request, 'control_measure/demos_workspace.html', {'err_msg': err_msg, 'user': demos_search, 'ava': demos_search.demos_avatar, 'bins': demos_bins_list })
 
+def delete_demos_measurement(request):
+	try:
+		message_id = int(request.GET['message'])
+	except (KeyError, Demos_Message.DoesNotExist):
+		return HttpResponseRedirect("/soznaik")
+	else:
+		logger.info(message_id)
+		message_for_removing = Demos_Message.objects.get(id = message_id)
+		current_user = message_for_removing.demos_message_user
+		current_user.demos_sochnik_count -= 1
+		current_user.save()
+		message_for_removing.delete()
+		return HttpResponseRedirect("/soznaik")
+
+
 
 def rootpage (request):
 	if request.user.is_authenticated():

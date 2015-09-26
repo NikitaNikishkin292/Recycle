@@ -5,6 +5,7 @@ urlpatterns = [
 	url(r'^$', views.inside, name = 'inside'),
 	url(r'^soznaik/$', views.soznaik, name = 'soznaik'),
 	url(r'^soznaik/demos_add_measurement/$', views.demos_add_measurement, name = "demos_add_measurement"),
+	url(r'^soznaik/delete_demos_measurement/$', views.delete_demos_measurement, name = "delete_demos_measurement"),
 	url(r'^unload/$', views.unload, name = 'unload'),
 	url(r'^root/$', views.rootpage, name = 'rootpage'),
 	url(r'^city/$', views.dashboard, name = 'dashboard'),

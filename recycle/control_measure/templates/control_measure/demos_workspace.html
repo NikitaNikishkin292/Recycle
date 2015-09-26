@@ -199,6 +199,11 @@
 			text-align: left;
 		}
 
+		.soznaik-remove-button {
+			text-decoration: none;
+			cursor: pointer;
+		}
+
 	</style>
 	<script type="text/javascript">
 		$(document).ready(function(){
@@ -223,6 +228,27 @@
                     });
                     window.location.reload();
                 });
+
+			$('.soznaik-remove-button').click(function(event) {
+				var message = $(this).attr('id');
+				console.log(message);
+				remove_demos_measurement (message);
+			})
+
+			function remove_demos_measurement (message_id) {
+				$.ajax({
+					type: 'GET',
+					url: '{% url "control_measure:delete_demos_measurement" %}',
+					data: {'message': message_id },
+					success: function() {
+						console.log('successfull');
+					},
+					error: function () {
+						console.log('fail');
+					}
+				});
+				window.location.replace('{% url "control_measure:soznaik" %}')
+			}
 		});
 	</script>
 </head>
@@ -340,8 +366,24 @@
 						{% if user.demos_get_messages %}
 							{% for message in user.demos_get_messages %}
 								<div class="row soznaik-card-row soznaik-card-row-history">
-									<div class="col-xs-2"><span class = "{{ message.demos_get_message_icon_class }}" ></span></div>
-									<div class="col-xs-10">{{message.demos_message_date}} {{message.demos_message_content}}</div>
+									<div class="col-xs-2">
+										<div class="row">
+											<div class="col-xs-12">
+												<span class = "{{ message.demos_get_message_icon_class }}" ></span>
+											</div>
+											<div class="col-xs-12">
+												<br>
+											</div>
+											{% if not message.demos_message_status %}
+												<div class="col-xs-12">
+													<a class = "soznaik-remove-button" id =  "{{ message.id }}" data-toggle="tooltip" data-placement="bottom" title="Удалить запись"><span class="glyphicon glyphicon-remove aligned"></span></a>
+												</div>
+											{% endif %}
+
+										</div>
+										
+									</div>
+									<div class="col-xs-10 message_to_display">{{message.demos_message_date}} {{message.demos_message_content}}</div>
 								</div>
 								<hr>
 							{% endfor %}
