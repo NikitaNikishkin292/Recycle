@@ -56,7 +56,7 @@ class Bin(models.Model):
 		return self.bin_type.type_get_volume()
 
 	#генерирует скорость заполнения в литрах/час для счёта
-	def bin_generate_volume_pace(self):
+	def bin_generate_volume_pace_test(self):
 		measure_set = self.measurement_set.all().order_by('measurement_date')
 		if measure_set.count() > 1:
 			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
@@ -72,7 +72,7 @@ class Bin(models.Model):
 		else:
 			return 0
 
-	def bin_generate_volume_pace_test(self):
+	def bin_generate_volume_pace(self):
 		measure_set_init = self.measurement_set.all().order_by('measurement_date')
 		size = measure_set_init.count()
 		if size > 10:
