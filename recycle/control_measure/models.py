@@ -62,7 +62,7 @@ class Bin(models.Model):
 		if size > 10:
 			begin = size - 10
 		else:
-			begin = size
+			begin = 0
 		measure_set = measure_set_init[begin:]
 		if measure_set.count() > 1:
 			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
