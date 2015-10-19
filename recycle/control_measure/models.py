@@ -80,9 +80,14 @@ class Bin(models.Model):
 		else:
 			begin = 0
 		measure_set = measure_set_init[begin:]
+		logger.info(measure_set)
 		if measure_set.count() > 1:
-			time_summ = measure_set.last().measurement_date - measure_set.first().measurement_date
+			logger.info(measure_set_init.last())
+			logger.info(measure_set.first().measurement_date)
+			time_summ = measure_set_init.last().measurement_date - measure_set.first().measurement_date
+			logger.info(time_summ)
 			time_summ = time_summ.days * 24 + time_summ.seconds / 3600
+			logger.info(time_summ)
 			summ = 0.
 			mes_first = measure_set.first()
 			for mes_second in measure_set[1:]:
@@ -90,6 +95,9 @@ class Bin(models.Model):
 					summ += float(mes_second.measurement_volume - mes_first.measurement_volume)
 				mes_first = mes_second
 			result = summ / time_summ
+			logger.info("New: ")
+			logger.info(summ)
+			logger.info(time_summ)
 			return result
 		else:
 			return 0

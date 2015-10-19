@@ -210,7 +210,8 @@ def dashboard(request):
 			recycle_now_in_bins /= 1000
 			city_pace = ("{0:.2f}".format(city_pace))
 			recycle_now_in_bins = ("{0:.2f}".format(recycle_now_in_bins))
-			context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }
+			#test_value = Bin.objects.get(bin_adress = 'Моск шоссе')
+			context = RequestContext = {'bins_list': bins_list, 'bins_list_ordered': bins_list[0].bin_get_ordered_bins_list, 'types': Type.objects.all(), 'pace': city_pace, 'volume': recycle_now_in_bins }#, 'test_value': test_value }
 		#from django.conf import settings
 		return render(request, 'control_measure/dashboard.html', context)
 	else:
