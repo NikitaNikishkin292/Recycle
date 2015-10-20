@@ -273,6 +273,9 @@ def detail(request, bin_ident):
 						mes.measurement_error = ((fill_of_date - mes.measurement_volume) / mes.measurement_bin.bin_get_volume()) * 100
 						mes.save()
 				mes_first = mes
+			#the_date_datetime = datetime.strptime("2015-08-21 14:00", "%Y-%m-%d %H:%M")
+			#our_date_for_comparison = pytz.utc.localize(the_date_datetime)
+			#pace = Bin.objects.get(bin_adress = 'dhdh').bin_generate_volume_pace_of_date_test(our_date_for_comparison)
 		return render(request, 'control_measure/detail.html', { 'a_bin': a_bin })
 	else:
 		return render(request, 'control_measure/inside.html', {'err_msg': ""})

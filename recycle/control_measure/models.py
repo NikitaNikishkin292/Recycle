@@ -80,14 +80,14 @@ class Bin(models.Model):
 		else:
 			begin = 0
 		measure_set = measure_set_init[begin:]
-		logger.info(measure_set)
+		#logger.info(measure_set)
 		if measure_set.count() > 1:
-			logger.info(measure_set_init.last())
-			logger.info(measure_set.first().measurement_date)
+			#logger.info(measure_set_init.last())
+			#logger.info(measure_set.first().measurement_date)
 			time_summ = measure_set_init.last().measurement_date - measure_set.first().measurement_date
 			logger.info(time_summ)
 			time_summ = time_summ.days * 24 + time_summ.seconds / 3600
-			logger.info(time_summ)
+			#logger.info(time_summ)
 			summ = 0.
 			mes_first = measure_set.first()
 			for mes_second in measure_set[1:]:
@@ -95,15 +95,53 @@ class Bin(models.Model):
 					summ += float(mes_second.measurement_volume - mes_first.measurement_volume)
 				mes_first = mes_second
 			result = summ / time_summ
-			logger.info("New: ")
-			logger.info(summ)
-			logger.info(time_summ)
+			#logger.info("New: ")
+			#logger.info(summ)
+			#logger.info(time_summ)
 			return result
 		else:
 			return 0
 
 	def bin_generate_volume_pace_of_date(self, our_date):
 		measure_set = self.measurement_set.all().order_by('measurement_date')
+		if measure_set.count() > 1:
+			summ = 0.
+			last_meas = 0
+			mes_first = measure_set.first()
+			#logger.info(mes_first)
+			if our_date > mes_first.measurement_date:
+				for mes_second in measure_set[1:]:
+					if mes_second.measurement_date >= our_date:
+						last_meas = mes_first
+						break
+					if mes_second.measurement_volume - mes_first.measurement_volume > 0:
+						summ += float(mes_second.measurement_volume - mes_first.measurement_volume)
+					mes_first = mes_second
+				if last_meas == 0:
+					last_meas = self.measurement_set.all().order_by('measurement_date').last()
+				time_summ = last_meas.measurement_date - measure_set.first().measurement_date
+				time_summ = time_summ.days * 24 + time_summ.seconds / 3600
+				if time_summ:
+					result = summ / time_summ
+					return result
+				else:
+					return 0
+			else:
+				return 0
+		else:
+			return 0
+
+	def bin_generate_volume_pace_of_date_test(self, our_date):
+		logger.info(our_date)
+		measure_set_init = self.measurement_set.all().order_by('measurement_date').filter(measurement_date__lte = our_date.date)
+		logger.info(measure_set_init)
+		size = measure_set_init.count()
+		if size > 10:
+			begin = size - 10
+		else:
+			begin = 0
+		measure_set = measure_set_init[begin:]
+		logger.info(measure_set)
 		if measure_set.count() > 1:
 			summ = 0.
 			last_meas = 0
